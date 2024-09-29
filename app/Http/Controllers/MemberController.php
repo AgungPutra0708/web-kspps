@@ -47,6 +47,7 @@ class MemberController extends Controller
         // Redirect ke halaman anggota dengan pesan sukses
         return redirect()->route('anggota')->with('success', 'Data anggota berhasil disimpan!');
     }
+
     public function getMemberAndRembugData()
     {
         // Ambil nomor anggota terbesar dari tabel

@@ -16,7 +16,11 @@ Route::get('/anggota/next-number', [App\Http\Controllers\MemberController::class
 
 Route::get('/simpanan', [App\Http\Controllers\SavingController::class, 'index'])->name('simpanan');
 Route::get('/pembiayaan', [App\Http\Controllers\LoanController::class, 'index'])->name('pembiayaan');
+
 Route::get('/management-user', [App\Http\Controllers\UserMemberController::class, 'index'])->name('management_user');
+Route::post('/management-user/save', [App\Http\Controllers\UserMemberController::class, 'store'])->name('management_user.store');
+Route::get('/management-user/anggota', [App\Http\Controllers\UserMemberController::class, 'getMemberData'])->name('get_member_data');
+
 Route::get('/input-simpanan', [App\Http\Controllers\InputSavingController::class, 'index'])->name('input_simpanan');
 Route::get('/input-pembiayaan', [App\Http\Controllers\InputLoanController::class, 'index'])->name('input_pembiayaan');
 Route::get('/input-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexKolektif'])->name('input_simpanan_kolektif');

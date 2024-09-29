@@ -6,16 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AnggotaModel extends Model
+class UserMemberModel extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "anggotas";
+    protected $table = "user_anggotas";
 
     protected $guarded = [];
-
-    public function rembug()
-    {
-        return $this->belongsTo(RembugModel::class, 'id_rembug', 'id');
-    }
 }
