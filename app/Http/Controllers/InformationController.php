@@ -8,6 +8,6 @@ class InformationController extends Controller
 {
     public function index()
     {
-        return view('informasi');
+        return view('admin.informasi');
     }
 }

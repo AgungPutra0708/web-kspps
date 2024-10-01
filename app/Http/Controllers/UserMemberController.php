@@ -10,7 +10,7 @@ class UserMemberController extends Controller
 {
     public function index()
     {
-        return view('user');
+        return view('admin.user');
     }
 
     public function store(Request $request)

@@ -8,6 +8,6 @@ class LoanController extends Controller
 {
     public function index()
     {
-        return view('pembiayaan');
+        return view('admin.pembiayaan');
     }
 }

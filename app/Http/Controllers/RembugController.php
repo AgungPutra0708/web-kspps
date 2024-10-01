@@ -13,7 +13,7 @@ class RembugController extends Controller
     public function index()
     {
         $data = [];
-        return view('rembug', $data);
+        return view('admin.rembug', $data);
     }
 
     /**
@@ -44,8 +44,7 @@ class RembugController extends Controller
         ]);
 
         // Redirect dengan pesan sukses
-        return redirect()->route('kumpulan')
-            ->with('success', 'Kumpulan berhasil disimpan');
+        return redirect()->route('kumpulan')->with('success', 'Data kumpulan berhasil disimpan');
     }
 
     /**

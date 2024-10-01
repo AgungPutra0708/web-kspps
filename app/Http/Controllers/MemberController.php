@@ -11,7 +11,7 @@ class MemberController extends Controller
 {
     public function index()
     {
-        return view('anggota');
+        return view('admin.anggota');
     }
 
     public function store(Request $request)

@@ -8,10 +8,10 @@ class InputLoanController extends Controller
 {
     public function index()
     {
-        return view('inputpembiayaan');
+        return view('admin.inputpembiayaan');
     }
     public function indexKolektif()
     {
-        return view('inputpembiayaankolektif');
+        return view('admin.inputpembiayaankolektif');
     }
 }

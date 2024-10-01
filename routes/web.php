@@ -15,6 +15,9 @@ Route::post('/anggota/save', [App\Http\Controllers\MemberController::class, 'sto
 Route::get('/anggota/next-number', [App\Http\Controllers\MemberController::class, 'getMemberAndRembugData'])->name('get_member_and_rembug_data');
 
 Route::get('/simpanan', [App\Http\Controllers\SavingController::class, 'index'])->name('simpanan');
+Route::post('/simpanan/save', [App\Http\Controllers\SavingController::class, 'store'])->name('simpanan.store');
+Route::get('/simpanan/next-number', [App\Http\Controllers\SavingController::class, 'getSavingData'])->name('get_saving_data');
+
 Route::get('/pembiayaan', [App\Http\Controllers\LoanController::class, 'index'])->name('pembiayaan');
 
 Route::get('/management-user', [App\Http\Controllers\UserMemberController::class, 'index'])->name('management_user');
@@ -22,6 +25,8 @@ Route::post('/management-user/save', [App\Http\Controllers\UserMemberController:
 Route::get('/management-user/anggota', [App\Http\Controllers\UserMemberController::class, 'getMemberData'])->name('get_member_data');
 
 Route::get('/input-simpanan', [App\Http\Controllers\InputSavingController::class, 'index'])->name('input_simpanan');
+Route::post('/input-simpanan/save', [App\Http\Controllers\InputSavingController::class, 'store'])->name('input_simpanan.store');
+
 Route::get('/input-pembiayaan', [App\Http\Controllers\InputLoanController::class, 'index'])->name('input_pembiayaan');
 Route::get('/input-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexKolektif'])->name('input_simpanan_kolektif');
 Route::get('/penarikan-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexPenarikanKolektif'])->name('penarikan_simpanan_kolektif');
