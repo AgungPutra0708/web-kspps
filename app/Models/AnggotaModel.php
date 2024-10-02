@@ -18,4 +18,11 @@ class AnggotaModel extends Model
     {
         return $this->belongsTo(RembugModel::class, 'id_rembug', 'id');
     }
+
+    // Relasi ke model TransaksiSimpanan dengan kondisi id_anggota dan id_simpanan
+    public function transaksiSimpanans($idSimpanan)
+    {
+        return $this->hasMany(TransaksiSimpananModel::class, 'id_anggota')
+            ->where('id_simpanan', $idSimpanan);
+    }
 }

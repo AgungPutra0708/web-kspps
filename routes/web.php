@@ -33,6 +33,9 @@ Route::get('/input-pembiayaan', [App\Http\Controllers\InputLoanController::class
 Route::post('/input-pembiayaan/save', [App\Http\Controllers\InputLoanController::class, 'store'])->name('input_pembiayaan.store');
 
 Route::get('/input-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexKolektif'])->name('input_simpanan_kolektif');
+Route::get('/input-simpanan-kolektif/get-data', [App\Http\Controllers\InputSavingController::class, 'getMemberDataSimpananKolektif'])->name('get_member_data_simpanan_kolektif');
+Route::post('/input-simpanan-kolektif/save', [App\Http\Controllers\InputSavingController::class, 'storeSimpananKolektif'])->name('input_simpanan_kolektif.store');
+
 Route::get('/penarikan-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexPenarikanKolektif'])->name('penarikan_simpanan_kolektif');
 Route::get('/input-pembiayaan-kolektif', [App\Http\Controllers\InputLoanController::class, 'indexKolektif'])->name('input_pembiayaan_kolektif');
 Route::get('/informasi-berita', [App\Http\Controllers\InformationController::class, 'index'])->name('informasi_berita');

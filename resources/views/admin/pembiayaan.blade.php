@@ -50,7 +50,7 @@
     <!-- /.container-fluid -->
     <script>
         $(document).ready(function() {
-            function fetchSavingData() {
+            function fetchLoanData() {
                 $.ajax({
                     url: "{{ route('get_loan_data') }}",
                     method: 'GET',
@@ -65,10 +65,10 @@
             }
 
             // Panggil fungsi saat halaman dimuat
-            fetchSavingData();
+            fetchLoanData();
 
             // Update setiap 10 detik
-            setInterval(fetchSavingData, 10000);
+            setInterval(fetchLoanData, 10000);
         });
     </script>
 @endsection
