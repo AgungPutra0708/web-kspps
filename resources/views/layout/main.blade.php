@@ -22,7 +22,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
             @include('layout.nav')
             <!-- Main Content -->
-            <div id="content">
+            <div id="content" style="height: 80vh;">
                 @yield('content')
             </div>
             <!-- End of Main Content -->

@@ -1,248 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Anggota</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Web Anggota</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        />
 
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-      }
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: "Poppins", sans-serif;
+            }
 
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: #ffffff;
-      }
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                background: #ffffff;
+            }
 
-      .navigation {
-        position: absolute;
-        width: 100%;
-        height: 70px;
-        background: #08786b;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 10px;
-        bottom: 0;
-      }
+            .navigation {
+                position: absolute;
+                width: 100%;
+                height: 60px;
+                background: #08786b;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                /* border-radius: 10px; */
+                bottom: 0;
+                padding-bottom: 20px; /* Adjust spacing below for visual balance */
+            }
 
-      .navigation ul {
-        display: flex;
-        width: 350px;
-      }
+            .navigation ul {
+                display: flex;
+                justify-content: space-between; /* Space between the li elements */
+                width: 250px; /* Adjust width based on the number of items */
+                position: relative;
+            }
 
-      .navigation ul li {
-        position: relative;
-        width: 70px;
-        height: 70px;
-        list-style: none;
-        z-index: 1;
-      }
+            .navigation ul li {
+                position: relative;
+                width: 70px;
+                height: 70px;
+                list-style: none;
+                z-index: 1;
+            }
 
-      .navigation ul li a {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        width: 100%;
-        text-align: center;
-        font-weight: 500;
-      }
+            .navigation ul li a {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+                font-weight: 500;
+            }
 
-      .navigation ul li a .icon {
-        position: relative;
-        display: block;
-        line-height: 75px;
-        font-size: 1.5em;
-        text-align: center;
-        color: #ffffff;
-        transition: 0.5s;
-      }
+            .navigation ul li a .icon {
+                position: relative;
+                display: block;
+                line-height: 75px;
+                font-size: 1.5em;
+                text-align: center;
+                color: #ffffff;
+                transition: 0.5s;
+            }
 
-      .navigation ul li.active a .icon {
-        transform: translateY(-32px);
-      }
+            .navigation ul li.active a .icon {
+                transform: translateY(-32px);
+            }
 
-      .navigation ul li a .text {
-        position: absolute;
-        color: #ffffff;
-        font-weight: 400;
-        font-size: 0.75em;
-        letter-spacing: 0.05em;
-        opacity: 0;
-        transform: translateY(20px);
-        transition: 0.5s;
-      }
+            .navigation ul li a .text {
+                position: absolute;
+                color: #ffffff;
+                font-weight: 400;
+                font-size: 0.75em;
+                letter-spacing: 0.05em;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: 0.5s;
+            }
 
-      .navigation ul li.active a .text {
-        opacity: 1;
-        transform: translateY(10px);
-      }
+            .navigation ul li.active a .text {
+                opacity: 1;
+                transform: translateY(10px);
+            }
 
-      .navigation ul li a .circle {
-        position: absolute;
-        display: block;
-        width: 50px;
-        height: 50px;
-        background: transparent;
-        border-radius: 50%;
-        border: 1.8px solid #ffffff;
-        transform: translateY(-37px) scale(0);
-      }
+            .navigation ul li a .circle {
+                position: absolute;
+                display: block;
+                width: 50px;
+                height: 50px;
+                top: 20px;
+                background: transparent;
+                border-radius: 50%;
+                border: 1.8px solid #ffffff;
+                transform: translateY(-40px) scale(0);
+                transition: transform 0.5s ease;
+                z-index: -1; /* Ensures the circle stays behind the content */
+            }
 
-      .navigation ul li.active a .circle {
-        transition: 0.5s;
-        transition-delay: 0.5s;
-        transform: translateY(-37px) scale(1);
-      }
+            .navigation ul li.active a .circle {
+                transform: translateY(-40px) scale(1);
+            }
 
-      .indicator {
-        position: absolute;
-        top: -50%;
-        width: 70px;
-        height: 70px;
-        background: #08786b;
-        border: 6px solid #ffffff;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: 0.5s;
-      }
+            .indicator {
+                position: absolute;
+                top: -30px; /* Adjust the indicator's vertical position */
+                left: 0;
+                width: 70px;
+                height: 70px;
+                background: #08786b;
+                border: 6px solid #ffffff;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: 0.5s;
+                z-index: 0;
+            }
 
-      .indicator::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: -22px;
-        width: 20px;
-        height: 20px;
-        background: transparent;
-        border-top-right-radius: 20px;
-      }
+            .indicator::before,
+            .indicator::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                width: 20px;
+                height: 20px;
+                background: transparent;
+            }
 
-      .indicator::after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        right: -22px;
-        width: 20px;
-        height: 20px;
-        background: transparent;
-        border-top-left-radius: 20px;
-      }
+            .indicator::before {
+                left: -22px;
+                border-top-right-radius: 20px;
+            }
 
-      .navigation ul li:nth-child(1).active ~ .indicator {
-        transform: translateX(calc(70px * 0));
-      }
+            .indicator::after {
+                right: -22px;
+                border-top-left-radius: 20px;
+            }
 
-      .navigation ul li:nth-child(2).active ~ .indicator {
-        transform: translateX(calc(70px * 1));
-      }
+            .navigation ul li:nth-child(1).active ~ .indicator {
+                transform: translateX(calc(70px * 0));
+            }
 
-      .navigation ul li:nth-child(3).active ~ .indicator {
-        transform: translateX(calc(70px * 2));
-      }
+            .navigation ul li:nth-child(2).active ~ .indicator {
+                transform: translateX(calc(70px * 1.285));
+            }
 
-      .navigation ul li:nth-child(4).active ~ .indicator {
-        transform: translateX(calc(70px * 3));
-      }
+            .navigation ul li:nth-child(3).active ~ .indicator {
+                transform: translateX(calc(70px * 2.57));
+            }
+        </style>
+    </head>
 
-      .navigation ul li:nth-child(5).active ~ .indicator {
-        transform: translateX(calc(70px * 4));
-      }
-    </style>
-  </head>
+    <body>
+        <div class="navigation">
+            <ul>
+                <li class="list active">
+                    <a href="#">
+                        <span class="icon">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span class="text">Home</span>
+                        <span class="circle"></span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="#">
+                        <span class="icon">
+                            <i class="fas fa-info"></i>
+                        </span>
+                        <span class="text">Message</span>
+                        <span class="circle"></span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="#">
+                        <span class="icon">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <span class="text">Profile</span>
+                        <span class="circle"></span>
+                    </a>
+                </li>
+                <div class="indicator"></div>
+            </ul>
+        </div>
+        <script>
+            const list = document.querySelectorAll(".list");
 
-  <body>
-    <div class="navigation">
-      <ul>
-        <li class="list active">
-          <a href="#">
-            <span class="icon">
-              <!-- <ion-icon name="home-outline"></ion-icon> -->
-              <ion-icon name="home"></ion-icon>
-            </span>
-            <span class="text">Home</span>
-            <span class="circle"></span>
-          </a>
-        </li>
-        <li class="list">
-          <a href="#">
-            <span class="icon">
-              <!-- <ion-icon name="person-outline"></ion-icon> -->
-              <ion-icon name="person"></ion-icon>
-            </span>
-            <span class="text">Profile</span>
-            <span class="circle"></span>
-          </a>
-        </li>
-        <li class="list">
-          <a href="#">
-            <span class="icon">
-              <!-- <ion-icon name="chatbubble-outline"></ion-icon> -->
-              <ion-icon name="chatbubble"></ion-icon>
-            </span>
-            <span class="text">Message</span>
-            <span class="circle"></span>
-          </a>
-        </li>
-        <li class="list">
-          <a href="#">
-            <span class="icon">
-              <!-- <ion-icon name="camera-outline"></ion-icon> -->
-              <ion-icon name="camera"></ion-icon>
-            </span>
-            <span class="text">Photos</span>
-            <span class="circle"></span>
-          </a>
-        </li>
-        <li class="list">
-          <a href="#">
-            <span class="icon">
-              <!-- <ion-icon name="settings-outline"></ion-icon> -->
-              <ion-icon name="settings"></ion-icon>
-            </span>
-            <span class="text">Settings</span>
-            <span class="circle"></span>
-          </a>
-        </li>
-        <div class="indicator"></div>
-      </ul>
-    </div>
+            function activeLink() {
+                list.forEach((item) => item.classList.remove("active"));
+                this.classList.add("active");
+            }
 
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
-    ></script>
-    <script>
-      const list = document.querySelectorAll(".list");
-
-      function activeLink() {
-        list.forEach((item) => item.classList.remove("active"));
-        this.classList.add("active");
-      }
-
-      list.forEach((item) => item.addEventListener("click", activeLink));
-    </script>
-  </body>
+            list.forEach((item) => item.addEventListener("click", activeLink));
+        </script>
+    </body>
 </html>

@@ -61,7 +61,7 @@ class InputSavingController extends Controller
         $idSimpanan = $request->input('id_simpanan');
         $idRembug = $request->input('id_rembug');
 
-        // Ambil data anggota dengan filter id_anggota dan id_simpanan
+        // Ambil data anggota dengan filter id_rembug
         $anggotaData = AnggotaModel::where('id_rembug', $idRembug)
             ->with('rembug')
             ->get();

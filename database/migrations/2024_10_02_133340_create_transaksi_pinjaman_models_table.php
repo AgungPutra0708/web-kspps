@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pinjamans', function (Blueprint $table) {
+        Schema::create('transaksi_pinjamans', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_pinjaman');
             $table->integer('id_pembiayaan');
             $table->integer('id_anggota');
-            $table->decimal('besar_pinjaman', 15, 2);
-            $table->decimal('besar_margin', 15, 2);
-            $table->integer('lama_pinjaman');
-            $table->decimal('sisa_besar_pinjaman', 15, 2);
-            $table->decimal('sisa_besar_margin', 15, 2);
-            $table->integer('sisa_pinjaman');
-            $table->text('keterangan_pinjaman');
+            $table->decimal('angsur_pinjaman', 15, 2);
+            $table->decimal('angsur_margin', 15, 2);
+            $table->integer('angsuran_ke');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pinjamans');
+        Schema::dropIfExists('transaksi_pinjamans');
     }
 };
