@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PetugasModel;
 use App\Models\UserMemberModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,12 +35,15 @@ class LoginController extends Controller
 
                 // Simpan role ke session
                 Session::put('role', $user->status);
-                $role = Session::get('role');
 
                 // Redirect berdasarkan role
-                if ($role == 'petugas') {
+                if ($user->status == 'petugas') {
+                    $petugasData = PetugasModel::find($user->id_user);
+                    Session::put('no_user', $petugasData->no_petugas);
+                    Session::put('nama_user', $petugasData->nama_petugas);
+                    Session::put('role_user', $user->status);
                     return redirect()->route('dashboard');
-                } elseif ($role == 'anggota') {
+                } elseif ($user->status == 'anggota') {
                     return redirect()->route('home');
                 }
             }

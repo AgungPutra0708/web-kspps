@@ -18,7 +18,7 @@ class RoleMiddleware
         }
 
         // Retrieve the role from the session
-        $userRole = Session::get('role');
+        $userRole = Session::get('role_user');
 
         // Debugging: Check what role is being retrieved
         if ($userRole !== $role) {
