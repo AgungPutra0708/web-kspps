@@ -26,7 +26,6 @@
                                                 <th>No</th>
                                                 <th>Judul Informasi/Berita</th>
                                                 <th>Tanggal Informasi/Berita</th>
-                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -61,12 +60,6 @@
                     {
                         data: 'created_at',
                         name: 'created_at'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
                     }
                 ]
             });

@@ -14,7 +14,7 @@ class MessageController extends Controller
     {
         if ($request->ajax()) {
             // Melakukan join antara tabel informasis dan anggotas
-            $data = InformasiModel::select(['informasis.id', 'anggotas.nama_anggota', 'informasis.created_at'])
+            $data = InformasiModel::select(['informasis.id', 'anggotas.nama_anggota', 'informasis.judul', 'informasis.created_at'])
                 ->join('anggotas', 'informasis.id_anggota', '=', 'anggotas.id') // Menambahkan join
                 ->where('kondisi_informasi', 'pesan')
                 ->get();
@@ -24,12 +24,6 @@ class MessageController extends Controller
                 ->editColumn('created_at', function ($row) {
                     return Carbon::parse($row->created_at)->format('d/m/Y');
                 })
-                ->addColumn('action', function ($row) {
-                    $btn = '<a href="#" class="edit btn btn-primary btn-sm">Edit</a>';
-                    $btn .= ' <a href="#" class="delete btn btn-danger btn-sm">Delete</a>';
-                    return $btn;
-                })
-                ->rawColumns(['action'])
                 ->make(true);
         }
         return view('admin.pesan');

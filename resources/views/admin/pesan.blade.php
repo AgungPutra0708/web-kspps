@@ -25,8 +25,8 @@
                                             <tr>
                                                 <th>No</th>
                                                 <th>Nama Anggota</th>
+                                                <th>Judul Pesan</th>
                                                 <th>Tanggal Informasi/Berita</th>
-                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -56,17 +56,15 @@
                     },
                     {
                         data: 'nama_anggota',
+                        name: 'nama_anggota'
+                    },
+                    {
+                        data: 'judul',
                         name: 'judul'
                     },
                     {
                         data: 'created_at',
                         name: 'created_at'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: false,
-                        searchable: false
                     }
                 ]
             });

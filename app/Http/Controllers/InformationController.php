@@ -19,12 +19,6 @@ class InformationController extends Controller
                 ->editColumn('created_at', function ($row) {
                     return Carbon::parse($row->created_at)->format('d/m/Y');
                 })
-                ->addColumn('action', function ($row) {
-                    $btn = '<a href="#" class="edit btn btn-primary btn-sm">Edit</a>';
-                    $btn .= ' <a href="#" class="delete btn btn-danger btn-sm">Delete</a>';
-                    return $btn;
-                })
-                ->rawColumns(['action'])
                 ->make(true);
         }
         return view('admin.informasi');
