@@ -5,34 +5,42 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-12">
-                <form action="{{ route('kumpulan.store') }}" method="POST">
+                <form action="{{ route('petugas.store') }}" method="post">
+                    @csrf
                     <div class="card shadow mb-4">
-                        @csrf
                         <!-- Card Header Anggota -->
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold" style="color: #08786B">Rembug/Area/Kumpulan</h6>
+                            <h6 class="m-0 font-weight-bold" style="color: #08786B">Tambah Data Petugas</h6>
                         </div>
                         <!-- Card Body Anggota -->
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="group_number">Nomor Rembug/Area/Kumpulan*</label>
-                                        <input type="text" class="form-control group_number" name="group_number"
-                                            id="group_number" placeholder="Nomor Rembug/Area/Kumpulan" readonly>
+                                        <label for="petugas_number">Nomor Petugas*</label>
+                                        <input type="text" class="form-control petugas_number" name="petugas_number"
+                                            id="petugas_number" placeholder="Nomor Petugas" readonly>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="group_name">Nama Rembug/Area/Kumpulan*</label>
-                                        <input type="text" class="form-control group_name" name="group_name"
-                                            id="group_name" placeholder="Nama Rembug/Area/Kumpulan">
+                                        <label for="petugas_name">Nama Petugas*</label>
+                                        <input type="text" class="form-control petugas_name" name="petugas_name"
+                                            id="petugas_name" placeholder="Nama Petugas">
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="group_address">Alamat</label>
-                                        <textarea class="form-control group_address" name="group_address" id="group_address"></textarea>
+                                        <label for="petugas_username">Username Petugas</label>
+                                        <input type="text" class="form-control petugas_username" name="petugas_username"
+                                            id="petugas_username" placeholder="Username Petugas">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="petugas_password">Password Petugas</label>
+                                        <input type="password" class="form-control petugas_password" name="petugas_password"
+                                            id="petugas_password" placeholder="Password Petugas">
                                     </div>
                                 </div>
                             </div>
@@ -50,21 +58,21 @@
     <script>
         $(document).ready(function() {
             // Fungsi untuk mendapatkan nomor post terbaru dengan format
-            function getNextPostRembugNumber() {
+            function getNextPostPetugasNumber() {
                 $.ajax({
-                    url: "{{ route('get_number_kumpulan') }}",
+                    url: "{{ route('get_number_petugas') }}",
                     method: 'GET',
                     success: function(response) {
-                        $('#group_number').val(response).change();
+                        $('#petugas_number').val(response).change();
                     }
                 });
             }
 
             // Panggil fungsi saat halaman dimuat
-            getNextPostRembugNumber();
+            getNextPostPetugasNumber();
 
             // Bisa juga dipanggil setiap beberapa detik jika diperlukan (misalnya 10 detik)
-            setInterval(getNextPostRembugNumber, 10000); // Update setiap 10 detik
+            setInterval(getNextPostPetugasNumber, 10000); // Update setiap 10 detik
         });
     </script>
 @endsection

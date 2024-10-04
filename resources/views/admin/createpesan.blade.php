@@ -5,19 +5,33 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xl-12">
-                <form action="{{ route('informasi_berita.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('pesan_anggota.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="card shadow mb-4">
                         <!-- Card Header  -->
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold" style="color: #08786B">Tambah Informasi/Berita</h6>
+                            <h6 class="m-0 font-weight-bold" style="color: #08786B">Tambah Pesan Anggota</h6>
                         </div>
                         <!-- Card Body  -->
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label for="judul_informasi">Judul Informasi/Berita*</label>
+                                        <label for="member_name">Pilih Nama Anggota*</label>
+                                        <select class="form-control select2 member_name" style="width: 100%;"
+                                            name="member_name" id="member_name">
+                                            <option></option>
+                                            @foreach ($dataAnggota as $data)
+                                                <option value="{{ $data->id }}"
+                                                    data-nama_anggota="{{ $data->nama_anggota }}">({{ $data->no_anggota }})
+                                                    {{ $data->nama_anggota }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="judul_informasi">Judul Pesan*</label>
                                         <input type="text" class="form-control judul_informasi" name="judul_informasi"
                                             id="judul_informasi" placeholder="Judul Informasi/Berita">
                                     </div>
@@ -48,7 +62,6 @@
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
-                            <button type="button" class="btn btn-success float-right">Cetak</button>
                             <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
                         </div>
                     </div>

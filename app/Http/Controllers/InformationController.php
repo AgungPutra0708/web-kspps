@@ -12,7 +12,7 @@ class InformationController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = InformasiModel::select(['id', 'judul', 'created_at'])->get();
+            $data = InformasiModel::select(['id', 'judul', 'created_at'])->where('kondisi_informasi', 'info')->get();
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -55,6 +55,7 @@ class InformationController extends Controller
             'judul' => $request->judul_informasi,
             'keterangan' => $request->keterangan_informasi,
             'banner' => $memberCardPath, // Simpan path file banner
+            'kondisi_informasi' => 'info',
         ];
 
         // Menyimpan data ke tabel anggotas

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AnggotaModel;
 use App\Models\UserMemberModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserMemberController extends Controller
 {
@@ -23,16 +24,22 @@ class UserMemberController extends Controller
         ]);
 
         $data = [
-            'id_anggota' => $request->member_name,
+            'id_user' => $request->member_name,
+            'status' => "anggota",
             'username' => $request->member_username,
-            'password' => $request->member_password,
+            'password' => Hash::make($request->member_password),
         ];
 
-        // Menyimpan data ke tabel anggotas
-        UserMemberModel::create($data);
+        $user = UserMemberModel::where('username', $request->petugas_username)->first();
 
-        // Redirect ke halaman anggota dengan pesan sukses
-        return redirect()->route('management_user')->with('success', 'Data user anggota berhasil disimpan!');
+        if ($user) {
+            return redirect()->route('petugas')->with('error', 'Username sudah digunakan silahkan pilih yang lain!');
+        } else {
+            // Menyimpan data ke tabel anggotas
+            UserMemberModel::create($data);
+            // Redirect ke halaman anggota dengan pesan sukses
+            return redirect()->route('management_user')->with('success', 'Data user anggota berhasil disimpan!');
+        }
     }
 
     public function getMemberData()

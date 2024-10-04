@@ -127,7 +127,7 @@
                         <input type="hidden" name="pembiayaan_array" id="pembiayaan_array">
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
-                            <a href="{{ route('home') }}" class="btn btn-danger float-left">Batal</a>
+                            <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
                         </div>
                     </div>
                 </form>

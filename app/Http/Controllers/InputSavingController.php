@@ -109,7 +109,7 @@ class InputSavingController extends Controller
             }
         }
 
-        return redirect()->route('home')->with('success', 'Data simpanan kolektif berhasil disimpan.');
+        return redirect()->route('dashboard')->with('success', 'Data simpanan kolektif berhasil disimpan.');
     }
 
 

@@ -13,7 +13,8 @@
                                 <div class="text-center">
                                     <h1 class="h4 text-gray-900 mb-4">Login</h1>
                                 </div>
-                                <form class="user">
+                                <form action="{{ route('login.authenticate') }}" method="POST" class="user">
+                                    @csrf
                                     <div class="form-group">
                                         <input type="text" class="form-control form-control-user" id="username"
                                             name="username" placeholder="Enter Username">
@@ -22,16 +23,9 @@
                                         <input type="password" class="form-control form-control-user" name="password"
                                             id="password" placeholder="Enter Password">
                                     </div>
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox small">
-                                            <input type="checkbox" class="custom-control-input" id="customCheck">
-                                            <label class="custom-control-label" for="customCheck">Remember
-                                                Me</label>
-                                        </div>
-                                    </div>
-                                    <a href="{{ route('home') }}" class="btn btn-primary btn-user btn-block">
+                                    <button type="submit" class="btn btn-secondary btn-user btn-block">
                                         Login
-                                    </a>
+                                    </button>
                                 </form>
                             </div>
                         </div>

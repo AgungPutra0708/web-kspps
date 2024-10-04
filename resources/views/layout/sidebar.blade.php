@@ -3,7 +3,7 @@
     <ul class="navbar-nav sidebar sidebar-dark accordion d-none d-lg-block" style="background-color: #08786B"
         id="accordionSidebar">
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
             BMT SARANA
         </a>
 
@@ -12,7 +12,7 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item {{ Route::is('home') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('home') }}">
+            <a class="nav-link" href="{{ route('dashboard') }}">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span></a>
         </li>
@@ -21,14 +21,27 @@
         <hr class="sidebar-divider" />
 
         <!-- Heading -->
-        <div class="sidebar-heading">Keanggotaan</div>
+        <div class="sidebar-heading">Master Data</div>
 
-        <!-- Nav Item - Anggota Menu -->
+        <!-- Nav Item - Kumpulan Menu -->
         <li class="nav-item {{ Route::is('kumpulan') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('kumpulan') }}">
                 <i class="fas fa-users"></i>
                 <span>Rembug/Area/Kumpulan</span></a>
         </li>
+
+        <!-- Nav Item - Kumpulan Menu -->
+        <li class="nav-item {{ Route::is('petugas') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('petugas') }}">
+                <i class="fas fa-user-tie"></i>
+                <span>Petugas</span></a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider" />
+
+        <!-- Heading -->
+        <div class="sidebar-heading">Keanggotaan</div>
 
         <!-- Nav Item - Anggota Menu -->
         <li class="nav-item {{ Route::is('anggota') ? 'active' : '' }}">
@@ -96,7 +109,7 @@
 
         <!-- Nav Item - Pindah Buku -->
         <li class="nav-item {{ Route::is('home') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('home') }}">
+            <a class="nav-link" href="{{ route('dashboard') }}">
                 <i class="fas fa-exchange-alt"></i>
                 <span>Pindah Buku</span>
             </a>
@@ -118,7 +131,7 @@
 
         <!-- Nav Item - Cek -->
         <li class="nav-item {{ Route::is('home') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('home') }}">
+            <a class="nav-link" href="{{ route('dashboard') }}">
                 <i class="fas fa-tasks"></i>
                 <span>Cek</span>
             </a>

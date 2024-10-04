@@ -14,7 +14,7 @@
     @include('layout.header')
 </head>
 
-<body>
+<body style="background-color: #08786B; height: 100vh;" class="align-content-center">
     <div class="container">
         <!-- Main Content -->
         @yield('login')
@@ -37,5 +37,25 @@
     <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 </body>
+<script>
+    $(document).ready(function() {
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'OK'
+            });
+        @endif
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        @endif
+    });
+</script>
 
 </html>
