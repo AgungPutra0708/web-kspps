@@ -1,71 +1,76 @@
 @extends('layout.main')
 
 @section('content')
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12">
-                <form action="{{ route('pesan_anggota.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="card shadow mb-4">
-                        <!-- Card Header  -->
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold" style="color: #08786B">Tambah Pesan Anggota</h6>
-                        </div>
-                        <!-- Card Body  -->
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="member_name">Pilih Nama Anggota*</label>
-                                        <select class="form-control select2 member_name" style="width: 100%;"
-                                            name="member_name" id="member_name">
-                                            <option></option>
-                                            @foreach ($dataAnggota as $data)
-                                                <option value="{{ $data->id }}"
-                                                    data-nama_anggota="{{ $data->nama_anggota }}">({{ $data->no_anggota }})
-                                                    {{ $data->nama_anggota }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="judul_informasi">Judul Pesan*</label>
-                                        <input type="text" class="form-control judul_informasi" name="judul_informasi"
-                                            id="judul_informasi" placeholder="Judul Informasi/Berita">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="keterangan_informasi">Keterangan Informasi/Berita</label>
-                                        <textarea class="form-control keterangan_informasi" name="keterangan_informasi" id="keterangan_informasi"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="banner">Banner/Foto</label>
+    <!-- Main Content -->
+    <div id="content" style="height: 100vh">
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12">
+                    <form action="{{ route('pesan_anggota.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="card shadow mb-4">
+                            <!-- Card Header  -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Tambah Pesan Anggota</h6>
+                            </div>
+                            <!-- Card Body  -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <img id="bannerPreview" src="" alt="Preview Banner"
-                                                style="max-width: 300px; max-height: 300px; display: none">
+                                            <label for="member_name">Pilih Nama Anggota*</label>
+                                            <select class="form-control select2 member_name" style="width: 100%;"
+                                                name="member_name" id="member_name">
+                                                <option></option>
+                                                @foreach ($dataAnggota as $data)
+                                                    <option value="{{ $data->id }}"
+                                                        data-nama_anggota="{{ $data->nama_anggota }}">
+                                                        ({{ $data->no_anggota }})
+                                                        {{ $data->nama_anggota }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input banner" id="banner"
-                                                    name="banner">
-                                                <label class="custom-file-label" for="banner">Choose file</label>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="judul_informasi">Judul Pesan*</label>
+                                            <input type="text" class="form-control judul_informasi"
+                                                name="judul_informasi" id="judul_informasi"
+                                                placeholder="Judul Informasi/Berita">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="keterangan_informasi">Keterangan Informasi/Berita</label>
+                                            <textarea class="form-control keterangan_informasi" name="keterangan_informasi" id="keterangan_informasi"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="banner">Banner/Foto</label>
+                                            <div class="form-group">
+                                                <img id="bannerPreview" src="" alt="Preview Banner"
+                                                    style="max-width: 300px; max-height: 300px; display: none">
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input banner" id="banner"
+                                                        name="banner">
+                                                    <label class="custom-file-label" for="banner">Choose file</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
+                                <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
-                            <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

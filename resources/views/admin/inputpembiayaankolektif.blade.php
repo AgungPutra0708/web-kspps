@@ -1,84 +1,87 @@
 @extends('layout.main')
 
 @section('content')
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12">
-                <form action="{{ route('input_pembiayaan_kolektif.store') }}" method="post" id="pembiayaanKolektifForm">
-                    @csrf
-                    <div class="card shadow mb-4">
-                        <!-- Card Header Anggota -->
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold" style="color: #08786B">Input Angsuran Anggota Kolektif</h6>
-                        </div>
-                        <!-- Card Body Anggota -->
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-6 col-sm-12">
-                                    <div class="form-group">
-                                        <label for="loan_product">Pilih Produk Pembiayaan</label>
-                                        <select class="form-control select2 loan_product" style="width: 100%;"
-                                            name="loan_product" id="loan_product">
-                                            <option></option>
-                                            @foreach ($dataPembiayaan as $data)
-                                                <option value="{{ $data->id }}"
-                                                    data-nama_pembiayaan="{{ $data->nama_pembiayaan }}">
-                                                    ({{ $data->no_pembiayaan }})
-                                                    {{ $data->nama_pembiayaan }}</option>
-                                            @endforeach
-                                        </select>
+    <!-- Main Content -->
+    <div id="content" style="height: 100vh">
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12">
+                    <form action="{{ route('input_pembiayaan_kolektif.store') }}" method="post" id="pembiayaanKolektifForm">
+                        @csrf
+                        <div class="card shadow mb-4">
+                            <!-- Card Header Anggota -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Input Angsuran Anggota Kolektif</h6>
+                            </div>
+                            <!-- Card Body Anggota -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="loan_product">Pilih Produk Pembiayaan</label>
+                                            <select class="form-control select2 loan_product" style="width: 100%;"
+                                                name="loan_product" id="loan_product">
+                                                <option></option>
+                                                @foreach ($dataPembiayaan as $data)
+                                                    <option value="{{ $data->id }}"
+                                                        data-nama_pembiayaan="{{ $data->nama_pembiayaan }}">
+                                                        ({{ $data->no_pembiayaan }})
+                                                        {{ $data->nama_pembiayaan }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="member_group">Pilih Rembug/Area/Kelompok*</label>
+                                            <select class="form-control select2 member_group" style="width: 100%;"
+                                                name="member_group" id="member_group">
+                                                <option></option>
+                                                @foreach ($dataKumpulan as $data)
+                                                    <option value="{{ $data->id }}"
+                                                        data-nama_rembug="{{ $data->nama_rembug }}">
+                                                        ({{ $data->no_rembug }})
+                                                        {{ $data->nama_rembug }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 col-sm-12">
-                                    <div class="form-group">
-                                        <label for="member_group">Pilih Rembug/Area/Kelompok*</label>
-                                        <select class="form-control select2 member_group" style="width: 100%;"
-                                            name="member_group" id="member_group">
-                                            <option></option>
-                                            @foreach ($dataKumpulan as $data)
-                                                <option value="{{ $data->id }}"
-                                                    data-nama_rembug="{{ $data->nama_rembug }}">
-                                                    ({{ $data->no_rembug }})
-                                                    {{ $data->nama_rembug }}</option>
-                                            @endforeach
-                                        </select>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama Anggota</th>
+                                                    <th>Angsuran Pokok</th>
+                                                    <th>Angsuran Margin</th>
+                                                    <th>Sisa Angsuran</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="2">Total Setoran</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Nama Anggota</th>
-                                                <th>Angsuran Pokok</th>
-                                                <th>Angsuran Margin</th>
-                                                <th>Sisa Angsuran</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="2">Total Setoran</th>
-                                                <th></th>
-                                                <th></th>
-                                                <th></th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <input type="hidden" name="pembiayaan_array" id="pembiayaan_array">
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
+                                <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
                             </div>
                         </div>
-                        <input type="hidden" name="pembiayaan_array" id="pembiayaan_array">
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
-                            <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

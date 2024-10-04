@@ -1,75 +1,78 @@
 @extends('layout.main')
 
 @section('content')
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-12">
-                <form action="{{ route('anggota.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="card shadow mb-4">
-                        <!-- Card Header Anggota -->
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold" style="color: #08786B">Anggota</h6>
-                        </div>
-                        <!-- Card Body Anggota -->
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="member_number">Nomor Anggota*</label>
-                                        <input type="text" class="form-control member_number" name="member_number"
-                                            id="member_number" placeholder="Nomor Anggota" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="member_name">Nama Anggota*</label>
-                                        <input type="text" class="form-control member_name" name="member_name"
-                                            id="member_name" placeholder="Nama Anggota">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="member_group">Rembug/Area/Kelompok*</label>
-                                        <select class="form-control select2 member_group" style="width: 100%;"
-                                            name="member_group" id="member_group">
-                                            <option></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="member_phone">Nomor Handphone Anggota</label>
-                                        <input type="text" class="form-control member_phone" name="member_phone"
-                                            id="member_phone" placeholder="Nomor Handphone Anggota">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label for="member_card">Foto KTP</label>
+    <!-- Main Content -->
+    <div id="content" style="height: 100vh">
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12">
+                    <form action="{{ route('anggota.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="card shadow mb-4">
+                            <!-- Card Header Anggota -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Anggota</h6>
+                            </div>
+                            <!-- Card Body Anggota -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
                                         <div class="form-group">
-                                            <img id="ktpPreview" src="" alt="Preview KTP"
-                                                style="max-width: 300px; max-height: 300px; display: none">
+                                            <label for="member_number">Nomor Anggota*</label>
+                                            <input type="text" class="form-control member_number" name="member_number"
+                                                id="member_number" placeholder="Nomor Anggota" readonly>
                                         </div>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input member_card" id="member_card"
-                                                    name="member_card">
-                                                <label class="custom-file-label" for="member_card">Choose file</label>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="member_name">Nama Anggota*</label>
+                                            <input type="text" class="form-control member_name" name="member_name"
+                                                id="member_name" placeholder="Nama Anggota">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="member_group">Rembug/Area/Kelompok*</label>
+                                            <select class="form-control select2 member_group" style="width: 100%;"
+                                                name="member_group" id="member_group">
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="member_phone">Nomor Handphone Anggota</label>
+                                            <input type="text" class="form-control member_phone" name="member_phone"
+                                                id="member_phone" placeholder="Nomor Handphone Anggota">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="member_card">Foto KTP</label>
+                                            <div class="form-group">
+                                                <img id="ktpPreview" src="" alt="Preview KTP"
+                                                    style="max-width: 300px; max-height: 300px; display: none">
+                                            </div>
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input member_card"
+                                                        id="member_card" name="member_card">
+                                                    <label class="custom-file-label" for="member_card">Choose file</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
+                                <button type="button" class="btn btn-success float-right">Cetak</button>
+                                <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
-                            <button type="button" class="btn btn-success float-right">Cetak</button>
-                            <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
