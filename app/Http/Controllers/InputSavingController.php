@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnggotaModel;
+use App\Models\RekeningSimpananModel;
 use App\Models\RembugModel;
 use App\Models\SimpananModel;
 use App\Models\TransaksiSimpananModel;
@@ -34,13 +35,37 @@ class InputSavingController extends Controller
 
         // Loop melalui setiap item dalam array dan simpan ke database
         foreach ($simpananArray as $simpanan) {
+            $rekeningSimpanan = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan'])
+                ->where('id_anggota', $simpanan['id_anggota'])
+                ->first();
+
+            if (!$rekeningSimpanan) {
+                $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan']);
+                $kodeAnggota = AnggotaModel::find($simpanan['id_anggota']);
+
+                // Extract the member code part after '-'
+                $memberCodePart = substr($kodeAnggota->no_anggota, strpos($kodeAnggota->no_anggota, '-') + 1);
+
+                // Create the combined code: SP-00001
+                $noRekeningSimpanan = $kodeSimpanan->no_simpanan . '-' . $memberCodePart;
+
+                // Create Rekening Simpanan
+                $rekeningSimpanan = RekeningSimpananModel::create([
+                    'no_rekening_simpanan' => $noRekeningSimpanan,
+                    'id_anggota' => $simpanan['id_anggota'],
+                    'id_simpanan' => $simpanan['id_simpanan'],
+                ]);
+            }
+
+            // Create Transaksi Simpanan
             TransaksiSimpananModel::create([
+                'id_rekening_simpanan' => $rekeningSimpanan->id,
                 'id_simpanan' => $simpanan['id_simpanan'],
                 'id_anggota' => $simpanan['id_anggota'],
                 'metode_transaksi' => $simpanan['metode_transaksi'],
                 'jumlah_setoran' => $simpanan['nominal_setoran'],
                 'keterangan' => $simpanan['keterangan'],
-                'tanggal_transaksi' => Carbon::now()->format('Y-m-d H:i:s'),
+                'tanggal_transaksi' => Carbon::now(),
             ]);
         }
 
@@ -95,11 +120,33 @@ class InputSavingController extends Controller
         // Ambil array simpanan dari input hidden
         $simpananArray = json_decode($request->input('simpanan_array'), true);
 
-        // Loop melalui array simpanan dan simpan ke database
         foreach ($simpananArray as $simpanan) {
-            // Check that jumlah_setoran is a valid number and not null, 0, or an empty string
+            $rekeningSimpanan = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan'])
+                ->where('id_anggota', $simpanan['id_anggota'])
+                ->first();
+
+            if (!$rekeningSimpanan) {
+                $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan']);
+                $kodeAnggota = AnggotaModel::find($simpanan['id_anggota']);
+
+                // Extract the member code part after '-'
+                $memberCodePart = substr($kodeAnggota->no_anggota, strpos($kodeAnggota->no_anggota, '-') + 1);
+
+                // Create the combined code: SP-00001
+                $noRekeningSimpanan = $kodeSimpanan->no_simpanan . '-' . $memberCodePart;
+
+                // Create Rekening Simpanan
+                $rekeningSimpanan = RekeningSimpananModel::create([
+                    'no_rekening_simpanan' => $noRekeningSimpanan,
+                    'id_anggota' => $simpanan['id_anggota'],
+                    'id_simpanan' => $simpanan['id_simpanan'],
+                ]);
+            }
+
+            // Create Transaksi Simpanan
             if (!empty($simpanan['jumlah_setoran']) && is_numeric($simpanan['jumlah_setoran'])) {
                 TransaksiSimpananModel::create([
+                    'id_rekening_simpanan' => $rekeningSimpanan->id,
                     'id_anggota' => $simpanan['id_anggota'],
                     'id_simpanan' => $simpanan['id_simpanan'],
                     'metode_transaksi' => $simpanan['metode_transaksi'],
