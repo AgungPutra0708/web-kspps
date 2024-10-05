@@ -76,7 +76,7 @@ class MemberController extends Controller
 
         $member->save();
 
-        return redirect()->back()->with('message', 'Data anggota berhasil diperbarui');
+        return redirect()->back()->with('success', 'Data anggota berhasil diperbarui');
     }
 
     public function deleteMember($id)
@@ -92,7 +92,7 @@ class MemberController extends Controller
         // Delete the member from the database
         $member->delete();
 
-        return redirect()->back()->with('message', 'Anggota dan gambar KTP berhasil dihapus');
+        return redirect()->back()->with('success', 'Data anggota berhasil dihapus');
     }
 
 
