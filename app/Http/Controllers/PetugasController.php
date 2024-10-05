@@ -59,24 +59,8 @@ class PetugasController extends Controller
 
             UserMemberModel::create($dataPetugasUser);
             // Redirect ke halaman anggota dengan pesan sukses
-            return redirect()->route('petugas')->with('success', 'Data petugas berhasil disimpan!');
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return redirect()->route('petugas')->with('success', 'Data petugas berhasil disimpan!');
     }
 
     /**
@@ -84,7 +68,29 @@ class PetugasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'edit_petugas_name' => 'required',
+            'edit_petugas_username' => 'required',
+        ]);
+
+        // Find petugas by ID
+        $petugas = PetugasModel::findOrFail($id);
+        $userPetugas = UserMemberModel::where('id_user', $id)
+            ->where('status', 'petugas')
+            ->firstOrFail();
+
+        // Update petugas data
+        $petugas->nama_petugas = $request->input('edit_petugas_name');
+        $userPetugas->username = $request->input('edit_petugas_username');
+
+        if ($request->input('edit_petugas_password')) {
+            $userPetugas->password = Hash::make($request->input('edit_petugas_password'));
+        }
+
+        $petugas->save();
+        $userPetugas->save();
+
+        return redirect()->back()->with('success', 'Data petugas berhasil diperbarui');
     }
 
     /**
@@ -92,7 +98,15 @@ class PetugasController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $petugas = PetugasModel::findOrFail($id);
+        $userPetugas = UserMemberModel::where('id_user', $id)
+            ->where('status', 'petugas')
+            ->firstOrFail();
+        // Delete the petugas from the database
+        $petugas->delete();
+        $userPetugas->delete();
+
+        return redirect()->back()->with('success', 'Data petugas berhasil dihapus');
     }
 
     public function getLatestPetugasNumber()
@@ -105,5 +119,15 @@ class PetugasController extends Controller
 
         // Format nomor post dengan prefix 'R-' dan pad angka menjadi 4 digit (contoh: R-0001)
         return 'P-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function getDataPetugas()
+    {
+        $latestPost = PetugasModel::whereHas('dataUserPetugas', function ($query) {
+            $query->where('status', 'petugas'); // Filter where 'status' is 'petugas'
+        })->with('dataUserPetugas')->get();
+        return response()->json([
+            'petugas_data' => $latestPost
+        ]);
     }
 }

@@ -13,4 +13,10 @@ class PetugasModel extends Model
     protected $table = "petugas";
 
     protected $guarded = [];
+
+    public function dataUserPetugas()
+    {
+        return $this->belongsTo(UserMemberModel::class, 'id', 'id_user')
+            ->where('status', 'petugas');
+    }
 }

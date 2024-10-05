@@ -19,6 +19,9 @@ Route::post('/kumpulan/delete/{id}', [App\Http\Controllers\RembugController::cla
 Route::get('/petugas', [App\Http\Controllers\PetugasController::class, 'index'])->middleware('role:petugas')->name('petugas');
 Route::post('/petugas/save', [App\Http\Controllers\PetugasController::class, 'store'])->middleware('role:petugas')->name('petugas.store');
 Route::get('/petugas/next-number', [App\Http\Controllers\PetugasController::class, 'getLatestPetugasNumber'])->middleware('role:petugas')->name('get_number_petugas');
+Route::get('/petugas/get-data', [App\Http\Controllers\PetugasController::class, 'getDataPetugas'])->middleware('role:petugas')->name('get_data_petugas');
+Route::post('/petugas/update/{id}', [App\Http\Controllers\PetugasController::class, 'update'])->name('petugas.update');
+Route::post('/petugas/delete/{id}', [App\Http\Controllers\PetugasController::class, 'destroy'])->name('petugas.destroy');
 
 Route::get('/anggota', [App\Http\Controllers\MemberController::class, 'index'])->middleware('role:petugas')->name('anggota');
 Route::post('/anggota/save', [App\Http\Controllers\MemberController::class, 'store'])->middleware('role:petugas')->name('anggota.store');
