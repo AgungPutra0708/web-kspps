@@ -13,6 +13,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/kumpulan', [App\Http\Controllers\RembugController::class, 'index'])->middleware('role:petugas')->name('kumpulan');
 Route::post('/kumpulan/save', [App\Http\Controllers\RembugController::class, 'store'])->middleware('role:petugas')->name('kumpulan.store');
 Route::get('/kumpulan/next-number', [App\Http\Controllers\RembugController::class, 'getLatestRembugNumber'])->middleware('role:petugas')->name('get_number_kumpulan');
+Route::post('/kumpulan/update/{id}', [App\Http\Controllers\RembugController::class, 'update'])->name('kumpulan.update');
+Route::post('/kumpulan/delete/{id}', [App\Http\Controllers\RembugController::class, 'destroy'])->name('kumpulan.destroy');
 
 Route::get('/petugas', [App\Http\Controllers\PetugasController::class, 'index'])->middleware('role:petugas')->name('petugas');
 Route::post('/petugas/save', [App\Http\Controllers\PetugasController::class, 'store'])->middleware('role:petugas')->name('petugas.store');

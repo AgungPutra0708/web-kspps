@@ -48,27 +48,25 @@ class RembugController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'edit_group_name' => 'required',
+            'edit_group_address' => 'nullable',
+        ]);
+
+        // Find group by ID
+        $group = RembugModel::findOrFail($id);
+
+        // Update group data
+        $group->nama_rembug = $request->input('edit_group_name');
+        $group->alamat_rembug = $request->input('edit_group_address');
+
+        $group->save();
+
+        return redirect()->back()->with('success', 'Data rembug berhasil diperbarui');
     }
 
     /**
@@ -76,7 +74,12 @@ class RembugController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $group = RembugModel::findOrFail($id);
+
+        // Delete the group from the database
+        $group->delete();
+
+        return redirect()->back()->with('success', 'Data rembug berhasil dihapus');
     }
 
     public function getLatestRembugNumber()

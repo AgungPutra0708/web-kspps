@@ -112,6 +112,7 @@ class MemberController extends Controller
                 'id' => $item->id,  // Enkripsi id
                 'no_rembug' => $item->no_rembug,
                 'nama_rembug' => $item->nama_rembug,
+                'alamat_rembug' => $item->alamat_rembug,
             ];
         });
 
