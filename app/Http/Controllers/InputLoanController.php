@@ -10,6 +10,7 @@ use App\Models\TransaksiPinjamanModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class InputLoanController extends Controller
 {
@@ -133,5 +134,28 @@ class InputLoanController extends Controller
             }
         }
         return redirect()->back()->with('success', 'Data pembiayaan kolektif berhasil disimpan.');
+    }
+
+    public function getLastTransactionLoan(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = TransaksiPinjamanModel::select([
+                'anggotas.nama_anggota',
+                'pembiayaans.nama_pembiayaan as produk_pembiayaan',
+                'transaksi_pinjamans.angsur_pinjaman',
+                'transaksi_pinjamans.angsur_margin',
+                'transaksi_pinjamans.tanggal_transaksi'
+            ])
+                ->join('anggotas', 'anggotas.id', '=', 'transaksi_pinjamans.id_anggota')  // Perbaiki kondisi ON
+                ->join('pembiayaans', 'pembiayaans.id', '=', 'transaksi_pinjamans.id_pembiayaan')  // Perbaiki kondisi ON
+                ->get();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('tanggal_transaksi', function ($row) {
+                    return Carbon::parse($row->tanggal_transaksi)->format('d/m/Y H:i:s');
+                })
+                ->make(true);
+        }
     }
 }

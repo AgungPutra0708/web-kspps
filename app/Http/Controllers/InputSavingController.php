@@ -9,6 +9,7 @@ use App\Models\TransaksiSimpananModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class InputSavingController extends Controller
 {
@@ -112,7 +113,6 @@ class InputSavingController extends Controller
         return redirect()->route('dashboard')->with('success', 'Data simpanan kolektif berhasil disimpan.');
     }
 
-
     public function indexPenarikanKolektif()
     {
         $data = [
@@ -120,5 +120,34 @@ class InputSavingController extends Controller
             'dataKumpulan' => RembugModel::all(),
         ];
         return view('admin.penarikansimpanankolektif', $data);
+    }
+
+    public function getLastTransactionSaving(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = TransaksiSimpananModel::select([
+                'anggotas.nama_anggota',
+                'simpanans.nama_simpanan as produk_simpanan',
+                'transaksi_simpanans.metode_transaksi',
+                'transaksi_simpanans.jumlah_setoran',
+                'transaksi_simpanans.tanggal_transaksi'
+            ])
+                ->join('anggotas', 'anggotas.id', '=', 'transaksi_simpanans.id_anggota')
+                ->join('simpanans', 'simpanans.id', '=', 'transaksi_simpanans.id_simpanan')
+                ->latest('transaksi_simpanans.created_at')
+                ->take(25)
+                ->get();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('nominal_transaksi', function ($row) {
+                    $nominal = $row->metode_transaksi === '+' ? $row->jumlah_setoran : -$row->jumlah_setoran;
+                    return number_format($nominal, 2);
+                })
+                ->editColumn('tanggal_transaksi', function ($row) {
+                    return Carbon::parse($row->tanggal_transaksi)->format('d/m/Y H:i:s');
+                })
+                ->make(true);
+        }
     }
 }

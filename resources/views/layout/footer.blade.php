@@ -31,10 +31,8 @@
                         Yakin akan keluar?
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">
-                            Tidak
-                        </button>
-                        <button type="submit" class="btn btn-primary" href="{{ route('logout') }}">Keluar</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Tidak</button>
+                        <button type="submit" class="btn btn-primary">Keluar</button>
                     </div>
                 </div>
             </form>

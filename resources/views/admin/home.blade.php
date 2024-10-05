@@ -316,8 +316,147 @@
                     </div>
                 </div>
             </div>
+            <div class="container d-none d-lg-block">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header transaksi simpanan -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Transaksi Simpanan Terakhir</h6>
+                            </div>
+                            <!-- Card Body transaksi simpanan -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="transaksiSimpananTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Anggota</th>
+                                                    <th>Produk Simpanan</th>
+                                                    <th>Nominal</th>
+                                                    <th>Tanggal Transaksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header transaksi Angsuran -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Transaksi Angsuran Terakhir</h6>
+                            </div>
+                            <!-- Card Body transaksi Angsuran -->
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="transaksiAngsuranTable" width="100%"
+                                            cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Anggota</th>
+                                                    <th>Produk Pembiayaan</th>
+                                                    <th>Angsuran Pokok</th>
+                                                    <th>Angsuran Margin</th>
+                                                    <th>Tanggal Transaksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.container-fluid -->
     </div>
     <!-- End of Main Content -->
+
+    <script>
+        $(document).ready(function() {
+            $('#transaksiSimpananTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('transaksi_simpanan_terakhir') }}",
+                pageLength: 25, // Membatasi hanya 25 data per halaman
+                lengthChange: false, // Menghilangkan opsi "Show Entries"
+                paging: false, // Menghilangkan pagination (Next/Previous)
+                info: false, // Menghilangkan "Showing X to Y of Z entries"
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'nama_anggota',
+                        name: 'nama_anggota'
+                    },
+                    {
+                        data: 'produk_simpanan',
+                        name: 'produk_simpanan'
+                    },
+                    {
+                        data: 'nominal_transaksi',
+                        name: 'nominal_transaksi'
+                    },
+                    {
+                        data: 'tanggal_transaksi',
+                        name: 'tanggal_transaksi'
+                    }
+                ]
+            });
+
+            $('#transaksiAngsuranTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('transaksi_angsuran_terakhir') }}",
+                pageLength: 25, // Membatasi hanya 25 data per halaman
+                lengthChange: false, // Menghilangkan opsi "Show Entries"
+                paging: false, // Menghilangkan pagination (Next/Previous)
+                info: false, // Menghilangkan "Showing X to Y of Z entries"
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'nama_anggota',
+                        name: 'nama_anggota'
+                    },
+                    {
+                        data: 'produk_pembiayaan',
+                        name: 'produk_pembiayaan'
+                    },
+                    {
+                        data: 'angsur_pinjaman',
+                        name: 'angsur_pinjaman'
+                    },
+                    {
+                        data: 'angsur_margin',
+                        name: 'angsur_margin'
+                    },
+                    {
+                        data: 'tanggal_transaksi',
+                        name: 'tanggal_transaksi'
+                    }
+                ]
+            });
+        });
+    </script>
 @endsection

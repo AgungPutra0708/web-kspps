@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.navigation {
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    background: #08786b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border-radius: 10px; */
+    bottom: 0;
+    padding-bottom: 20px; /* Adjust spacing below for visual balance */
+}
+
+.navigation ul {
+    display: flex;
+    justify-content: space-between; /* Space between the li elements */
+    width: 250px; /* Adjust width based on the number of items */
+    position: relative;
+    margin-top: 15px;
+}
+
+.navigation ul li {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    list-style: none;
+    z-index: 1;
+}
+
+.navigation ul li a {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    font-weight: 500;
+}
+
+.navigation ul li a .icon {
+    position: relative;
+    display: block;
+    line-height: 75px;
+    font-size: 1.5em;
+    text-align: center;
+    color: #ffffff;
+    transition: 0.5s;
+}
+
+.navigation ul li.active a .icon {
+    transform: translateY(-32px);
+}
+
+.navigation ul li a .text {
+    position: absolute;
+    color: #ffffff;
+    font-weight: 400;
+    font-size: 0.75em;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.5s;
+}
+
+.navigation ul li.active a .text {
+    opacity: 1;
+    transform: translateY(10px);
+}
+
+.navigation ul li a .circle {
+    position: absolute;
+    display: block;
+    width: 50px;
+    height: 50px;
+    top: 20px;
+    background: transparent;
+    border-radius: 50%;
+    border: 1.8px solid #ffffff;
+    transform: translateY(-40px) scale(0);
+    transition: transform 0.5s ease;
+    z-index: -1; /* Ensures the circle stays behind the content */
+}
+
+.navigation ul li.active a .circle {
+    transform: translateY(-40px) scale(1);
+}
+
+.indicator {
+    position: absolute;
+    top: -30px; /* Adjust the indicator's vertical position */
+    left: 0;
+    width: 70px;
+    height: 70px;
+    background: #08786b;
+    border: 6px solid #ffffff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+    z-index: 0;
+}
+
+.indicator::before,
+.indicator::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+}
+
+.indicator::before {
+    left: -22px;
+    border-top-right-radius: 20px;
+}
+
+.indicator::after {
+    right: -22px;
+    border-top-left-radius: 20px;
+}
+
+.navigation ul li:nth-child(1).active ~ .indicator {
+    transform: translateX(calc(70px * 0));
+}
+
+.navigation ul li:nth-child(2).active ~ .indicator {
+    transform: translateX(calc(70px * 1.275));
+}
+
+.navigation ul li:nth-child(3).active ~ .indicator {
+    transform: translateX(calc(70px * 2.57));
+}

@@ -8,7 +8,7 @@ Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->na
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->middleware('role:petugas')->name('dashboard');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('role:anggota')->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/kumpulan', [App\Http\Controllers\RembugController::class, 'index'])->middleware('role:petugas')->name('kumpulan');
 Route::post('/kumpulan/save', [App\Http\Controllers\RembugController::class, 'store'])->middleware('role:petugas')->name('kumpulan.store');
@@ -43,12 +43,14 @@ Route::post('/input-pembiayaan/save', [App\Http\Controllers\InputLoanController:
 Route::get('/input-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexKolektif'])->middleware('role:petugas')->name('input_simpanan_kolektif');
 Route::get('/input-simpanan-kolektif/get-data', [App\Http\Controllers\InputSavingController::class, 'getMemberDataSimpananKolektif'])->middleware('role:petugas')->name('get_member_data_simpanan_kolektif');
 Route::post('/input-simpanan-kolektif/save', [App\Http\Controllers\InputSavingController::class, 'storeSimpananKolektif'])->middleware('role:petugas')->name('input_simpanan_kolektif.store');
+Route::get('/input-simpanan-kolektif/get-last-data', [App\Http\Controllers\InputSavingController::class, 'getLastTransactionSaving'])->middleware('role:petugas')->name('transaksi_simpanan_terakhir');
 
 Route::get('/penarikan-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexPenarikanKolektif'])->middleware('role:petugas')->name('penarikan_simpanan_kolektif');
 
 Route::get('/input-pembiayaan-kolektif', [App\Http\Controllers\InputLoanController::class, 'indexKolektif'])->middleware('role:petugas')->name('input_pembiayaan_kolektif');
 Route::get('/input-pembiayaan-kolektif/get-data', [App\Http\Controllers\InputLoanController::class, 'getMemberDataPembiayaanKolektif'])->middleware('role:petugas')->name('get_member_data_pembiayaan_kolektif');
 Route::post('/input-pembiayaan-kolektif/save', [App\Http\Controllers\InputLoanController::class, 'storePembiayaanKolektif'])->middleware('role:petugas')->name('input_pembiayaan_kolektif.store');
+Route::get('/input-pembiayaan-kolektif/get-last-data', [App\Http\Controllers\InputLoanController::class, 'getLastTransactionLoan'])->middleware('role:petugas')->name('transaksi_angsuran_terakhir');
 
 Route::get('/informasi-berita', [App\Http\Controllers\InformationController::class, 'index'])->middleware('role:petugas')->name('informasi_berita');
 Route::get('/informasi-berita/create', [App\Http\Controllers\InformationController::class, 'create'])->middleware('role:petugas')->name('informasi_berita.create');
