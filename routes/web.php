@@ -32,6 +32,8 @@ Route::post('/anggota/delete/{id}', [App\Http\Controllers\MemberController::clas
 Route::get('/simpanan', [App\Http\Controllers\SavingController::class, 'index'])->middleware('role:petugas')->name('simpanan');
 Route::post('/simpanan/save', [App\Http\Controllers\SavingController::class, 'store'])->middleware('role:petugas')->name('simpanan.store');
 Route::get('/simpanan/next-number', [App\Http\Controllers\SavingController::class, 'getSavingData'])->middleware('role:petugas')->name('get_saving_data');
+Route::post('/simpanan/update/{id}', [App\Http\Controllers\SavingController::class, 'update'])->name('simpanan.update');
+Route::post('/simpanan/delete/{id}', [App\Http\Controllers\SavingController::class, 'destroy'])->name('simpanan.destroy');
 
 Route::get('/pembiayaan', [App\Http\Controllers\LoanController::class, 'index'])->middleware('role:petugas')->name('pembiayaan');
 Route::post('/pembiayaan/save', [App\Http\Controllers\LoanController::class, 'store'])->middleware('role:petugas')->name('pembiayaan.store');
