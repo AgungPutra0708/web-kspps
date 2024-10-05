@@ -53,7 +53,10 @@ class UserMemberController extends Controller
                 'id' => $item->id,  // ID Anggota
                 'no_anggota' => $item->no_anggota, // No Anggota
                 'nama_anggota' => $item->nama_anggota, // Nama Anggota
-                'nama_rembug' => $item->rembug->nama_rembug ?? null, // Nama Rembug dari tabel rembug
+                'nama_rembug' => $item->rembug->nama_rembug ?? null,
+                'id_rembug' => $item->id_rembug,
+                'phone_anggota' => $item->phone_anggota,
+                'ktp_image' => asset('storage/' . $item->idcard_anggota), // URL gambar KTP
             ];
         });
 

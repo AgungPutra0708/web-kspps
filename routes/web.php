@@ -21,6 +21,8 @@ Route::get('/petugas/next-number', [App\Http\Controllers\PetugasController::clas
 Route::get('/anggota', [App\Http\Controllers\MemberController::class, 'index'])->middleware('role:petugas')->name('anggota');
 Route::post('/anggota/save', [App\Http\Controllers\MemberController::class, 'store'])->middleware('role:petugas')->name('anggota.store');
 Route::get('/anggota/next-number', [App\Http\Controllers\MemberController::class, 'getMemberAndRembugData'])->middleware('role:petugas')->name('get_member_and_rembug_data');
+Route::post('/anggota/update/{id}', [App\Http\Controllers\MemberController::class, 'updateMember'])->name('member.update');
+Route::post('/anggota/delete/{id}', [App\Http\Controllers\MemberController::class, 'deleteMember'])->name('member.destroy');
 
 Route::get('/simpanan', [App\Http\Controllers\SavingController::class, 'index'])->middleware('role:petugas')->name('simpanan');
 Route::post('/simpanan/save', [App\Http\Controllers\SavingController::class, 'store'])->middleware('role:petugas')->name('simpanan.store');
@@ -50,7 +52,7 @@ Route::get('/penarikan-simpanan-kolektif', [App\Http\Controllers\InputSavingCont
 Route::get('/input-pembiayaan-kolektif', [App\Http\Controllers\InputLoanController::class, 'indexKolektif'])->middleware('role:petugas')->name('input_pembiayaan_kolektif');
 Route::get('/input-pembiayaan-kolektif/get-data', [App\Http\Controllers\InputLoanController::class, 'getMemberDataPembiayaanKolektif'])->middleware('role:petugas')->name('get_member_data_pembiayaan_kolektif');
 Route::post('/input-pembiayaan-kolektif/save', [App\Http\Controllers\InputLoanController::class, 'storePembiayaanKolektif'])->middleware('role:petugas')->name('input_pembiayaan_kolektif.store');
-Route::get('/input-pembiayaan-kolektif/get-last-data', [App\Http\Controllers\InputLoanController::class, 'getLastTransactionLoan'])->middleware('role:petugas')->name('transaksi_angsuran_terakhir');
+Route::get('/input-pembiayaan-kolektif/get-last-data', [App\Http\Controllers\InputLoanController::class, 'getLastTransactionLoan'])->middleware('role:petugas')->name('transaksi_pembiayaan_terakhir');
 
 Route::get('/informasi-berita', [App\Http\Controllers\InformationController::class, 'index'])->middleware('role:petugas')->name('informasi_berita');
 Route::get('/informasi-berita/create', [App\Http\Controllers\InformationController::class, 'create'])->middleware('role:petugas')->name('informasi_berita.create');
