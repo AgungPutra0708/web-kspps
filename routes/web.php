@@ -38,6 +38,8 @@ Route::post('/simpanan/delete/{id}', [App\Http\Controllers\SavingController::cla
 Route::get('/pembiayaan', [App\Http\Controllers\LoanController::class, 'index'])->middleware('role:petugas')->name('pembiayaan');
 Route::post('/pembiayaan/save', [App\Http\Controllers\LoanController::class, 'store'])->middleware('role:petugas')->name('pembiayaan.store');
 Route::get('/pembiayaan/next-number', [App\Http\Controllers\LoanController::class, 'getLoanData'])->middleware('role:petugas')->name('get_loan_data');
+Route::post('/pembiayaan/update/{id}', [App\Http\Controllers\LoanController::class, 'update'])->name('pembiayaan.update');
+Route::post('/pembiayaan/delete/{id}', [App\Http\Controllers\LoanController::class, 'destroy'])->name('pembiayaan.destroy');
 
 Route::get('/management-user', [App\Http\Controllers\UserMemberController::class, 'index'])->middleware('role:petugas')->name('management_user');
 Route::post('/management-user/save', [App\Http\Controllers\UserMemberController::class, 'store'])->middleware('role:petugas')->name('management_user.store');

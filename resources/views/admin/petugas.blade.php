@@ -69,7 +69,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="petugasModalLabel">Edit Rembug/Area/Kumpulan</h5>
+                        <h5 class="modal-title" id="petugasModalLabel">Edit Petugas</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
