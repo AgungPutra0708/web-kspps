@@ -127,22 +127,25 @@
                         tbody.empty(); // Kosongkan tabel sebelum menambah data baru
                         pembiayaanArray = []; // Reset array pembiayaan
                         totalAngsurPinjaman = 0; // Reset total
+                        totalAngsurMargin = 0; // Reset total
                         totalAngsurPinjamanSisa = 0; // Reset total
 
                         // Loop melalui data anggota dan tampilkan ke dalam tabel
                         anggotaData.forEach(function(anggota, index) {
                             let angsurPinjaman = parseFloat(anggota.angsur_pinjaman) || 0;
+                            let angsurMargin = parseFloat(anggota.angsur_margin) || 0;
                             let angsurPinjamanSisa = parseFloat(anggota.sisa_besar_pinjaman) ||
                                 0;
 
                             totalAngsurPinjaman += angsurPinjaman;
+                            totalAngsurMargin += angsurMargin;
                             totalAngsurPinjamanSisa += angsurPinjamanSisa;
 
                             let row = `<tr>
                         <td>${index + 1}</td>
                         <td>${anggota.nama_anggota}</td>
-                        <td>${angsurPinjaman.toLocaleString()}</td>
-                        <td><input type="number" name="nominal_setoran[]" class="form-control nominal-setoran" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-pembiayaan_id="${anggota.id_pembiayaan}" data-pinjaman_id="${anggota.id_pinjaman}" data-angsur_pinjaman="${angsurPinjaman}" data-sisa_pinjaman="${anggota.sisa_pinjaman}"></td>
+                        <td><input type="number" name="nominal_setoran_pokok[]" class="form-control nominal-setoran-pokok" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-pembiayaan_id="${anggota.id_pembiayaan}" data-pinjaman_id="${anggota.id_pinjaman}" data-angsur_pinjaman="${angsurPinjaman}" data-sisa_pinjaman="${anggota.sisa_pinjaman}" value="${angsurPinjaman}"></td>
+                        <td><input type="number" name="nominal_setoran_margin[]" class="form-control nominal-setoran-margin" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-pembiayaan_id="${anggota.id_pembiayaan}" data-pinjaman_id="${anggota.id_pinjaman}" data-angsur_pinjaman="${angsurPinjaman}" data-sisa_pinjaman="${anggota.sisa_pinjaman}" value="${angsurMargin}"></td>
                         <td>${angsurPinjamanSisa.toLocaleString()}</td>
                     </tr>`;
 
@@ -152,11 +155,13 @@
                         // Display totals in the footer
                         $('tfoot th:eq(1)').text(totalAngsurPinjaman
                             .toLocaleString()); // Total Angsur Pinjaman
+                        $('tfoot th:eq(2)').text(totalAngsurMargin
+                            .toLocaleString()); // Total Angsur Margin
                         $('tfoot th:eq(3)').text(totalAngsurPinjamanSisa
                             .toLocaleString()); // Total Angsur Pinjaman * Sisa
 
                         // Total setoran di bagian footer
-                        $('.nominal-setoran').on('input', function() {
+                        $('.nominal-setoran-pokok, .nominal-setoran-margin').on('input', function() {
                             updateTotalSetoran();
                         });
                     },
@@ -168,11 +173,16 @@
 
             // Fungsi untuk menghitung total setoran
             function updateTotalSetoran() {
-                let totalSetoran = 0;
-                $('.nominal-setoran').each(function() {
-                    totalSetoran += parseFloat($(this).val()) || 0;
+                let totalSetoranPokok = 0;
+                let totalSetoranMargin = 0;
+                $('.nominal-setoran-pokok').each(function() {
+                    totalSetoranPokok += parseFloat($(this).val()) || 0;
                 });
-                $('tfoot th:eq(2)').text(totalSetoran.toLocaleString());
+                $('.nominal-setoran-margin').each(function() {
+                    totalSetoranMargin += parseFloat($(this).val()) || 0;
+                });
+                $('tfoot th:eq(1)').text(totalSetoranPokok.toLocaleString());
+                $('tfoot th:eq(2)').text(totalSetoranMargin.toLocaleString());
             }
 
             // Saat form disubmit, kumpulkan data dari tabel dan masukkan ke dalam pembiayaanArray
@@ -180,20 +190,22 @@
                 pembiayaanArray = []; // Reset array sebelum mengumpulkan data
 
                 $('#dataTable tbody tr').each(function(index, row) {
-                    let pinjamanId = $(row).find('.nominal-setoran').data('pinjaman_id');
-                    let pembiayaanId = $(row).find('.nominal-setoran').data('pembiayaan_id');
-                    let anggotaId = $(row).find('.nominal-setoran').data('anggota_id');
-                    let angsurPinjaman = $(row).find('.nominal-setoran').data('angsur_pinjaman');
-                    let sisaPinjaman = $(row).find('.nominal-setoran').data('sisa_pinjaman');
-                    let nominalSetoran = $(row).find('.nominal-setoran').val();
+                    let pinjamanId = $(row).find('.nominal-setoran-pokok').data('pinjaman_id');
+                    let pembiayaanId = $(row).find('.nominal-setoran-pokok').data('pembiayaan_id');
+                    let anggotaId = $(row).find('.nominal-setoran-pokok').data('anggota_id');
+                    let angsurPinjaman = $(row).find('.nominal-setoran-pokok').data(
+                        'angsur_pinjaman');
+                    let sisaPinjaman = $(row).find('.nominal-setoran-pokok').data('sisa_pinjaman');
+                    let nominalSetoranPokok = $(row).find('.nominal-setoran-pokok').val();
+                    let nominalSetoranMargin = $(row).find('.nominal-setoran-margin').val();
 
                     // Tambahkan data ke pembiayaanArray
                     pembiayaanArray.push({
                         id_anggota: anggotaId,
                         id_pembiayaan: pembiayaanId,
                         id_pinjaman: pinjamanId,
-                        angsur_pinjaman: angsurPinjaman,
-                        angsur_margin: nominalSetoran,
+                        angsur_pinjaman: nominalSetoranPokok,
+                        angsur_margin: nominalSetoranMargin,
                         angsuran_ke: sisaPinjaman
                     });
                 });

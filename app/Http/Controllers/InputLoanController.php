@@ -35,7 +35,26 @@ class InputLoanController extends Controller
 
         // Loop melalui setiap item dalam array dan simpan ke database
         foreach ($pembiayaanArray as $pembiayaan) {
+            $kodePembiayaan = PembiayaanModel::find($pembiayaan['id_pembiayaan']);
+            $kodeAnggota = AnggotaModel::find($pembiayaan['id_anggota']);
+            // Get the last inserted no_pinjaman for the current pembiayaan
+            $lastPinjaman = PinjamanModel::where('id_pembiayaan', $pembiayaan['id_pembiayaan'])
+                ->orderBy('no_pinjaman', 'desc')
+                ->first();
+
+            if ($lastPinjaman) {
+                // Extract the numeric part after the hyphen and increment it
+                $lastNumber = (int) substr($lastPinjaman->no_pinjaman, strrpos($lastPinjaman->no_pinjaman, '-') + 1);
+                $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
+            } else {
+                // If no previous records, start from 00001
+                $nextNumber = '00001';
+            }
+
+            // Create the combined code: MRB-00001
+            $noPinjaman = $kodePembiayaan->no_pembiayaan . '-' . $nextNumber;
             PinjamanModel::create([
+                'no_pinjaman' => $noPinjaman,
                 'id_pembiayaan' => (int) $pembiayaan['id_pembiayaan'],
                 'id_anggota' => (int) $pembiayaan['id_anggota'],
                 'besar_pinjaman' => $pembiayaan['nominal_pinjaman'],
@@ -47,7 +66,8 @@ class InputLoanController extends Controller
                 'angsur_pinjaman' => $pembiayaan['angsur_pinjaman'],
                 'angsur_margin' => $pembiayaan['angsur_margin'],
                 'kondisi_pinjaman' => $pembiayaan['kondisi_pinjaman'],
-                'keterangan_pinjaman' => $pembiayaan['keterangan_pinjaman']
+                'keterangan_pinjaman' => $pembiayaan['keterangan_pinjaman'],
+                'status_pinjaman' => 'on_going'
             ]);
         }
 
@@ -111,28 +131,43 @@ class InputLoanController extends Controller
 
         // Loop melalui array pembiayaan dan simpan ke database
         foreach ($pembiayaanArray as $pembiayaan) {
-            // Check that jumlah_setoran is a valid number and not null, 0, or an empty string
-            if (!empty($pembiayaan['id_pinjaman']) && is_numeric($pembiayaan['id_pinjaman'])) {
-                // Create new TransaksiPinjamanModel entry
-                TransaksiPinjamanModel::create([
-                    'id_anggota' => $pembiayaan['id_anggota'],
-                    'id_pembiayaan' => $pembiayaan['id_pembiayaan'],
-                    'id_pinjaman' => $pembiayaan['id_pinjaman'],
-                    'angsur_pinjaman' => $pembiayaan['angsur_pinjaman'],
-                    'angsur_margin' => $pembiayaan['angsur_margin'],
-                    'angsuran_ke' => $pembiayaan['angsuran_ke'],
-                    'tanggal_transaksi' => Carbon::now()->format('Y-m-d H:i:s'),
+            // Skip if id_pinjaman is null, 0, or invalid, or if angsur_pinjaman or angsur_margin is null, empty, or 0
+            if (
+                empty($pembiayaan['id_pinjaman']) || !is_numeric($pembiayaan['id_pinjaman']) ||
+                empty($pembiayaan['angsur_pinjaman']) || !is_numeric($pembiayaan['angsur_pinjaman']) ||
+                empty($pembiayaan['angsur_margin']) || !is_numeric($pembiayaan['angsur_margin'])
+            ) {
+                continue; // Skip this iteration if any of the conditions are met
+            }
+
+            // Create new TransaksiPinjamanModel entry
+            TransaksiPinjamanModel::create([
+                'id_anggota' => $pembiayaan['id_anggota'],
+                'id_pembiayaan' => $pembiayaan['id_pembiayaan'],
+                'id_pinjaman' => $pembiayaan['id_pinjaman'],
+                'angsur_pinjaman' => $pembiayaan['angsur_pinjaman'],
+                'angsur_margin' => $pembiayaan['angsur_margin'],
+                'angsuran_ke' => $pembiayaan['angsuran_ke'],
+                'tanggal_transaksi' => Carbon::now()->format('Y-m-d H:i:s'),
+            ]);
+
+            // Update the related PinjamanModel entry
+            PinjamanModel::where('id', $pembiayaan['id_pinjaman'])
+                ->update([
+                    'sisa_besar_pinjaman' => DB::raw('sisa_besar_pinjaman - ' . $pembiayaan['angsur_pinjaman']),
+                    'sisa_besar_margin' => DB::raw('sisa_besar_margin - ' . $pembiayaan['angsur_margin']),
+                    'sisa_pinjaman' => DB::raw('sisa_pinjaman - 1'),
                 ]);
 
-                // Update the related PinjamanModel entry
-                PinjamanModel::where('id', $pembiayaan['id_pinjaman'])
-                    ->update([
-                        'sisa_besar_pinjaman' => DB::raw('sisa_besar_pinjaman - ' . $pembiayaan['angsur_pinjaman']),
-                        'sisa_besar_margin' => DB::raw('sisa_besar_margin - ' . $pembiayaan['angsur_margin']),
-                        'sisa_pinjaman' => DB::raw('sisa_pinjaman - 1'), // Assuming you increment 'angsuran_ke'
-                    ]);
+            // Check if the sisa_pinjaman has reached 0
+            $pinjaman = PinjamanModel::find($pembiayaan['id_pinjaman']);
+            if ($pinjaman->sisa_pinjaman == 0) {
+                // Update the status_pinjaman to "done"
+                $pinjaman->status_pinjaman = 'done';
+                $pinjaman->save();
             }
         }
+
         return redirect()->back()->with('success', 'Data pembiayaan kolektif berhasil disimpan.');
     }
 
