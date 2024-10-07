@@ -35,6 +35,12 @@ Route::get('/simpanan/next-number', [App\Http\Controllers\SavingController::clas
 Route::post('/simpanan/update/{id}', [App\Http\Controllers\SavingController::class, 'update'])->name('simpanan.update');
 Route::post('/simpanan/delete/{id}', [App\Http\Controllers\SavingController::class, 'destroy'])->name('simpanan.destroy');
 
+Route::get('/pindah-buku', [App\Http\Controllers\PindahBukuController::class, 'index'])->middleware('role:petugas')->name('pindahbuku');
+Route::post('/pindah-buku/save', [App\Http\Controllers\PindahBukuController::class, 'store'])->middleware('role:petugas')->name('pindahbuku.store');
+Route::get('/pindah-buku/next-number', [App\Http\Controllers\PindahBukuController::class, 'getSavingData'])->middleware('role:petugas')->name('get_pindahbuku_data');
+Route::post('/pindah-buku/update/{id}', [App\Http\Controllers\PindahBukuController::class, 'update'])->name('pindahbuku.update');
+Route::post('/pindah-buku/delete/{id}', [App\Http\Controllers\PindahBukuController::class, 'destroy'])->name('pindahbuku.destroy');
+
 Route::get('/pembiayaan', [App\Http\Controllers\LoanController::class, 'index'])->middleware('role:petugas')->name('pembiayaan');
 Route::post('/pembiayaan/save', [App\Http\Controllers\LoanController::class, 'store'])->middleware('role:petugas')->name('pembiayaan.store');
 Route::get('/pembiayaan/next-number', [App\Http\Controllers\LoanController::class, 'getLoanData'])->middleware('role:petugas')->name('get_loan_data');
@@ -70,3 +76,6 @@ Route::post('/informasi-berita/store', [App\Http\Controllers\InformationControll
 Route::get('/pesan-anggota', [App\Http\Controllers\MessageController::class, 'index'])->middleware('role:petugas')->name('pesan_anggota');
 Route::get('/pesan-anggota/create', [App\Http\Controllers\MessageController::class, 'create'])->middleware('role:petugas')->name('pesan_anggota.create');
 Route::post('/pesan-anggota/store', [App\Http\Controllers\MessageController::class, 'store'])->middleware('role:petugas')->name('pesan_anggota.store');
+
+Route::get('/cek-simpanan-pembiayaan', [App\Http\Controllers\LoanSavingCheckController::class, 'index'])->name('cek_saldo');
+Route::get('/cek-simpanan-pembiayaan/get-data', [App\Http\Controllers\LoanSavingCheckController::class, 'getSavingLoanData'])->name('get_saving_loan_data');

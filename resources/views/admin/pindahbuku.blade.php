@@ -7,21 +7,21 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-12">
-                    <form action="{{ route('input_simpanan.store') }}" method="post" id="simpananForm">
+                    <form action="{{ route('pindahbuku.store') }}" method="post" id="simpananForm">
                         @csrf
                         <div class="card shadow mb-4">
                             <!-- Card Header Anggota -->
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Input Simpanan Anggota</h6>
+                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Pindah Buku Anggota</h6>
                             </div>
                             <!-- Card Body Anggota -->
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
-                                            <label for="saving_product">Pilih Produk Simpanan</label>
-                                            <select class="form-control select2 saving_product" style="width: 100%;"
-                                                name="saving_product" id="saving_product">
+                                            <label for="asal_saving_product">Pilih Produk Simpanan</label>
+                                            <select class="form-control select2 asal_saving_product" style="width: 100%;"
+                                                name="asal_saving_product" id="asal_saving_product">
                                                 <option></option>
                                                 @foreach ($dataSimpanan as $data)
                                                     <option value="{{ $data->id }}"
@@ -34,9 +34,9 @@
                                     </div>
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
-                                            <label for="member_name">Pilih Nama Anggota*</label>
-                                            <select class="form-control select2 member_name" style="width: 100%;"
-                                                name="member_name" id="member_name">
+                                            <label for="asal_member_name">Pilih Nama Anggota*</label>
+                                            <select class="form-control select2 asal_member_name" style="width: 100%;"
+                                                name="asal_member_name" id="asal_member_name">
                                                 <option></option>
                                                 @foreach ($dataAnggota as $data)
                                                     <option value="{{ $data->id }}"
@@ -51,21 +51,43 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
+                                            <label for="tujuan_saving_product">Pilih Produk Simpanan</label>
+                                            <select class="form-control select2 tujuan_saving_product" style="width: 100%;"
+                                                name="tujuan_saving_product" id="tujuan_saving_product">
+                                                <option></option>
+                                                @foreach ($dataSimpanan as $data)
+                                                    <option value="{{ $data->id }}"
+                                                        data-nama_simpanan="{{ $data->nama_simpanan }}">
+                                                        ({{ $data->no_simpanan }})
+                                                        {{ $data->nama_simpanan }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6">
+                                        <div class="form-group">
+                                            <label for="tujuan_member_name">Pilih Nama Anggota*</label>
+                                            <select class="form-control select2 tujuan_member_name" style="width: 100%;"
+                                                name="tujuan_member_name" id="tujuan_member_name">
+                                                <option></option>
+                                                @foreach ($dataAnggota as $data)
+                                                    <option value="{{ $data->id }}"
+                                                        data-nama_anggota="{{ $data->nama_anggota }}">
+                                                        ({{ $data->no_anggota }})
+                                                        {{ $data->nama_anggota }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-6">
+                                        <div class="form-group">
                                             <label for="amount_saving">Nominal Setoran</label>
-                                            <div class="row">
-                                                <div class="col-auto pr-0">
-                                                    <select class="kondisi_setoran form-control" name="kondisi_setoran"
-                                                        id="kondisi_setoran">
-                                                        <option value="+">+</option>
-                                                        <option value="-">-</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col pl-1">
-                                                    <input type="text" class="form-control amount_saving"
-                                                        name="amount_saving" id="amount_saving"
-                                                        placeholder="Nominal Setoran">
-                                                </div>
-                                            </div>
+                                            <input type="text" class="form-control amount_saving" name="amount_saving"
+                                                id="amount_saving" placeholder="Nominal Setoran">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6">
@@ -84,8 +106,10 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Nama Anggota</th>
-                                                    <th>Produk Simpanan</th>
+                                                    <th>Produk Simpanan Asal</th>
+                                                    <th>Nama Anggota Asal</th>
+                                                    <th>Produk Simpanan Tujuan</th>
+                                                    <th>Nama Anggota Tujuan</th>
                                                     <th>Nominal Setoran</th>
                                                     <th>Keterangan</th>
                                                     <th></th>
@@ -93,7 +117,7 @@
                                             </thead>
                                             <tfoot>
                                                 <tr>
-                                                    <th colspan="3">Total Setoran</th>
+                                                    <th colspan="5">Total Setoran</th>
                                                     <th><span class="amount_setoran"></span></th>
                                                     <th></th>
                                                     <th></th>
@@ -126,42 +150,36 @@
             // Event handler untuk tombol "Tambah"
             $('.btn-success').on('click', function() {
                 // Ambil data dari form
-                let memberID = $('#member_name').val();
-                let memberName = $('#member_name').find('option:selected').data("nama_anggota");
-                let savingID = $('#saving_product').val();
-                let savingProductName = $('#saving_product').find('option:selected').data("nama_simpanan");
+                let memberAsalID = $('#asal_member_name').val();
+                let memberAsalName = $('#asal_member_name').find('option:selected').data("nama_anggota");
+                let savingAsalID = $('#asal_saving_product').val();
+                let savingProductAsalName = $('#asal_saving_product').find('option:selected').data(
+                    "nama_simpanan");
+                let memberTujuanID = $('#tujuan_member_name').val();
+                let memberTujuanName = $('#tujuan_member_name').find('option:selected').data(
+                    "nama_anggota");
+                let savingTujuanID = $('#tujuan_saving_product').val();
+                let savingProductTujuanName = $('#tujuan_saving_product').find('option:selected').data(
+                    "nama_simpanan");
                 let amountSaving = $('#amount_saving').val();
                 let savingDesc = $('#saving_desc').val();
-                let kondisiSetoran = $('#kondisi_setoran').val();
 
                 // Validasi input (opsional)
-                if (!memberID || !savingID || !amountSaving) {
+                if (!memberAsalID || !savingAsalID || !memberTujuanID || !savingTujuanID || !amountSaving) {
                     Swal.fire('Error!', 'Semua kolom harus diisi!', 'error');
                     return;
                 }
 
-                // Cek apakah ini data anggota pertama yang diinput
-                if (simpananArray.length === 0) {
-                    firstMemberID = memberID; // Set member ID pertama
-                } else {
-                    // Jika member ID berbeda dengan yang pertama, tampilkan pesan error
-                    if (memberID !== firstMemberID) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Member ID berbeda! Hanya member yang sama yang bisa diinput.',
-                        });
-                        return;
-                    }
-                }
-
                 // Buat objek simpanan baru
                 let simpanan = {
-                    id_anggota: memberID,
-                    nama_anggota: memberName,
-                    id_simpanan: savingID,
-                    produk_simpanan: savingProductName,
-                    metode_transaksi: kondisiSetoran,
+                    id_anggota_asal: memberAsalID,
+                    nama_anggota_asal: memberAsalName,
+                    id_simpanan_asal: savingAsalID,
+                    produk_simpanan_asal: savingProductAsalName,
+                    id_anggota_tujuan: memberTujuanID,
+                    nama_anggota_tujuan: memberTujuanName,
+                    id_simpanan_tujuan: savingTujuanID,
+                    produk_simpanan_tujuan: savingProductTujuanName,
                     nominal_setoran: amountSaving,
                     keterangan: savingDesc
                 };
@@ -182,19 +200,15 @@
 
                 // Loop melalui array dan tambahkan baris ke tabel
                 $.each(simpananArray, function(index, simpanan) {
-
-                    if (simpanan.metode_transaksi == "+") {
-                        totalSetoran += parseFloat(simpanan.nominal_setoran.replace(/[^\d.-]/g, ''));
-                    } else {
-                        totalSetoran -= parseFloat(simpanan.nominal_setoran.replace(/[^\d.-]/g, ''));
-                    }
-
+                    totalSetoran += parseFloat(simpanan.nominal_setoran.replace(/[^\d.-]/g, ''));
                     tableBody.append(`
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${simpanan.nama_anggota}</td>
-                        <td>${simpanan.produk_simpanan}</td>
-                        <td>${simpanan.metode_transaksi}${simpanan.nominal_setoran}</td>
+                        <td>${simpanan.nama_anggota_asal}</td>
+                        <td>${simpanan.produk_simpanan_asal}</td>
+                        <td>${simpanan.nama_anggota_tujuan}</td>
+                        <td>${simpanan.produk_simpanan_tujuan}</td>
+                        <td>${simpanan.nominal_setoran}</td>
                         <td>${simpanan.keterangan}</td>
                         <td><button class="btn btn-danger btn-sm" onclick="removeRow(${index})">Hapus</button></td>
                     </tr>

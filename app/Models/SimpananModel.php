@@ -13,4 +13,10 @@ class SimpananModel extends Model
     protected $table = "simpanans";
 
     protected $guarded = [];
+
+    public function transaksiSimpanans($idAnggota)
+    {
+        return $this->hasMany(TransaksiSimpananModel::class, 'id_simpanan')
+            ->where('id_anggota', $idAnggota);
+    }
 }

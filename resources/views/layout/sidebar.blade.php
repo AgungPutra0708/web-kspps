@@ -108,8 +108,8 @@
         </li>
 
         <!-- Nav Item - Pindah Buku -->
-        <li class="nav-item {{ Route::is('home') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('dashboard') }}">
+        <li class="nav-item {{ Route::is('pindahbuku') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('pindahbuku') }}">
                 <i class="fas fa-exchange-alt"></i>
                 <span>Pindah Buku</span>
             </a>
@@ -130,8 +130,8 @@
         </li>
 
         <!-- Nav Item - Cek -->
-        <li class="nav-item {{ Route::is('home') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('dashboard') }}">
+        <li class="nav-item {{ Route::is('cek_saldo') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('cek_saldo') }}">
                 <i class="fas fa-tasks"></i>
                 <span>Cek</span>
             </a>
