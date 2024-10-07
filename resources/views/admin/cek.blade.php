@@ -70,7 +70,7 @@
                                                 <th>Margin Pinjaman</th>
                                                 <th>Lama Pinjaman</th>
                                                 <th>Status Pinjaman</th>
-                                                <th style="width: 50px"></th>
+                                                <th style="width: 125px"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -157,11 +157,16 @@
                                             <td>${loan.lama_pinjaman}</td>
                                             <td>${loan.status_pinjaman == "done" ? "Lunas" : "Berjalan"}</td>
                                             <td class="text-center">
+                                                <!-- Tombol Edit -->
+                                                <a href="{{ route('pinjaman.edit', ':id') }}" class="btn btn-warning">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
                                                 <button type="button" class="btn btn-info" onclick="window.location.href='{{ url('loan-history/') }}/${loan.id_pinjaman}'">
                                                     <i class="fas fa-history"></i>
                                                 </button>
                                             </td>
                                         </tr>`;
+                            row = row.replace(':id', `${loan.id_pinjaman}`);
                             tbodyPinjaman.append(row);
                             totalPokokPinjaman += parseFloat(loan
                                 .besar_pinjaman); // Tambahkan ke total pokok pinjaman

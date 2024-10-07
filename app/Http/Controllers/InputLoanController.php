@@ -9,6 +9,7 @@ use App\Models\RembugModel;
 use App\Models\TransaksiPinjamanModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -73,6 +74,72 @@ class InputLoanController extends Controller
 
         // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Data transaksi pembiayaan berhasil ditambahkan.');
+    }
+
+    public function edit($encryptedId)
+    {
+        // Dekripsi ID transaksi pembiayaan
+        $id_pinjaman = Crypt::decrypt($encryptedId);
+
+        // Ambil data transaksi pembiayaan
+        $pinjaman = PinjamanModel::findOrFail($id_pinjaman);
+
+        // Data pembiayaan dan anggota
+        $data = [
+            'dataPembiayaan' => PembiayaanModel::all(),
+            'dataAnggota' => AnggotaModel::all(),
+            'pinjaman' => $pinjaman
+        ];
+
+        // Mengirimkan data ke view
+        return view('admin.editpembiayaan', $data);
+    }
+
+    public function updatePembiayaan(Request $request, $id)
+    {
+        // Validasi data input
+        $request->validate([
+            'loan_product' => 'required',
+            'member_name' => 'required',
+            'nominal_pinjaman' => 'required',
+            'nominal_margin' => 'required',
+            'lama_pinjaman' => 'required',
+            'kondisi_pinjaman' => 'required|string',
+            'loan_desc' => 'nullable|string',
+        ]);
+
+        // Temukan data pinjaman berdasarkan ID yang dienkripsi
+        $pinjaman = PinjamanModel::findOrFail(Crypt::decrypt($id));
+
+        // Update data pinjaman berdasarkan input
+        $pinjaman->update([
+            'id_pembiayaan' => $request->loan_product,
+            'id_anggota' => $request->member_name,
+            'besar_pinjaman' => $request->nominal_pinjaman,
+            'besar_margin' => $request->nominal_margin,
+            'angsur_pinjaman' => $request->nominal_angsuran_pinjaman,
+            'angsur_margin' => $request->nominal_angsuran_margin,
+            'lama_pinjaman' => $request->lama_pinjaman,
+            'kondisi_pinjaman' => $request->kondisi_pinjaman,
+            'status_pinjaman' => $request->status_pinjaman,
+            'keterangan_pinjaman' => $request->loan_desc,
+        ]);
+
+        // Redirect kembali dengan pesan sukses
+        return redirect()->route('cek_saldo')->with('success', 'Data pinjaman berhasil diupdate.');
+    }
+
+    public function destroyPinjaman($encryptedId)
+    {
+        // Dekripsi ID transaksi pembiayaan
+        $id_pinjaman = Crypt::decrypt($encryptedId);
+
+        // Ambil pinjaman terkait dan sesuaikan nilai sisa_besar_pinjaman dan sisa_besar_margin
+        $pinjaman = PinjamanModel::find($id_pinjaman);
+        // Hapus pinjaman
+        $pinjaman->delete();
+
+        return redirect()->route('cek_saldo')->with('success', 'Pinjaman berhasil dihapus.');
     }
 
     public function indexKolektif()

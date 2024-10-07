@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\InputLoanController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TransactionController;
@@ -90,3 +91,6 @@ Route::get('/loan-history/{encryptedId}', [LoanController::class, 'history'])->n
 Route::get('/loan/edit/{encryptedId}', [LoanController::class, 'edit'])->name('loan.edit');
 Route::delete('/loan/delete/{encryptedId}', [LoanController::class, 'destroyTransaction'])->name('loan.destroy');
 Route::put('/loan/update/{id}', [LoanController::class, 'updateHistory'])->name('loan.update');
+Route::get('/pembiayaan/edit/{encryptedId}', [InputLoanController::class, 'edit'])->name('pinjaman.edit');
+Route::put('/pembiayaan/update/{id}', [InputLoanController::class, 'updatePembiayaan'])->name('pinjaman.update');
+Route::delete('/pembiayaan/delete/{encryptedId}', [InputLoanController::class, 'destroyPinjaman'])->name('delete_pembiayaan');

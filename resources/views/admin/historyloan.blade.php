@@ -34,13 +34,15 @@
                                                     <td>{{ $history->angsuran_ke }}</td>
                                                     <td>
                                                         <a href="{{ route('loan.edit', Crypt::encrypt($history->id)) }}"
-                                                            class="btn btn-warning">Edit</a>
+                                                            class="btn btn-warning"><i class="fas fa-edit"></i>
+                                                        </a>
                                                         <form
                                                             action="{{ route('loan.destroy', Crypt::encrypt($history->id)) }}"
                                                             method="POST" style="display:inline;">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                                            <button type="submit" class="btn btn-danger"><i
+                                                                    class="fas fa-trash"></i></button>
                                                         </form>
                                                     </td>
                                                 </tr>
