@@ -150,14 +150,18 @@
                         // Loop melalui data anggota dan tampilkan ke dalam tabel
                         loanData.forEach(function(loan, index) {
                             let row = `<tr>
-                    <td>${index + 1}</td>
-                    <td>${loan.no_pinjaman}</td>
-                    <td>${loan.besar_pinjaman}</td>
-                    <td>${loan.besar_margin}</td>
-                    <td>${loan.lama_pinjaman}</td>
-                    <td>${loan.status_pinjaman == "done" ? "Lunas" : "Berjalan"}</td>
-                    <td class="text-center"><button type="button" class="btn btn-info"><i class="fas fa-history"></i></button></td>
-                </tr>`;
+                                            <td>${index + 1}</td>
+                                            <td>${loan.no_pinjaman}</td>
+                                            <td>${loan.besar_pinjaman}</td>
+                                            <td>${loan.besar_margin}</td>
+                                            <td>${loan.lama_pinjaman}</td>
+                                            <td>${loan.status_pinjaman == "done" ? "Lunas" : "Berjalan"}</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-info" onclick="window.location.href='{{ url('loan-history/') }}/${loan.id_pinjaman}'">
+                                                    <i class="fas fa-history"></i>
+                                                </button>
+                                            </td>
+                                        </tr>`;
                             tbodyPinjaman.append(row);
                             totalPokokPinjaman += parseFloat(loan
                                 .besar_pinjaman); // Tambahkan ke total pokok pinjaman

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\PembiayaanModel;
+use App\Models\PinjamanModel;
+use App\Models\TransaksiPinjamanModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 class LoanController extends Controller
 {
@@ -88,5 +91,79 @@ class LoanController extends Controller
         return response()->json([
             'loan_data' => $latestPost,
         ]);
+    }
+
+    public function history($encryptedId)
+    {
+        // Dekripsi ID pembiayaan
+        $id_pinjaman = Crypt::decrypt($encryptedId);
+
+        // Ambil data history pembiayaan berdasarkan id_pinjaman
+        $historyData = TransaksiPinjamanModel::where('id_pinjaman', $id_pinjaman)->get();
+
+        return view('admin.historyloan', compact('historyData', 'id_pinjaman'));
+    }
+    // Fungsi history tetap sama
+
+    public function edit($encryptedId)
+    {
+        // Dekripsi ID transaksi pembiayaan
+        $id_transaksi = Crypt::decrypt($encryptedId);
+
+        // Ambil data transaksi pembiayaan
+        $transaction = TransaksiPinjamanModel::findOrFail($id_transaksi);
+
+        return view('admin.edithistorypembiayaan', compact('transaction'));
+    }
+
+    public function destroyTransaction($encryptedId)
+    {
+        // Dekripsi ID transaksi pembiayaan
+        $id_transaksi = Crypt::decrypt($encryptedId);
+
+        // Ambil data transaksi pembiayaan
+        $transaction = TransaksiPinjamanModel::findOrFail($id_transaksi);
+
+        // Ambil pinjaman terkait dan sesuaikan nilai sisa_besar_pinjaman dan sisa_besar_margin
+        $pinjaman = PinjamanModel::find($transaction->id_pinjaman);
+        if ($pinjaman) {
+            $pinjaman->sisa_besar_pinjaman += $transaction->angsur_pinjaman;
+            $pinjaman->sisa_besar_margin += $transaction->angsur_margin;
+            $pinjaman->save();
+        }
+
+        // Hapus transaksi pembiayaan
+        $transaction->delete();
+
+        return redirect()->back()->with('success', 'Transaksi berhasil dihapus dan nilai sisa pembiayaan telah diperbarui.');
+    }
+
+    public function updateHistory(Request $request, $encryptedId)
+    {
+        // Dekripsi ID transaksi
+        $id_transaksi = Crypt::decrypt($encryptedId);
+
+        // Ambil transaksi dan pinjaman terkait
+        $transaction = TransaksiPinjamanModel::findOrFail($id_transaksi);
+        $pinjaman = PinjamanModel::find($transaction->id_pinjaman);
+
+        if ($pinjaman) {
+            // Hitung perbedaan angsuran sebelum dan sesudah update
+            $differencePokok = $transaction->angsur_pinjaman - $request->input('angsur_pinjaman');
+            $differenceMargin = $transaction->angsur_margin - $request->input('angsur_margin');
+
+            // Update sisa_besar_pinjaman dan sisa_besar_margin di PinjamanModel
+            $pinjaman->sisa_besar_pinjaman += $differencePokok;
+            $pinjaman->sisa_besar_margin += $differenceMargin;
+            $pinjaman->save();
+        }
+
+        // Update transaksi pembiayaan
+        $transaction->angsur_pinjaman = $request->input('angsur_pinjaman');
+        $transaction->angsur_margin = $request->input('angsur_margin');
+        $transaction->save();
+
+        return redirect()->route('loan.history', Crypt::encrypt($transaction->id_pinjaman))
+            ->with('success', 'Transaksi berhasil diperbarui dan nilai sisa pembiayaan telah diperbarui.');
     }
 }

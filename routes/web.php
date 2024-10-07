@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -85,3 +86,7 @@ Route::get('/history/{id_simpanan}', [HistoryController::class, 'index'])->name(
 Route::get('/transaction/edit/{id}', [TransactionController::class, 'edit'])->name('edit_transaction');
 Route::delete('/transaction/delete/{id}', [TransactionController::class, 'destroy'])->name('delete_transaction');
 Route::put('/transaction/update/{id}', [TransactionController::class, 'update'])->name('update_transaction');
+Route::get('/loan-history/{encryptedId}', [LoanController::class, 'history'])->name('loan.history');
+Route::get('/loan/edit/{encryptedId}', [LoanController::class, 'edit'])->name('loan.edit');
+Route::delete('/loan/delete/{encryptedId}', [LoanController::class, 'destroyTransaction'])->name('loan.destroy');
+Route::put('/loan/update/{id}', [LoanController::class, 'updateHistory'])->name('loan.update');

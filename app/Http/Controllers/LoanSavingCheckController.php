@@ -50,10 +50,22 @@ class LoanSavingCheckController extends Controller
             ];
         });
 
+        // Map pinjamanData untuk mengenkripsi id_pinjaman
+        $filteredDataPinjaman = $pinjamanData->map(function ($item) {
+            return [
+                'id_pinjaman' => Crypt::encrypt($item->id),  // Enkripsi ID Pinjaman
+                'no_pinjaman' => $item->no_pinjaman,
+                'besar_pinjaman' => $item->besar_pinjaman,
+                'besar_margin' => $item->besar_margin,
+                'lama_pinjaman' => $item->lama_pinjaman,
+                'status_pinjaman' => $item->status_pinjaman,
+            ];
+        });
+
         // Kembalikan data dalam bentuk JSON
         return response()->json([
             'saving_data' => $filteredDataSimpanan,
-            'loan_data' => $pinjamanData,
+            'loan_data' => $filteredDataPinjaman,
         ]);
     }
 }
