@@ -41,6 +41,7 @@
                                                 <th>No</th>
                                                 <th>Produk Simpanan</th>
                                                 <th>Saldo Simpanan</th>
+                                                <th style="width: 50px"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -49,6 +50,7 @@
                                             <tr>
                                                 <th colspan="2">Total</th>
                                                 <th id="totalSaldoSimpanan">0</th>
+                                                <th></th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -68,6 +70,7 @@
                                                 <th>Margin Pinjaman</th>
                                                 <th>Lama Pinjaman</th>
                                                 <th>Status Pinjaman</th>
+                                                <th style="width: 50px"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -77,6 +80,7 @@
                                                 <th colspan="2">Total</th>
                                                 <th id="totalPokokPinjaman">0</th>
                                                 <th id="totalMarginPinjaman">0</th>
+                                                <th></th>
                                                 <th></th>
                                                 <th></th>
                                             </tr>
@@ -125,10 +129,12 @@
                         // Loop melalui data anggota dan tampilkan ke dalam tabel
                         savingData.forEach(function(saving, index) {
                             let row = `<tr>
-                    <td>${index + 1}</td>
-                    <td>${saving.nama_simpanan}</td>
-                    <td>${saving.saldo_akhir}</td>
-                </tr>`;
+                                            <td>${index + 1}</td>
+                                            <td>${saving.nama_simpanan}</td>
+                                            <td>${saving.saldo_akhir}</td>
+                                            <td class="text-center"><button type="button" class="btn btn-info" onclick="window.location.href='{{ url('history/') }}/${saving.id_simpanan}'"><i class="fas fa-history"></i></button></td>
+                                        </tr>`;
+
                             tbodySimpanan.append(row);
                             totalSaldoSimpanan += parseFloat(saving
                                 .saldo_akhir); // Tambahkan ke total
@@ -150,6 +156,7 @@
                     <td>${loan.besar_margin}</td>
                     <td>${loan.lama_pinjaman}</td>
                     <td>${loan.status_pinjaman == "done" ? "Lunas" : "Berjalan"}</td>
+                    <td class="text-center"><button type="button" class="btn btn-info"><i class="fas fa-history"></i></button></td>
                 </tr>`;
                             tbodyPinjaman.append(row);
                             totalPokokPinjaman += parseFloat(loan

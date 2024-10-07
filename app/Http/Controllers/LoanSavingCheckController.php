@@ -6,6 +6,7 @@ use App\Models\AnggotaModel;
 use App\Models\PinjamanModel;
 use App\Models\SimpananModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class LoanSavingCheckController extends Controller
@@ -40,7 +41,7 @@ class LoanSavingCheckController extends Controller
                 ->value('saldo_akhir');
 
             return [
-                'id_simpanan' => $item->id,  // ID Simpanan
+                'id_simpanan' => Crypt::encrypt($item->id),  // ID Simpanan
                 'id_anggota' => $id_anggota,  // ID Anggota yang sedang difilter
                 'no_anggota' => $item->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
                 'nama_anggota' => $item->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota

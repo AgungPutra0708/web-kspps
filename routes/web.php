@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [App\Http\Controllers\LoginController::class, 'index'])->name('login');
@@ -79,3 +81,7 @@ Route::post('/pesan-anggota/store', [App\Http\Controllers\MessageController::cla
 
 Route::get('/cek-simpanan-pembiayaan', [App\Http\Controllers\LoanSavingCheckController::class, 'index'])->name('cek_saldo');
 Route::get('/cek-simpanan-pembiayaan/get-data', [App\Http\Controllers\LoanSavingCheckController::class, 'getSavingLoanData'])->name('get_saving_loan_data');
+Route::get('/history/{id_simpanan}', [HistoryController::class, 'index'])->name('history');
+Route::get('/transaction/edit/{id}', [TransactionController::class, 'edit'])->name('edit_transaction');
+Route::delete('/transaction/delete/{id}', [TransactionController::class, 'destroy'])->name('delete_transaction');
+Route::put('/transaction/update/{id}', [TransactionController::class, 'update'])->name('update_transaction');
