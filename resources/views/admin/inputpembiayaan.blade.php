@@ -53,15 +53,16 @@
                                         <div class="form-group">
                                             <label for="nominal_pinjaman">Nominal Pinjaman</label>
                                             <input type="text" class="form-control nominal_pinjaman"
-                                                name="nominal_pinjaman" id="nominal_pinjaman"
-                                                placeholder="Nominal Pinjaman">
+                                                name="nominal_pinjaman" id="nominal_pinjaman" placeholder="Nominal Pinjaman"
+                                                onchange="formatLocalString(this)">
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
                                             <label for="nominal_margin">Nominal Margin</label>
                                             <input type="text" class="form-control nominal_margin" name="nominal_margin"
-                                                id="nominal_margin" placeholder="Nominal Margin">
+                                                id="nominal_margin" placeholder="Nominal Margin"
+                                                onchange="formatLocalString(this)">
                                         </div>
                                     </div>
                                 </div>
@@ -155,8 +156,8 @@
                 let loanID = $('#loan_product').val();
                 let loanProductName = $('#loan_product').find('option:selected').data(
                     "nama_pembiayaan");
-                let nominalPinjaman = $('#nominal_pinjaman').val();
-                let nominalMargin = $('#nominal_margin').val();
+                let nominalPinjaman = parseFloat($('#nominal_pinjaman').val().replaceAll('.', ''));
+                let nominalMargin = parseFloat($('#nominal_margin').val().replaceAll('.', ''));
                 let lamaPinjaman = $('#lama_pinjaman').val();
                 let kondisiPinjaman = $('#kondisi_pinjaman').find('option:selected').val();
                 let loanDesc = $('#loan_desc').val();
@@ -191,9 +192,8 @@
                     produk_pembiayaan: loanProductName,
                     nominal_pinjaman: nominalPinjaman,
                     nominal_margin: nominalMargin,
-                    angsur_pinjaman: (parseFloat(nominalPinjaman) / parseFloat(lamaPinjaman)).toFixed(
-                        2),
-                    angsur_margin: (parseFloat(nominalMargin) / parseFloat(lamaPinjaman)).toFixed(2),
+                    angsur_pinjaman: (parseFloat(nominalPinjaman) / parseFloat(lamaPinjaman)),
+                    angsur_margin: (parseFloat(nominalMargin) / parseFloat(lamaPinjaman)),
                     lama_pinjaman: lamaPinjaman,
                     kondisi_pinjaman: kondisiPinjaman,
                     keterangan_pinjaman: loanDesc
@@ -201,6 +201,9 @@
 
                 // Masukkan data ke array
                 pembiayaanArray.push(pembiayaan);
+
+                console.log(pembiayaanArray);
+
 
                 // Tambahkan baris ke tabel
                 updateTable();
@@ -216,19 +219,19 @@
 
                 // Loop melalui array dan tambahkan baris ke tabel
                 $.each(pembiayaanArray, function(index, pembiayaan) {
-                    totalPinjaman += parseFloat(pembiayaan.nominal_pinjaman.replace(/[^\d.-]/g, ''));
-                    totalMargin += parseFloat(pembiayaan.nominal_margin.replace(/[^\d.-]/g, ''));
+                    totalPinjaman += parseFloat(pembiayaan.nominal_pinjaman);
+                    totalMargin += parseFloat(pembiayaan.nominal_margin);
 
                     tableBody.append(`
                     <tr>
                         <td>${index + 1}</td>
                         <td>${pembiayaan.nama_anggota}</td>
                         <td>${pembiayaan.produk_pembiayaan}</td>
-                        <td>${parseFloat(pembiayaan.nominal_pinjaman.replace(/[^\d.-]/g, '')).toLocaleString()}</td>
-                        <td>${parseFloat(pembiayaan.nominal_margin.replace(/[^\d.-]/g, '')).toLocaleString()}</td>
+                        <td>${formatRupiah(parseFloat(pembiayaan.nominal_pinjaman))}</td>
+                        <td>${formatRupiah(parseFloat(pembiayaan.nominal_margin))}</td>
                         <td>${pembiayaan.lama_pinjaman} ${pembiayaan.kondisi_pinjaman.toUpperCase()}</td>
-                        <td>${parseFloat(pembiayaan.angsur_pinjaman).toLocaleString()}</td>
-                        <td>${parseFloat(pembiayaan.angsur_margin).toLocaleString()}</td>
+                        <td>${formatRupiah(parseFloat(pembiayaan.angsur_pinjaman))}</td>
+                        <td>${formatRupiah(parseFloat(pembiayaan.angsur_margin))}</td>
                         <td>${pembiayaan.keterangan_pinjaman}</td>
                         <td><button class="btn btn-danger btn-sm" onclick="removeRow(${index})">Hapus</button></td>
                     </tr>
@@ -236,8 +239,8 @@
                 });
 
                 // Perbarui total setoran di footer tabel
-                $('.amount_pinjaman').text(totalPinjaman.toLocaleString());
-                $('.amount_margin').text(totalMargin.toLocaleString());
+                $('.amount_pinjaman').text(formatRupiah(totalPinjaman));
+                $('.amount_margin').text(formatRupiah(totalMargin));
             }
 
             // Fungsi untuk menghapus baris dari tabel dan array
@@ -251,6 +254,30 @@
                 // Serialize array menjadi JSON string dan masukkan ke input hidden
                 $('#pembiayaan_array').val(JSON.stringify(pembiayaanArray));
             });
+
+            // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
+            function formatRupiah(number) {
+                return number.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).replace(/,/g, ',').replace(/\./g, '.');
+            }
         });
+
+        // Function to format input as a localized string with dots for thousands and commas for decimals
+        function formatLocalString(input) {
+            let value = input.value.replace(/\./g, '').replace(/,/g, '.'); // Remove formatting for parsing
+            let number = parseFloat(value);
+
+            if (!isNaN(number)) {
+                // Reapply formatting
+                input.value = number.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).replace(/,/g, ',').replace(/\./g, '.');
+            } else {
+                input.value = ''; // Clear if not a valid number
+            }
+        }
     </script>
 @endsection

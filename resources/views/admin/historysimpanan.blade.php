@@ -25,11 +25,12 @@
                                         </thead>
                                         <tbody>
                                             @foreach ($historyData as $index => $transaction)
-                                                <tr>
+                                                <tr
+                                                    class="{{ $transaction->metode_transaksi == '-' ? 'text-danger' : '' }}">
                                                     <td>{{ $index + 1 }}</td>
                                                     <td>{{ $transaction->tanggal_transaksi }}</td>
                                                     <td>{{ $transaction->metode_transaksi }}</td>
-                                                    <td>{{ $transaction->jumlah_setoran }}</td>
+                                                    <td class="rupiah">{{ $transaction->jumlah_setoran }}</td>
                                                     <td class="text-center">
                                                         <a href="{{ route('edit_transaction', Crypt::encrypt($transaction->id)) }}"
                                                             class="btn btn-warning"><i class="fas fa-edit"></i></a>
@@ -57,4 +58,22 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
+            function formatRupiah(number) {
+                return number.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).replace(/,/g, ',').replace(/\./g, '.');
+            }
+
+            // Loop through all elements with class 'rupiah' and format the text content
+            $('.rupiah').each(function() {
+                var value = parseFloat($(this).text());
+                $(this).text(formatRupiah(value));
+            });
+        });
+    </script>
 @endsection

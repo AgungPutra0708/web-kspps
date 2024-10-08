@@ -52,7 +52,7 @@
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary float-right ml-1">Simpan</button>
                                 <button type="button" class="btn btn-success float-right">Cetak</button>
-                                <a href="{{ route('dashboard') }}" class="btn btn-danger float-left">Batal</a>
+                                <a href="{{ route('informasi_berita') }}" class="btn btn-danger float-left">Batal</a>
                             </div>
                         </div>
                     </form>

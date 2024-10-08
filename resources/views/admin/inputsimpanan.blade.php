@@ -63,7 +63,7 @@
                                                 <div class="col pl-1">
                                                     <input type="text" class="form-control amount_saving"
                                                         name="amount_saving" id="amount_saving"
-                                                        placeholder="Nominal Setoran">
+                                                        placeholder="Nominal Setoran" onchange="formatLocalString(this)">
                                                 </div>
                                             </div>
                                         </div>
@@ -120,12 +120,12 @@
     <!-- /.container-fluid -->
     <script>
         $(document).ready(function() {
-            let simpananArray = []; // Array untuk menyimpan data simpanan
-            let firstMemberID = null; // Variabel untuk menyimpan member ID pertama yang diinput
+            let simpananArray = []; // Array to store savings data
+            let firstMemberID = null; // Variable to store the first member ID input
 
-            // Event handler untuk tombol "Tambah"
+            // Event handler for the "Tambah" button
             $('.btn-success').on('click', function() {
-                // Ambil data dari form
+                // Get data from the form
                 let memberID = $('#member_name').val();
                 let memberName = $('#member_name').find('option:selected').data("nama_anggota");
                 let savingID = $('#saving_product').val();
@@ -134,17 +134,16 @@
                 let savingDesc = $('#saving_desc').val();
                 let kondisiSetoran = $('#kondisi_setoran').val();
 
-                // Validasi input (opsional)
+                // Validation
                 if (!memberID || !savingID || !amountSaving) {
                     Swal.fire('Error!', 'Semua kolom harus diisi!', 'error');
                     return;
                 }
 
-                // Cek apakah ini data anggota pertama yang diinput
+                // Check if it's the first member input
                 if (simpananArray.length === 0) {
-                    firstMemberID = memberID; // Set member ID pertama
+                    firstMemberID = memberID;
                 } else {
-                    // Jika member ID berbeda dengan yang pertama, tampilkan pesan error
                     if (memberID !== firstMemberID) {
                         Swal.fire({
                             icon: 'error',
@@ -155,7 +154,7 @@
                     }
                 }
 
-                // Buat objek simpanan baru
+                // Create new savings object
                 let simpanan = {
                     id_anggota: memberID,
                     nama_anggota: memberName,
@@ -166,56 +165,82 @@
                     keterangan: savingDesc
                 };
 
-                // Masukkan data ke array
+                // Add the data to the array
                 simpananArray.push(simpanan);
 
-                // Tambahkan baris ke tabel
+                // Update the table with the new data
                 updateTable();
             });
 
-            // Fungsi untuk memperbarui tabel
+            // Function to update the table with the savings data
             function updateTable() {
                 let tableBody = $('#dataTable tbody');
-                tableBody.empty(); // Kosongkan isi tabel sebelum menambahkan data baru
+                tableBody.empty(); // Clear the table before adding new data
 
                 let totalSetoran = 0;
 
-                // Loop melalui array dan tambahkan baris ke tabel
+                // Loop through the array and add rows to the table
                 $.each(simpananArray, function(index, simpanan) {
+                    // Remove the formatting (dots and commas) for calculation
+                    let cleanAmount = parseFloat(simpanan.nominal_setoran.replace(/\./g, '').replace(/,/g,
+                        '.'));
 
                     if (simpanan.metode_transaksi == "+") {
-                        totalSetoran += parseFloat(simpanan.nominal_setoran.replace(/[^\d.-]/g, ''));
+                        totalSetoran += cleanAmount;
                     } else {
-                        totalSetoran -= parseFloat(simpanan.nominal_setoran.replace(/[^\d.-]/g, ''));
+                        totalSetoran -= cleanAmount;
                     }
 
                     tableBody.append(`
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${simpanan.nama_anggota}</td>
-                        <td>${simpanan.produk_simpanan}</td>
-                        <td>${simpanan.metode_transaksi}${simpanan.nominal_setoran}</td>
-                        <td>${simpanan.keterangan}</td>
-                        <td><button class="btn btn-danger btn-sm" onclick="removeRow(${index})">Hapus</button></td>
-                    </tr>
-                `);
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${simpanan.nama_anggota}</td>
+                    <td>${simpanan.produk_simpanan}</td>
+                    <td>${simpanan.metode_transaksi}${formatRupiah(cleanAmount)}</td>
+                    <td>${simpanan.keterangan}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="removeRow(${index})">Hapus</button></td>
+                </tr>
+            `);
                 });
 
-                // Perbarui total setoran di footer tabel
-                $('.amount_setoran').text(totalSetoran.toFixed(2));
+                // Update total setoran in the table footer
+                $('.amount_setoran').text(formatRupiah(totalSetoran));
             }
 
-            // Fungsi untuk menghapus baris dari tabel dan array
+            // Function to remove a row from the table and array
             window.removeRow = function(index) {
-                simpananArray.splice(index, 1); // Hapus elemen dari array
-                updateTable(); // Perbarui tabel setelah penghapusan
+                simpananArray.splice(index, 1); // Remove the element from the array
+                updateTable(); // Update the table after deletion
             }
 
-            // Saat form disubmit, simpan array ke dalam input hidden
+            // Submit form handler
             $('#simpananForm').on('submit', function() {
-                // Serialize array menjadi JSON string dan masukkan ke input hidden
-                $('#simpanan_array').val(JSON.stringify(simpananArray));
+                $('#simpanan_array').val(JSON.stringify(simpananArray)); // Serialize array to JSON string
             });
+
+            // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
+            function formatRupiah(number) {
+                return number.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).replace(/,/g, ',').replace(/\./g, '.');
+            }
         });
+
+        // Function to format input as a localized string with dots for thousands and commas for decimals
+        function formatLocalString(input) {
+            let value = input.value.replace(/\./g, '').replace(/,/g, '.'); // Remove formatting for parsing
+            let number = parseFloat(value);
+
+            if (!isNaN(number)) {
+                // Reapply formatting
+                input.value = number.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).replace(/,/g, ',').replace(/\./g, '.');
+            } else {
+                input.value = ''; // Clear if not a valid number
+            }
+        }
     </script>
 @endsection

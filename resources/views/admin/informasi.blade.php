@@ -26,6 +26,7 @@
                                                 <th>No</th>
                                                 <th>Judul Informasi/Berita</th>
                                                 <th>Tanggal Informasi/Berita</th>
+                                                <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -36,6 +37,70 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Informasi</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="editForm" action="" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="edit_judul">Judul Informasi</label>
+                                <input type="text" class="form-control" id="edit_judul" name="judul_informasi" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_keterangan">Keterangan</label>
+                                <textarea class="form-control" id="edit_keterangan" name="keterangan_informasi"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="edit_banner">Banner (Optional)</label>
+                                <input type="file" class="form-control" id="edit_banner" name="banner">
+                            </div>
+                            <input type="hidden" id="edit_id" name="id">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form id="deleteForm" action="{{ route('informasi_berita.destroy') }}" method="POST">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Apakah Anda yakin ingin menghapus informasi ini?
+                            <input type="hidden" id="delete_id" name="delete_id">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-danger">Hapus</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -60,8 +125,38 @@
                     {
                         data: 'created_at',
                         name: 'created_at'
+                    },
+                    {
+                        data: null, // For actions
+                        render: function(data, type, row) {
+                            return `
+                                <button class="btn btn-warning btn-edit" data-id="${row.id}" data-judul="${row.judul}" data-keterangan="${row.keterangan}"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger btn-delete" data-toggle="modal" data-target="#deleteModal" data-id="${row.id}"><i class="fas fa-trash"></i></button>
+                            `;
+                        }
                     }
                 ]
+            });
+
+            // Edit button click handler
+            $(document).on('click', '.btn-edit', function() {
+                const id = $(this).data('id');
+                const judul = $(this).data('judul');
+                const keterangan = $(this).data('keterangan');
+
+                $('#edit_id').val(id);
+                $('#edit_judul').val(judul);
+                $('#edit_keterangan').val(keterangan);
+                $('#editForm').attr('action', `/informasi-berita/${id}`);
+                $('#editModal').modal('show');
+            });
+
+            // Delete button click handler
+            $(document).on('click', '.btn-delete', function() {
+                const id = $(this).data('id');
+
+                $('#delete_id').val(id);
+                $('#deleteModal').modal('show');
             });
         });
     </script>

@@ -76,10 +76,15 @@ Route::get('/input-pembiayaan-kolektif/get-last-data', [App\Http\Controllers\Inp
 Route::get('/informasi-berita', [App\Http\Controllers\InformationController::class, 'index'])->middleware('role:petugas')->name('informasi_berita');
 Route::get('/informasi-berita/create', [App\Http\Controllers\InformationController::class, 'create'])->middleware('role:petugas')->name('informasi_berita.create');
 Route::post('/informasi-berita/store', [App\Http\Controllers\InformationController::class, 'store'])->middleware('role:petugas')->name('informasi_berita.store');
+Route::get('/informasi-berita/{id}/edit', [App\Http\Controllers\InformationController::class, 'edit'])->middleware('role:petugas')->name('informasi_berita.edit');
+Route::put('/informasi-berita/{id}', [App\Http\Controllers\InformationController::class, 'update'])->middleware('role:petugas')->name('informasi_berita.update');
+Route::post('/informasi-berita/delete', [App\Http\Controllers\InformationController::class, 'destroy'])->middleware('role:petugas')->name('informasi_berita.destroy');
 
 Route::get('/pesan-anggota', [App\Http\Controllers\MessageController::class, 'index'])->middleware('role:petugas')->name('pesan_anggota');
 Route::get('/pesan-anggota/create', [App\Http\Controllers\MessageController::class, 'create'])->middleware('role:petugas')->name('pesan_anggota.create');
 Route::post('/pesan-anggota/store', [App\Http\Controllers\MessageController::class, 'store'])->middleware('role:petugas')->name('pesan_anggota.store');
+Route::put('/pesan-anggota/{id}', [App\Http\Controllers\MessageController::class, 'update'])->middleware('role:petugas')->name('pesan_anggota.update');
+Route::post('/pesan-anggota/delete', [App\Http\Controllers\MessageController::class, 'destroy'])->middleware('role:petugas')->name('pesan_anggota.destroy');
 
 Route::get('/cek-simpanan-pembiayaan', [App\Http\Controllers\LoanSavingCheckController::class, 'index'])->name('cek_saldo');
 Route::get('/cek-simpanan-pembiayaan/get-data', [App\Http\Controllers\LoanSavingCheckController::class, 'getSavingLoanData'])->name('get_saving_loan_data');

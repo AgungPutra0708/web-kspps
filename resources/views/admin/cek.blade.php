@@ -131,7 +131,7 @@
                             let row = `<tr>
                                             <td>${index + 1}</td>
                                             <td>${saving.nama_simpanan}</td>
-                                            <td>${saving.saldo_akhir}</td>
+                                            <td>${formatRupiah(parseFloat(saving.saldo_akhir))}</td>
                                             <td class="text-center"><button type="button" class="btn btn-info" onclick="window.location.href='{{ url('history/') }}/${saving.id_simpanan}'"><i class="fas fa-history"></i></button></td>
                                         </tr>`;
 
@@ -140,7 +140,7 @@
                                 .saldo_akhir); // Tambahkan ke total
                         });
                         // Update total di tfoot
-                        $('#totalSaldoSimpanan').text(totalSaldoSimpanan.toFixed(2));
+                        $('#totalSaldoSimpanan').text(formatRupiah(parseFloat(totalSaldoSimpanan)));
 
                         // tabel pinjaman
                         let tbodyPinjaman = $('#pinjamanTable tbody');
@@ -152,8 +152,8 @@
                             let row = `<tr>
                                             <td>${index + 1}</td>
                                             <td>${loan.no_pinjaman}</td>
-                                            <td>${loan.besar_pinjaman}</td>
-                                            <td>${loan.besar_margin}</td>
+                                            <td>${formatRupiah(parseFloat(loan.besar_pinjaman))}</td>
+                                            <td>${formatRupiah(parseFloat(loan.besar_margin))}</td>
                                             <td>${loan.lama_pinjaman}</td>
                                             <td>${loan.status_pinjaman == "done" ? "Lunas" : "Berjalan"}</td>
                                             <td class="text-center">
@@ -174,13 +174,21 @@
                                 .besar_margin); // Tambahkan ke total margin pinjaman
                         });
                         // Update total di tfoot
-                        $('#totalPokokPinjaman').text(totalPokokPinjaman.toFixed(2));
-                        $('#totalMarginPinjaman').text(totalMarginPinjaman.toFixed(2));
+                        $('#totalPokokPinjaman').text(formatRupiah(parseFloat(totalPokokPinjaman)));
+                        $('#totalMarginPinjaman').text(formatRupiah(parseFloat(totalMarginPinjaman)));
                     },
                     error: function(xhr, status, error) {
                         console.error("Terjadi kesalahan: " + error);
                     }
                 });
+            }
+
+            // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
+            function formatRupiah(number) {
+                return number.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).replace(/,/g, ',').replace(/\./g, '.');
             }
         });
     </script>

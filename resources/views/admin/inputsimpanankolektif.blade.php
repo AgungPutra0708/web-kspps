@@ -129,7 +129,7 @@
                             let row = `<tr>
                         <td>${index + 1}</td>
                         <td>${anggota.nama_anggota}</td>
-                        <td>${anggota.saldo_akhir}</td>
+                        <td>${formatRupiah(parseFloat(anggota.saldo_akhir))}</td>
                         <td><input type="number" name="nominal_setoran[]" class="form-control nominal-setoran" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-simpanan_id="${anggota.id_simpanan}" data-saldo="${anggota.saldo_akhir}"></td>
                         <td><input type="text" name="keterangan[]" class="form-control keterangan" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-simpanan_id="${anggota.id_simpanan}"></td>
                     </tr>`;
@@ -154,7 +154,7 @@
                 $('.nominal-setoran').each(function() {
                     totalSetoran += parseFloat($(this).val()) || 0;
                 });
-                $('tfoot th:eq(1)').text(totalSetoran.toLocaleString());
+                $('tfoot th:eq(1)').text(formatRupiah(parseFloat(totalSetoran)));
             }
 
             // Saat form disubmit, kumpulkan data dari tabel dan masukkan ke dalam simpananArray
@@ -180,6 +180,14 @@
                 // Serialize array menjadi JSON string dan masukkan ke input hidden
                 $('#simpanan_array').val(JSON.stringify(simpananArray));
             });
+
+            // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
+            function formatRupiah(number) {
+                return number.toLocaleString('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).replace(/,/g, ',').replace(/\./g, '.');
+            }
         });
     </script>
 @endsection

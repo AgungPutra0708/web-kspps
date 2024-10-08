@@ -25,52 +25,74 @@ class InputSavingController extends Controller
 
     public function store(Request $request)
     {
-        // Decode JSON array dari input hidden
+        // Decode JSON array from the hidden input
         $simpananArray = json_decode($request->simpanan_array, true);
 
-        // Validasi array jika diperlukan
+        // Validate array if necessary
         if (empty($simpananArray)) {
             return redirect()->back()->withErrors(['message' => 'Data simpanan kosong']);
         }
 
-        // Loop melalui setiap item dalam array dan simpan ke database
-        foreach ($simpananArray as $simpanan) {
-            $rekeningSimpanan = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan'])
-                ->where('id_anggota', $simpanan['id_anggota'])
-                ->first();
+        // Use database transactions to ensure atomicity
+        DB::beginTransaction();
 
-            if (!$rekeningSimpanan) {
-                $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan']);
-                $kodeAnggota = AnggotaModel::find($simpanan['id_anggota']);
+        try {
+            // Loop through each item in the array and save to the database
+            foreach ($simpananArray as $simpanan) {
+                $rekeningSimpanan = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan'])
+                    ->where('id_anggota', $simpanan['id_anggota'])
+                    ->first();
 
-                // Extract the member code part after '-'
-                $memberCodePart = substr($kodeAnggota->no_anggota, strpos($kodeAnggota->no_anggota, '-') + 1);
+                if (!$rekeningSimpanan) {
+                    $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan']);
+                    $kodeAnggota = AnggotaModel::find($simpanan['id_anggota']);
 
-                // Create the combined code: SP-00001
-                $noRekeningSimpanan = $kodeSimpanan->no_simpanan . '-' . $memberCodePart;
+                    if (!$kodeSimpanan || !$kodeAnggota) {
+                        throw new \Exception('Data Simpanan atau Anggota tidak ditemukan.');
+                    }
 
-                // Create Rekening Simpanan
-                $rekeningSimpanan = RekeningSimpananModel::create([
-                    'no_rekening_simpanan' => $noRekeningSimpanan,
-                    'id_anggota' => $simpanan['id_anggota'],
+                    // Extract the member code part after '-'
+                    $memberCodePart = substr($kodeAnggota->no_anggota, strpos($kodeAnggota->no_anggota, '-') + 1);
+
+                    // Create the combined code: SP-00001
+                    $noRekeningSimpanan = $kodeSimpanan->no_simpanan . '-' . $memberCodePart;
+
+                    // Create Rekening Simpanan
+                    $rekeningSimpanan = RekeningSimpananModel::create([
+                        'no_rekening_simpanan' => $noRekeningSimpanan,
+                        'id_anggota' => $simpanan['id_anggota'],
+                        'id_simpanan' => $simpanan['id_simpanan'],
+                    ]);
+                }
+
+                // Clean and format 'nominal_setoran' to ensure it's a valid decimal
+                $cleanAmount = str_replace('.', '', $simpanan['nominal_setoran']); // Remove dots
+                $cleanAmount = str_replace(',', '.', $cleanAmount); // Replace commas with dots
+
+                // Create Transaksi Simpanan
+                TransaksiSimpananModel::create([
+                    'id_rekening_simpanan' => $rekeningSimpanan->id,
                     'id_simpanan' => $simpanan['id_simpanan'],
+                    'id_anggota' => $simpanan['id_anggota'],
+                    'metode_transaksi' => $simpanan['metode_transaksi'],
+                    'jumlah_setoran' => number_format((float) $cleanAmount, 2, '.', ''), // Store as a decimal (15,2)
+                    'keterangan' => $simpanan['keterangan'],
+                    'tanggal_transaksi' => Carbon::now(),
                 ]);
             }
 
-            // Create Transaksi Simpanan
-            TransaksiSimpananModel::create([
-                'id_rekening_simpanan' => $rekeningSimpanan->id,
-                'id_simpanan' => $simpanan['id_simpanan'],
-                'id_anggota' => $simpanan['id_anggota'],
-                'metode_transaksi' => $simpanan['metode_transaksi'],
-                'jumlah_setoran' => $simpanan['nominal_setoran'],
-                'keterangan' => $simpanan['keterangan'],
-                'tanggal_transaksi' => Carbon::now(),
-            ]);
-        }
+            // Commit the transaction
+            DB::commit();
 
-        // Redirect kembali dengan pesan sukses
-        return redirect()->back()->with('success', 'Data transaksi simpanan berhasil ditambahkan.');
+            // Redirect back with success message
+            return redirect()->back()->with('success', 'Data transaksi simpanan berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            // Rollback the transaction if something goes wrong
+            DB::rollback();
+
+            // Return back with error message
+            return redirect()->back()->with(['error' => 'Gagal menyimpan data transaksi simpanan: ' . $e->getMessage()]);
+        }
     }
 
     public function indexKolektif()
@@ -157,7 +179,7 @@ class InputSavingController extends Controller
             }
         }
 
-        return redirect()->route('dashboard')->with('success', 'Data simpanan kolektif berhasil disimpan.');
+        return redirect()->back()->with('success', 'Data simpanan kolektif berhasil disimpan.');
     }
 
     public function indexPenarikanKolektif()
