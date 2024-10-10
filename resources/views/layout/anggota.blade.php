@@ -11,14 +11,11 @@
 </head>
 
 <body>
-    <div id="wrapper">
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-            @include('layout.nav')
-            @yield('content_anggota')
-        </div>
-        @include('anggota.nav')
+    <!-- Content Wrapper -->
+    <div class="d-flex flex-column">
+        @yield('content_anggota')
     </div>
+    @include('anggota.nav')
     <!-- End of Content Wrapper -->
 
     <!-- Bootstrap core JavaScript-->

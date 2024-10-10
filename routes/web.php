@@ -12,7 +12,6 @@ Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->na
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->middleware('role:petugas')->name('dashboard');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/kumpulan', [App\Http\Controllers\RembugController::class, 'index'])->middleware('role:petugas')->name('kumpulan');
 Route::post('/kumpulan/save', [App\Http\Controllers\RembugController::class, 'store'])->middleware('role:petugas')->name('kumpulan.store');
@@ -99,3 +98,8 @@ Route::put('/loan/update/{id}', [LoanController::class, 'updateHistory'])->name(
 Route::get('/pembiayaan/edit/{encryptedId}', [InputLoanController::class, 'edit'])->name('pinjaman.edit');
 Route::put('/pembiayaan/update/{id}', [InputLoanController::class, 'updatePembiayaan'])->name('pinjaman.update');
 Route::delete('/pembiayaan/delete/{encryptedId}', [InputLoanController::class, 'destroyPinjaman'])->name('delete_pembiayaan');
+
+// Anggota
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('role:anggota')->name('home');
+Route::get('/pesan-anggota', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('role:anggota')->name('message');
+Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('role:anggota')->name('profile');

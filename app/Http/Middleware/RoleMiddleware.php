@@ -12,13 +12,14 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, $role)
     {
+
+        // Retrieve the role from the session
+        $userRole = Session::get('role_user');
+
         // Check if the user is authenticated
         if (!Auth::check()) {
             return redirect()->route('login'); // Redirect to login if not authenticated
         }
-
-        // Retrieve the role from the session
-        $userRole = Session::get('role_user');
 
         // Debugging: Check what role is being retrieved
         if ($userRole !== $role) {

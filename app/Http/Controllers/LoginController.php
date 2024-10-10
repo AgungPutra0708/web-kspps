@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AnggotaModel;
 use App\Models\PetugasModel;
 use App\Models\UserMemberModel;
 use Illuminate\Http\Request;
@@ -33,9 +34,6 @@ class LoginController extends Controller
                 // Jika password cocok, login pengguna
                 Auth::login($user);
 
-                // Simpan role ke session
-                Session::put('role', $user->status);
-
                 // Redirect berdasarkan role
                 if ($user->status == 'petugas') {
                     $petugasData = PetugasModel::find($user->id_user);
@@ -44,6 +42,10 @@ class LoginController extends Controller
                     Session::put('role_user', $user->status);
                     return redirect()->route('dashboard');
                 } elseif ($user->status == 'anggota') {
+                    $anggotaData = AnggotaModel::find($user->id_user);
+                    Session::put('no_user', $anggotaData->no_anggota);
+                    Session::put('nama_user', $anggotaData->nama_anggota);
+                    Session::put('role_user', $user->status);
                     return redirect()->route('home');
                 }
             }
@@ -58,8 +60,12 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
-        // $request->session()->invalidate();
-        // $request->session()->regenerateToken();
+
+        // Menghapus semua session
+        $request->session()->invalidate();
+
+        // Regenerasi token untuk mencegah serangan CSRF
+        $request->session()->regenerateToken();
         return redirect()->route('login');
     }
 }

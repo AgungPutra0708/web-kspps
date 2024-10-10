@@ -2,6 +2,6 @@
 
 @section('content_anggota')
     <div class="container">
-        Home
+        Message
     </div>
 @endsection
