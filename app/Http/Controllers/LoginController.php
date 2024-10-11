@@ -14,6 +14,16 @@ class LoginController extends Controller
 {
     public function index()
     {
+        // Jika pengguna sudah login dan memiliki session
+        if (Auth::check()) {
+            $role = Session::get('role');
+
+            if ($role == 'petugas') {
+                return redirect()->route('dashboard');
+            } elseif ($role == 'anggota') {
+                return redirect()->route('home');
+            }
+        }
         return view('login');
     }
 
@@ -33,6 +43,8 @@ class LoginController extends Controller
             if ($user && Hash::check($request->password, $user->password)) {
                 // Jika password cocok, login pengguna
                 Auth::login($user);
+
+                Session::put('role', $user->status);
 
                 // Redirect berdasarkan role
                 if ($user->status == 'petugas') {

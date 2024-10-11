@@ -51,13 +51,11 @@
     <script>
         // Fungsi untuk menampilkan spinner
         function setLoading() {
-            console.log('Loading spinner shown'); // Debugging purpose
             $('#loader').removeClass('hide-loader'); // Show the loader
         }
 
         // Fungsi untuk menyembunyikan spinner
         function stopLoading() {
-            console.log('Loading spinner hidden'); // Debugging purpose
             $('#loader').addClass('hide-loader'); // Hide the loader
         }
 
@@ -83,24 +81,24 @@
                 // Load the content via AJAX
                 loadContent(url);
             });
-
-            // Function to load content with AJAX
-            function loadContent(url) {
-                setLoading(); // Show the loader before content is loaded
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#content-wrapper').html(data);
-                        stopLoading(); // Hide the loader after content is loaded
-                    },
-                    error: function() {
-                        alert('Error loading content');
-                        stopLoading(); // Hide the loader in case of an error
-                    }
-                });
-            }
         });
+
+        // Function to load content with AJAX
+        function loadContent(url) {
+            setLoading(); // Show the loader before content is loaded
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(data) {
+                    $('#main-content').html(data);
+                    stopLoading(); // Hide the loader after content is loaded
+                },
+                error: function() {
+                    alert('Error loading content');
+                    stopLoading(); // Hide the loader in case of an error
+                }
+            });
+        }
     </script>
 </body>
 

@@ -14,6 +14,11 @@ class MessageAnggotaController extends Controller
         return view('anggota.message');
     }
 
+    public function detail()
+    {
+        return view('anggota.message-detail');
+    }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -8,7 +8,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <title>Web Admin</title>
+    <title>BMT SARANA</title>
     <link rel="icon" href="{{ asset('assets/img/favicon.ico') }}" type="image/x-icon">
 
     @include('layout.header')
