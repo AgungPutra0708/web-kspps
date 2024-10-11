@@ -11,11 +11,27 @@
 </head>
 
 <body>
-    <!-- Content Wrapper -->
-    <div class="d-flex flex-column">
-        @yield('content_anggota')
+    <!-- Page Wrapper -->
+    <div id="wrapper-anggota" onload="stopLoading()">
+
+        <!-- Loading Spinner -->
+        <div id="loader" class="d-flex justify-content-center align-items-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Add this to properly handle the content load -->
+            <div id="main-content">
+                {{-- Content loaded dynamically will go here --}}
+            </div>
+        </div>
+        @include('anggota.nav')
     </div>
-    @include('anggota.nav')
+
+    <!-- End of Page Wrapper -->
     <!-- End of Content Wrapper -->
 
     <!-- Bootstrap core JavaScript-->
@@ -24,15 +40,67 @@
 
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('assets/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-    <script>
-        const list = document.querySelectorAll(".list");
 
-        function activeLink() {
-            list.forEach((item) => item.classList.remove("active"));
-            this.classList.add("active");
+    <!-- Custom scripts for all pages-->
+    <script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
+    <script src="{{ asset('assets/js/select2.min.js') }}"></script>
+
+    <!-- Page level plugins -->
+    <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script>
+        // Fungsi untuk menampilkan spinner
+        function setLoading() {
+            console.log('Loading spinner shown'); // Debugging purpose
+            $('#loader').removeClass('hide-loader'); // Show the loader
         }
 
-        list.forEach((item) => item.addEventListener("click", activeLink));
+        // Fungsi untuk menyembunyikan spinner
+        function stopLoading() {
+            console.log('Loading spinner hidden'); // Debugging purpose
+            $('#loader').addClass('hide-loader'); // Hide the loader
+        }
+
+        $(document).ready(function() {
+            // Sembunyikan loader pada awal load
+            stopLoading();
+
+            // Load content of the active link on page load
+            var activeLink = $('.list.active a').attr('href');
+            if (activeLink) {
+                loadContent(activeLink);
+            }
+
+            // Handle click events for navigation links
+            $('.list a').on('click', function(event) {
+                event.preventDefault();
+                var url = $(this).attr('href');
+
+                // Update the active class immediately
+                $('.list').removeClass('active');
+                $(this).parent().addClass('active');
+
+                // Load the content via AJAX
+                loadContent(url);
+            });
+
+            // Function to load content with AJAX
+            function loadContent(url) {
+                setLoading(); // Show the loader before content is loaded
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#content-wrapper').html(data);
+                        stopLoading(); // Hide the loader after content is loaded
+                    },
+                    error: function() {
+                        alert('Error loading content');
+                        stopLoading(); // Hide the loader in case of an error
+                    }
+                });
+            }
+        });
     </script>
 </body>
 

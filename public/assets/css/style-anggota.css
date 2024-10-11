@@ -8,9 +8,34 @@
 body {
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    /* align-items: center; */
+    /* min-height: 100vh; */
     background: #ffffff;
+}
+
+/* Loader */
+#loader {
+    display: none; /* Hide loader by default */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    z-index: 9999; /* Ensure it is on top of everything */
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.hide-loader {
+    display: none !important; /* Memastikan loader disembunyikan */
+}
+
+.card-border-radius {
+    border-radius: 2rem;
 }
 
 .navigation {
@@ -21,9 +46,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    /* border-radius: 10px; */
+    border-radius: 1.2rem;
     bottom: 0;
-    padding-bottom: 20px; /* Adjust spacing below for visual balance */
+    padding-bottom: 20px;
+    max-width: 900px;
 }
 
 .navigation ul {
@@ -142,9 +168,43 @@ body {
 }
 
 .navigation ul li:nth-child(2).active ~ .indicator {
-    transform: translateX(calc(70px * 1.275));
+    transform: translateX(calc(70px * 1.285));
 }
 
 .navigation ul li:nth-child(3).active ~ .indicator {
     transform: translateX(calc(70px * 2.57));
+}
+
+#wrapper-anggota {
+    width: 100%;
+    max-width: 900px;
+}
+
+.message-anggota {
+    max-height: 200px;
+}
+
+/* Custom CSS for dynamic text size */
+@media (max-width: 576px) {
+    .menu-text {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .menu-text {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .menu-text {
+        font-size: 16px;
+    }
+}
+
+@media (min-width: 993px) {
+    .menu-text {
+        font-size: 18px;
+    }
 }

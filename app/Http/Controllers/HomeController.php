@@ -8,6 +8,10 @@ class HomeController extends Controller
 {
     public function index()
     {
+        return view('layout.anggota');
+    }
+    public function indexHome()
+    {
         return view('anggota.home');
     }
 }

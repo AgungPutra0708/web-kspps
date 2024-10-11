@@ -1,7 +1,7 @@
 <div class="navigation">
     <ul>
-        <li class="list {{ Route::is('home') ? 'active' : '' }}">
-            <a href="{{ route('home') }}">
+        <li class="list active">
+            <a href="{{ route('home.anggota') }}">
                 <span class="icon">
                     <i class="fas fa-home"></i>
                 </span>
@@ -9,7 +9,7 @@
                 <span class="circle"></span>
             </a>
         </li>
-        <li class="list {{ Route::is('message') ? 'active' : '' }}">
+        <li class="list">
             <a href="{{ route('message') }}">
                 <span class="icon">
                     <i class="fas fa-info"></i>
@@ -18,7 +18,7 @@
                 <span class="circle"></span>
             </a>
         </li>
-        <li class="list {{ Route::is('profile') ? 'active' : '' }}">
+        <li class="list">
             <a href="{{ route('profile') }}">
                 <span class="icon">
                     <i class="fas fa-user"></i>

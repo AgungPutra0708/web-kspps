@@ -101,5 +101,6 @@ Route::delete('/pembiayaan/delete/{encryptedId}', [InputLoanController::class, '
 
 // Anggota
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('role:anggota')->name('home');
+Route::get('/home-anggota', [App\Http\Controllers\HomeController::class, 'indexHome'])->middleware('role:anggota')->name('home.anggota');
 Route::get('/pesan-anggota', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('role:anggota')->name('message');
 Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('role:anggota')->name('profile');
