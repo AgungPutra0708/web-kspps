@@ -49,12 +49,14 @@ class LoginController extends Controller
                 // Redirect berdasarkan role
                 if ($user->status == 'petugas') {
                     $petugasData = PetugasModel::find($user->id_user);
+                    Session::put('id_user', $user->id_user);
                     Session::put('no_user', $petugasData->no_petugas);
                     Session::put('nama_user', $petugasData->nama_petugas);
                     Session::put('role_user', $user->status);
                     return redirect()->route('dashboard');
                 } elseif ($user->status == 'anggota') {
                     $anggotaData = AnggotaModel::find($user->id_user);
+                    Session::put('id_user', $user->id_user);
                     Session::put('no_user', $anggotaData->no_anggota);
                     Session::put('nama_user', $anggotaData->nama_anggota);
                     Session::put('role_user', $user->status);

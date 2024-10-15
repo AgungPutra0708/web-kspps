@@ -3,10 +3,11 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 mt-2 text-center">
-                <img class="img-fluid rounded"
-                    src="{{ asset('storage/banner/2ULK73cmEU8FYRHrxGqk7xEC8kFkvjsKcJZgQqCx.jpg') }}" alt="Banner Image">
-                <h4 class="m-2">Judul Pesan</h4>
-                <p>Deskripsi Pesan</p>
+                @if ($informasi->banner)
+                    <img class="img-fluid rounded" src="{{ asset('storage/' . $informasi->banner) }}" alt="Banner Image">
+                @endif
+                <h4 class="m-2">{{ $informasi->judul }}</h4>
+                <p>{!! $informasi->keterangan !!}</p>
             </div>
         </div>
     </div>

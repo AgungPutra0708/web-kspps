@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Jenssegers\Agent\Agent;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,6 +21,7 @@ class MobileMiddleware
 
         // Check if the user is on a mobile device
         if (!$agent->isMobile()) {
+            Auth::logout();
             // If not mobile, redirect or return an error
             return redirect()->route('login')->with('error', 'Halaman ini hanya dapat diakses oleh mobile device');
         }

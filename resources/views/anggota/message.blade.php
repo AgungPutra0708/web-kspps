@@ -1,40 +1,23 @@
-{{-- Content Message --}}
-<div class="d-flex justify-content-center mb-1 mt-2 ">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
-        <a href="{{ route('detail_message') }}" class="nav-link detail-anggota">
-            <div class="card bg-light shadow message-anggota">
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-lg-12 col-12 text-secondary">
-                            <h5 class="font-weight-bold mb-3">Judul Pesan ke Anggota</h5>
-                            <p>Simple Deskripsi Pesan.</p>
+{{-- Content Messages Loop --}}
+@foreach ($dataInformasi as $informasi)
+    <div class="d-flex justify-content-center mb-1 mt-2">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
+            <a href="{{ route('detail_message', ['id' => $informasi->id]) }}" class="nav-link detail-anggota">
+                <div class="card shadow message-anggota {{ $informasi->class }}">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-12 col-12">
+                                <h5 class="font-weight-bold mb-3">{{ $informasi->judul }}</h5>
+                                <p>{{ $informasi->keterangan }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
     </div>
-</div>
-{{-- Content Message End --}}
-
-{{-- Content Message --}}
-<div class="d-flex justify-content-center mb-1 ">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
-        <a href="{{ route('detail_message') }}" class="nav-link detail-anggota">
-            <div class="card bg-primary text-white shadow message-anggota">
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-lg-12 col-12">
-                            <h5 class="text-white font-weight-bold mb-3">Judul Informasi</h5>
-                            <p>Simple Deskripsi Informasi</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
-</div>
-{{-- Content Message End --}}
+@endforeach
+{{-- End Content Messages Loop --}}
 <script>
     $(document).ready(function() {
         // Handle click events for navigation links

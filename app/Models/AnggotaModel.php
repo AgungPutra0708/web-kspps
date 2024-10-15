@@ -22,8 +22,19 @@ class AnggotaModel extends Model
     // Relasi ke model TransaksiSimpanan dengan kondisi id_anggota dan id_simpanan
     public function transaksiSimpanans($idSimpanan)
     {
-        return $this->hasMany(TransaksiSimpananModel::class, 'id_anggota')
-            ->where('id_simpanan', $idSimpanan);
+        $query = $this->hasMany(TransaksiSimpananModel::class, 'id_anggota');
+
+        if ($idSimpanan) {
+            $query->where('id_simpanan', $idSimpanan);
+        }
+
+        return $query;
+    }
+
+    // Relasi ke model TransaksiSimpanan dengan kondisi id_anggota dan id_simpanan
+    public function transaksiAllSimpanans()
+    {
+        return $this->hasMany(TransaksiSimpananModel::class, 'id_anggota');
     }
 
     // Relasi ke model Pinjaman dengan kondisi id_anggota dan id_pembiayaan

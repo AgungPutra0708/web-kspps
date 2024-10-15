@@ -100,8 +100,8 @@ Route::put('/pembiayaan/update/{id}', [InputLoanController::class, 'updatePembia
 Route::delete('/pembiayaan/delete/{encryptedId}', [InputLoanController::class, 'destroyPinjaman'])->name('delete_pembiayaan');
 
 // Anggota
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('role:anggota')->name('home');
-Route::get('/home-anggota', [App\Http\Controllers\HomeController::class, 'indexHome'])->middleware('role:anggota')->name('home.anggota');
-Route::get('/pesan', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('role:anggota')->name('message');
-Route::get('/detail-pesan', [App\Http\Controllers\MessageAnggotaController::class, 'detail'])->middleware('role:anggota')->name('detail_message');
-Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('role:anggota')->name('profile');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('home');
+Route::get('/home-anggota', [App\Http\Controllers\HomeController::class, 'indexHome'])->middleware('auth', 'role:anggota', 'mobile')->name('home.anggota');
+Route::get('/pesan', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('message');
+Route::get('/detail-pesan/{id}', [App\Http\Controllers\MessageAnggotaController::class, 'detail'])->middleware('auth', 'role:anggota', 'mobile')->name('detail_message');
+Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('profile');

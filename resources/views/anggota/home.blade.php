@@ -28,7 +28,9 @@
                     <div class="col-lg-10 col-8">
                         <h5 class="text-white font-weight-bold mb-3">BMT SARANA</h5>
                         <h4 class="text-white font-weight-bold">Saldo Total</h4>
-                        <h4 class="text-white font-weight-bold">Rp 3.000.000</h4>
+                        <h4 class="text-white font-weight-bold">Rp <span
+                                id="saldo-simpanan">{{ number_format($saldoSimpanan, 2, ',', '.') }}</span>
+                        </h4>
                     </div>
                     <div class="col-lg-2 col-4 align-content-center">
                         <i class="fas fa-wallet fa-4x"></i>

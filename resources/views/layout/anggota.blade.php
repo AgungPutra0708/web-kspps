@@ -28,6 +28,32 @@
                 {{-- Content loaded dynamically will go here --}}
             </div>
         </div>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Keluar</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Yakin akan keluar?
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Tidak</button>
+                            <button type="submit" class="btn btn-danger">Keluar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         @include('anggota.nav')
     </div>
 
@@ -82,6 +108,14 @@
                 loadContent(url);
             });
         });
+
+        // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
+        function formatRupiah(number) {
+            return number.toLocaleString('id-ID', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }).replace(/,/g, ',').replace(/\./g, '.');
+        }
 
         // Function to load content with AJAX
         function loadContent(url) {
