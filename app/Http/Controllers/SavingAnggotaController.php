@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\RekeningSimpananModel;
 use App\Models\SimpananModel;
+use App\Models\TransaksiSimpananModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -72,9 +74,29 @@ class SavingAnggotaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+        $id_simpanan = Crypt::decrypt($id);
+        $id_anggota = Session::get('id_user');
+
+        // Fetch the data and paginate it
+        $transaksiSimpananData = TransaksiSimpananModel::where('id_simpanan', $id_simpanan)->where('id_anggota', $id_anggota)->orderBy('tanggal_transaksi', 'desc')->paginate(5);
+
+        // Get the total count of installments
+        $totalAngsuran = $transaksiSimpananData->total();
+
+        // Map the data to display 'angsuran_ke' starting from 1 in descending order
+        $transaksiSimpanan = $transaksiSimpananData->map(function ($item, $key) use ($totalAngsuran) {
+            $currentAngsuran = $totalAngsuran - $key; // Reverse the angsuran_ke
+            return [
+                'id' => Crypt::encrypt($item->id),
+                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>Angsuran ke - ' . $currentAngsuran,
+                'nominal' => $item->metode_transaksi . ' Rp ' . number_format($item->jumlah_setoran, 2, ',', '.'),
+                'metode_transaksi' => $item->metode_transaksi,
+            ];
+        });
+
+        return view('anggota.transaksi-saving', compact('transaksiSimpanan', 'transaksiSimpananData'));
     }
 
     /**

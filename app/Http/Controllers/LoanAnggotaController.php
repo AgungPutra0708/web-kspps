@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\PinjamanModel;
 use App\Models\RekeningSimpananModel;
 use App\Models\SimpananModel;
+use App\Models\TransaksiPinjamanModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -61,9 +63,27 @@ class LoanAnggotaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+        $id = Crypt::decrypt($id);
+
+        // Fetch the data and paginate it
+        $transaksiPinjamanData = TransaksiPinjamanModel::where('id_pinjaman', $id)->orderBy('angsuran_ke', 'desc')->paginate(5);
+
+        // Get the total count of installments
+        $totalAngsuran = $transaksiPinjamanData->total();
+
+        // Map the data to display 'angsuran_ke' starting from 1 in descending order
+        $transaksiPinjaman = $transaksiPinjamanData->map(function ($item, $key) use ($totalAngsuran) {
+            $currentAngsuran = $totalAngsuran - $key; // Reverse the angsuran_ke
+            return [
+                'id' => Crypt::encrypt($item->id),
+                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>Angsuran ke - ' . $currentAngsuran,
+                'nominal' => 'Rp ' . number_format($item->angsur_pinjaman, 2, ',', '.'),
+            ];
+        });
+
+        return view('anggota.transaksi-loan', compact('transaksiPinjaman', 'transaksiPinjamanData'));
     }
 
     /**
