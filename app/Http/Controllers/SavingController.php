@@ -27,6 +27,7 @@ class SavingController extends Controller
             $data = [
                 'no_simpanan' => $request->saving_number,
                 'nama_simpanan' => $request->saving_name,
+                'utama' => $request->is_main,
                 'keterangan_simpanan' => $request->saving_desc,
             ];
 

@@ -47,7 +47,8 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-4 mb-3">
-                <a href="#" class="btn btn-success d-flex flex-column align-items-center justify-content-center"
+                <a href="{{ route('detail_saving') }}"
+                    class="btn btn-success d-flex flex-column align-items-center justify-content-center btn-home"
                     style="width: 100%; height: 100%;">
                     <i class="fas fa-wallet fa-2x mb-2"></i>
                     <span class="menu-text">Simpanan</span>
@@ -92,3 +93,16 @@
     </div>
 </div>
 {{-- Content Menu End --}}
+<script>
+    $(document).ready(function() {
+        // Handle click events for navigation links
+        $('.btn-home').on('click', function(event) {
+            event.preventDefault();
+            var url = $(this).attr('href');
+
+
+            // Load the content via AJAX
+            loadContent(url);
+        });
+    });
+</script>

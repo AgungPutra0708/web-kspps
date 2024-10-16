@@ -39,7 +39,7 @@ body {
 }
 
 .navigation {
-    position: absolute;
+    position: fixed; /* Changed to fixed to keep it at the bottom */
     width: 100%;
     height: 60px;
     background: #08786b;
@@ -50,6 +50,9 @@ body {
     bottom: 0;
     padding-bottom: 20px;
     max-width: 900px;
+    z-index: 999; /* Ensure it stays on top of other content */
+    left: 50%; /* Centering the navigation */
+    transform: translateX(-50%); /* Ensure the centering works on all screens */
 }
 
 .navigation ul {
@@ -94,7 +97,7 @@ body {
 }
 
 .navigation ul li a .text {
-    position: absolute;
+    position: fixed;
     color: #ffffff;
     font-weight: 400;
     font-size: 0.75em;
@@ -178,6 +181,12 @@ body {
 #wrapper-anggota {
     width: 100%;
     max-width: 900px;
+}
+
+/* Add custom style to make the dataSimpanan scrollable */
+.scrollable-content {
+    max-height: 100vh; /* Set a maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .message-anggota {

@@ -2,40 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AnggotaModel;
-use App\Models\PinjamanModel;
 use App\Models\RekeningSimpananModel;
 use App\Models\SimpananModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
-class LoanSavingCheckController extends Controller
+class SavingAnggotaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = [
-            'dataAnggota' => AnggotaModel::all(),
-        ];
-        return view('admin.cek', $data);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function getSavingLoanData(Request $request)
-    {
-        $id_anggota = $request->input('id_anggota');
+        $id_anggota = Session::get('id_user');
 
         // Ambil semua data simpanan
         $simpananData = SimpananModel::all();
-        $pinjamanData = PinjamanModel::where('id_anggota', $id_anggota)->get();
 
         // Filter simpanan dan hitung saldo akhir berdasarkan id_anggota
-        $filteredDataSimpanan = $simpananData->map(function ($item) use ($id_anggota) {
+        $dataSimpanan = $simpananData->map(function ($item) use ($id_anggota) {
             // Hitung saldo_akhir berdasarkan transaksi_simpanans untuk id_anggota dan id_simpanan
             $saldoAkhir = $item->transaksiSimpanans($id_anggota)
                 ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
@@ -52,26 +39,57 @@ class LoanSavingCheckController extends Controller
                 'no_simpanan' => $item->no_simpanan ?? null, // No Simpanan
                 'nama_simpanan' => $item->nama_simpanan ?? null, // Nama Simpanan
                 'saldo_akhir' => $saldoAkhir ?? 0, // Saldo akhir dari tabel transaksi_simpanans
-                'utama' => $item->utama ?? null,
+                'utama' => $item->utama,
             ];
         });
+        return view('anggota.detail-saving', compact('dataSimpanan'));
+    }
 
-        // Map pinjamanData untuk mengenkripsi id_pinjaman
-        $filteredDataPinjaman = $pinjamanData->map(function ($item) {
-            return [
-                'id_pinjaman' => Crypt::encrypt($item->id),  // Enkripsi ID Pinjaman
-                'no_pinjaman' => $item->no_pinjaman,
-                'besar_pinjaman' => $item->besar_pinjaman,
-                'besar_margin' => $item->besar_margin,
-                'lama_pinjaman' => $item->lama_pinjaman,
-                'status_pinjaman' => $item->status_pinjaman,
-            ];
-        });
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
 
-        // Kembalikan data dalam bentuk JSON
-        return response()->json([
-            'saving_data' => $filteredDataSimpanan,
-            'loan_data' => $filteredDataPinjaman,
-        ]);
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }

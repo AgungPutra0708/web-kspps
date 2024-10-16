@@ -38,6 +38,16 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
+                                            <label for="is_main">Simpanan Utama?</label>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="is_main"
+                                                    name="is_main" value="false">
+                                                <label class="custom-control-label" for="is_main"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
                                             <label for="saving_desc">Keterangan</label>
                                             <textarea class="form-control saving_desc" name="saving_desc" id="saving_desc"></textarea>
                                         </div>
