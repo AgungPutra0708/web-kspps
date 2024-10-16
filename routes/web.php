@@ -103,6 +103,7 @@ Route::delete('/pembiayaan/delete/{encryptedId}', [InputLoanController::class, '
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('home');
 Route::get('/home-anggota', [App\Http\Controllers\HomeController::class, 'indexHome'])->middleware('auth', 'role:anggota', 'mobile')->name('home.anggota');
 Route::get('/detail-simpanan', [App\Http\Controllers\SavingAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('detail_saving');
+Route::get('/detail-pembiayaan', [App\Http\Controllers\LoanAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('detail_loan');
 Route::get('/pesan', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('message');
 Route::get('/detail-pesan/{id}', [App\Http\Controllers\MessageAnggotaController::class, 'detail'])->middleware('auth', 'role:anggota', 'mobile')->name('detail_message');
 Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('profile');

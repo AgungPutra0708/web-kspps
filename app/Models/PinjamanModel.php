@@ -13,4 +13,9 @@ class PinjamanModel extends Model
     protected $table = "pinjamans";
 
     protected $guarded = [];
+
+    public function pembiayaan()
+    {
+        return $this->belongsTo(PembiayaanModel::class, 'id_pembiayaan', 'id');
+    }
 }

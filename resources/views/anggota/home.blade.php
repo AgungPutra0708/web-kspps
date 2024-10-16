@@ -22,7 +22,7 @@
 {{-- Content Saldo --}}
 <div class="d-flex justify-content-center mb-2">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
-        <div class="card bg-primary text-white shadow card-border-radius">
+        <div class="card bg-primary text-white card-border-radius">
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-lg-10 col-8">
@@ -55,35 +55,40 @@
                 </a>
             </div>
             <div class="col-4 mb-3">
-                <a href="#" class="btn btn-success d-flex flex-column align-items-center justify-content-center"
+                <a href="#"
+                    class="btn btn-success d-flex flex-column align-items-center justify-content-center btn-home"
                     style="width: 100%; height: 100%;">
                     <i class="fas fa-dollar-sign fa-2x mb-2"></i>
                     <span class="menu-text">Deposito</span>
                 </a>
             </div>
             <div class="col-4 mb-3">
-                <a href="#" class="btn btn-success d-flex flex-column align-items-center justify-content-center"
+                <a href="{{ route('detail_loan') }}"
+                    class="btn btn-success d-flex flex-column align-items-center justify-content-center btn-home"
                     style="width: 100%; height: 100%;">
                     <i class="fa fa-money-bill fa-2x mb-2"></i>
                     <span class="menu-text">Pembiayaan</span>
                 </a>
             </div>
             <div class="col-4 mb-3">
-                <a href="#" class="btn btn-success d-flex flex-column align-items-center justify-content-center"
+                <a href="#"
+                    class="btn btn-success d-flex flex-column align-items-center justify-content-center btn-home"
                     style="width: 100%; height: 100%;">
                     <i class="fas fa-handshake fa-2x mb-2"></i>
                     <span class="menu-text">SHU</span>
                 </a>
             </div>
             <div class="col-4 mb-3">
-                <a href="#" class="btn btn-success d-flex flex-column align-items-center justify-content-center"
+                <a href="#"
+                    class="btn btn-success d-flex flex-column align-items-center justify-content-center btn-home"
                     style="width: 100%; height: 100%;">
                     <i class="fas fa-store fa-2x mb-2"></i>
                     <span class="menu-text">Toko</span>
                 </a>
             </div>
             <div class="col-4 mb-3">
-                <a href="#" class="btn btn-success d-flex flex-column align-items-center justify-content-center"
+                <a href="#"
+                    class="btn btn-success d-flex flex-column align-items-center justify-content-center btn-home"
                     style="width: 100%; height: 100%;">
                     <i class="fas fa-mosque fa-2x mb-2"></i>
                     <span class="menu-text">Baitul Mal</span>

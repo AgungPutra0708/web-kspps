@@ -43,7 +43,7 @@
             @foreach ($dataSimpanan as $item)
                 @if ($item['utama'] == 'false')
                     <div class="col-6 mb-2 {{ $loop->iteration % 2 == 0 ? 'pl-1' : 'pr-1' }}">
-                        <div class="card bg-success text-white shadow" style="max-height: 120px; min-height: 120px">
+                        <div class="card bg-success text-white" style="max-height: 120px; min-height: 120px">
                             <div class="card-body pt-1">
                                 <div class="row">
                                     <div class="col-12 pt-0">
