@@ -6,7 +6,6 @@
                 <div class="card-body py-1">
                     <div class="row">
                         <div class="col-lg-12 col-12 align-content-center">
-                            <h5 class="m-0">Saldo</h5>
                             <h3 class="font-weight-bold m-0">Pembiayaan Anggota</h3>
                         </div>
                     </div>
@@ -21,25 +20,37 @@
         <div class="d-flex justify-content-center mb-2">
             <div class="col-12">
                 <a href="{{ route('transaksi_loan', ['id' => $item['id_pinjaman']]) }}" class="nav-link transaksi-loan">
-                    <div class="card bg-primary text-white" style="max-height: 120px">
+                    <div class="card card-orange-border-radius text-white" style="max-height: 120px">
                         <div class="card-body">
                             <div class="row mb-3">
-                                <div class="col-lg-12 col-12">
+                                <div class="col-lg-8 col-8">
                                     <h6 class="text-white">{{ $item['no_pinjaman'] }}</h6>
                                     <h5 class="text-white">{{ $item['nama_pembiayaan'] }}</h5>
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <h5 class="text-white">Rp
-                                                {{ number_format($item['besar_pinjaman'], 2, ',', '.') }}
-                                        </div>
-                                        <div class="col-4">
-                                            <h5 class="text-white">
-                                                {{ $item['lama_pinjaman'] . ' ' . $item['kondisi_pinjaman'] }}
-                                        </div>
-                                    </div>
+                                    <h5 class="text-white">Rp
+                                        {{ number_format($item['besar_pinjaman'], 2, ',', '.') }}
                                     </h5>
                                 </div>
+                                <div class="col-lg-4 col-4">
+                                    <img class="img-saldo img-fluid"
+                                        src="{{ asset('assets/img/card_pembiayaan.svg') }}" />
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-6">
+                            <span class="text-secondary">Margin</span>
+                            <br>
+                            <span class="text-secondary">
+                                Rp {{ number_format($item['besar_margin'], 2, ',', '.') }}
+                            </span>
+                        </div>
+                        <div class="col-6">
+                            <span class="text-secondary">Jangka Waktu</span>
+                            <br>
+                            <span class="text-secondary">
+                                {{ $item['lama_pinjaman'] . ' ' . $item['kondisi_pinjaman'] }}
+                            </span>
                         </div>
                     </div>
                 </a>

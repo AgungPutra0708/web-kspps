@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" style="width:100%;height:100%;transform:translate3d(0,0,0);content-visibility:visible" viewBox="0 0 500 500">
+<defs>
+<clipPath id="e">
+<path d="M0 0h500v500H0z"/>
+</clipPath>
+<clipPath id="h">
+<path d="M0 0h500v500H0z"/>
+</clipPath><clipPath id="f">
+<path d="M0 0h500v500H0z"/>
+</clipPath>
+<filter id="a" width="100%" height="100%" x="0%" y="0%" filterUnits="objectBoundingBox"><feComponentTransfer in="SourceGraphic"><feFuncA tableValues="1.0 0.0" type="table"/></feComponentTransfer></filter><filter id="c" width="100%" height="100%" x="0%" y="0%" filterUnits="objectBoundingBox"><feComponentTransfer in="SourceGraphic"><feFuncA tableValues="1.0 0.0" type="table"/></feComponentTransfer></filter><mask id="i" mask-type="alpha"><g filter="url(#a)"><path fill="#fff" d="M0 0h500v500H0z" opacity="0"/><use xmlns:ns1="http://www.w3.org/1999/xlink" ns1:href="#b"/></g></mask><mask id="g" mask-type="alpha"><g filter="url(#c)"><path fill="#fff" d="M0 0h500v500H0z" opacity="0"/><use xmlns:ns2="http://www.w3.org/1999/xlink" ns2:href="#d"/></g></mask><g id="b" class="primary design" style="display:none"><path class="primary"/></g><g id="d" class="primary design" style="display:none"><path class="primary"/></g></defs><g clip-path="url(#e)"><g clip-path="url(#f)" style="display:block"><g class="primary design" mask="url(#g)" style="display:none"><path fill="none" class="primary"/></g><g class="primary design" style="display:block"><path fill="#d69d14" d="m333.218 145.49 124.98-.122-.02-20.83c-.023-22.913-18.788-41.642-41.701-41.62l-333.28.328c-22.913.022-41.642 18.788-41.62 41.7l.246 249.96c.023 22.914 18.788 41.642 41.701 41.62l333.28-.327c22.913-.023 41.641-18.788 41.619-41.701l-.02-20.83-124.98.122c-57.491.057-104.196-46.556-104.253-104.047-.056-57.491 46.557-104.196 104.048-104.252" class="primary"/></g><g class="primary design" style="display:block">
+<path fill="#d69d14" d="M333.26 187.155c-34.369.033-62.461 28.181-62.428 62.55s28.182 62.463 62.552 62.43l124.98-.123-.123-124.98zm21.334 88.506c-14.372.014-26.257-11.639-26.27-26.012-.015-14.372 11.638-26.049 26.011-26.063h.208c14.373-.014 26.05 11.64 26.063 26.012.014 14.373-11.639 26.05-26.012 26.063" class="primary"/>
+</g>
+</g>
+<g clip-path="url(#h)" style="display:none">
+<g class="primary design" mask="url(#i)" style="display:none">
+<path fill="none" class="primary"/>
+</g>
+<g class="primary design" style="display:none">
+<path class="primary"/>
+</g>
+</g>
+</g>
+</svg>

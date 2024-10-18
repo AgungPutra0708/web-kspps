@@ -88,9 +88,10 @@ class SavingAnggotaController extends Controller
         // Map the data to display 'angsuran_ke' starting from 1 in descending order
         $transaksiSimpanan = $transaksiSimpananData->map(function ($item, $key) use ($totalAngsuran) {
             $currentAngsuran = $totalAngsuran - $key; // Reverse the angsuran_ke
+            $kondisiTransaksi = $item->metode_transaksi == "+" ? "Setoran" : "Penarikan";
             return [
                 'id' => Crypt::encrypt($item->id),
-                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>Angsuran ke - ' . $currentAngsuran,
+                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>' . $kondisiTransaksi,
                 'nominal' => $item->metode_transaksi . ' Rp ' . number_format($item->jumlah_setoran, 2, ',', '.'),
                 'metode_transaksi' => $item->metode_transaksi,
             ];

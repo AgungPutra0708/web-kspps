@@ -101,7 +101,7 @@ class MemberController extends Controller
         // Ambil nomor anggota terbesar dari tabel
         $latestPost = AnggotaModel::orderBy('no_anggota', 'desc')->lockForUpdate()->first();
         $nextNumber = $latestPost ? intval(substr($latestPost->no_anggota, 2)) + 1 : 1;
-        $formattedNumber = '101-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        $formattedNumber = '101-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
         // Ambil data rembug
         $rembugData = RembugModel::all();

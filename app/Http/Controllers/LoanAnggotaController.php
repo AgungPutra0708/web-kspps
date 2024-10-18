@@ -68,7 +68,7 @@ class LoanAnggotaController extends Controller
         $id = Crypt::decrypt($id);
 
         // Fetch the data and paginate it
-        $transaksiPinjamanData = TransaksiPinjamanModel::where('id_pinjaman', $id)->orderBy('angsuran_ke', 'desc')->paginate(5);
+        $transaksiPinjamanData = TransaksiPinjamanModel::where('id_pinjaman', $id)->orderBy('angsuran_ke', 'asc')->paginate(5);
 
         // Get the total count of installments
         $totalAngsuran = $transaksiPinjamanData->total();
