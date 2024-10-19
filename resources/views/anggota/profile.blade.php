@@ -6,7 +6,7 @@
             <div class="card shadow bg-light text-secondary mt-5">
                 <!-- Image positioned at the top center of the card -->
                 <div class="text-center img-profil">
-                    <img class="img-fluid rounded-circle" src="{{ asset('assets/img/undraw_profile_2.svg') }}"
+                    <img class="img-fluid rounded-circle" src="{{ asset('assets/img/account.svg') }}"
                         style="width: 80px; height: 80px;" />
                 </div>
                 <div class="card-body">
