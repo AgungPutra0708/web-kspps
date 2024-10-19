@@ -11,7 +11,9 @@
                         <div class="col-lg-12">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Login</h1>
+                                    <img src="{{ $dataProfile && $dataProfile->logo_koperasi ? asset('storage/' . $dataProfile->logo_koperasi) : '' }}"
+                                        alt="Preview Banner" class="text-center"
+                                        style="max-width: 300px; max-height: 300px; display: {{ $dataProfile && $dataProfile->logo_koperasi ? '' : 'none' }}">
                                 </div>
                                 <form action="{{ route('login.authenticate') }}" method="POST" class="user">
                                     @csrf

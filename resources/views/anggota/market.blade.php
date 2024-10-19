@@ -19,7 +19,8 @@
 
     <div class="d-flex justify-content-center mb-1 mt-2">
         <div class="col-12">
-            <embed src="https://setoko.co/tamwil" width="100%" height="500px">
+            <embed src="{{ $dataProfile && $dataProfile->link_market ? $dataProfile->link_market : '#' }}"
+                width="100%" height="500px">
         </div>
     </div>
 </div>

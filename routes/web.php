@@ -13,6 +13,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->middleware('role:petugas')->name('dashboard');
 
+Route::get('/profile-koperasi', [App\Http\Controllers\ProfileKoperasiController::class, 'index'])->middleware('role:petugas')->name('profile_koperasi');
+Route::post('/profile-koperasi/save', [App\Http\Controllers\ProfileKoperasiController::class, 'store'])->middleware('role:petugas')->name('profile_koperasi.store');
+
 Route::get('/kumpulan', [App\Http\Controllers\RembugController::class, 'index'])->middleware('role:petugas')->name('kumpulan');
 Route::post('/kumpulan/save', [App\Http\Controllers\RembugController::class, 'store'])->middleware('role:petugas')->name('kumpulan.store');
 Route::get('/kumpulan/next-number', [App\Http\Controllers\RembugController::class, 'getLatestRembugNumber'])->middleware('role:petugas')->name('get_number_kumpulan');

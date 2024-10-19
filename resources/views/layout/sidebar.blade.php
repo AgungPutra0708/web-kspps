@@ -37,6 +37,13 @@
                 <span>Petugas</span></a>
         </li>
 
+        <!-- Nav Item - Kumpulan Menu -->
+        <li class="nav-item {{ Route::is('profile_koperasi') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('profile_koperasi') }}">
+                <i class="fas fa-user-tie"></i>
+                <span>Profile Koperasi</span></a>
+        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider" />
 

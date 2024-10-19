@@ -38,7 +38,8 @@
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
         <!-- Section for Layanan Anggota -->
         <h5 class="font-weight-bold">Layanan Anggota</h5>
-        <a href="https://wa.me/+6281217283960" target="_blank" class="btn btn-success btn-lg btn-block mb-2">
+        <a href="{{ $dataProfile && $dataProfile->phone_koperasi ? 'https://wa.me/' . $dataProfile->phone_koperasi : '#' }}"
+            target="_blank" class="btn btn-success btn-lg btn-block mb-2">
             <span class="text">WHATSAPP BMT</span>
         </a>
         <a href="#" class="btn btn-danger btn-lg btn-block" data-toggle="modal" data-target="#logoutModal">

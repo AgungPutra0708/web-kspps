@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnggotaModel;
+use App\Models\ProfileKoperasiModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,9 @@ class HomeController extends Controller
                 ->value('saldo_akhir');
         }
 
+        $dataProfile = ProfileKoperasiModel::first();
+
         // Render the view with the anggota data
-        return view('anggota.home', compact('saldoSimpanan', 'gregorianDate', 'hijriDate'));
+        return view('anggota.home', compact('saldoSimpanan', 'gregorianDate', 'hijriDate', 'dataProfile'));
     }
 }

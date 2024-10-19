@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProfileKoperasiModel;
 use Illuminate\Http\Request;
 
 class EksternalAnggotaController extends Controller
@@ -11,7 +12,8 @@ class EksternalAnggotaController extends Controller
      */
     public function indexMarket()
     {
-        return view('anggota.market');
+        $dataProfile = ProfileKoperasiModel::first();
+        return view('anggota.market', compact('dataProfile'));
     }
 
     /**
@@ -19,7 +21,8 @@ class EksternalAnggotaController extends Controller
      */
     public function indexTamwil()
     {
-        return view('anggota.tamwil');
+        $dataProfile = ProfileKoperasiModel::first();
+        return view('anggota.tamwil', compact('dataProfile'));
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AnggotaModel;
 use App\Models\PetugasModel;
+use App\Models\ProfileKoperasiModel;
 use App\Models\UserMemberModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,9 @@ class LoginController extends Controller
 {
     public function index()
     {
+        $data = [
+            'dataProfile' => ProfileKoperasiModel::first(), // Get the first profile record
+        ];
         // Jika pengguna sudah login dan memiliki session
         if (Auth::check()) {
             $role = Session::get('role');
@@ -24,7 +28,7 @@ class LoginController extends Controller
                 return redirect()->route('home');
             }
         }
-        return view('login');
+        return view('login', $data);
     }
 
     public function authenticate(Request $request)

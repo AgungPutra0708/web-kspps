@@ -18,7 +18,8 @@
 
     <div class="d-flex justify-content-center mb-1 mt-2">
         <div class="col-12">
-            <embed src="https://s.id/bmtsarana" width="100%" height="500px">
+            <embed src="{{ $dataProfile && $dataProfile->link_baitul_mal ? $dataProfile->link_baitul_mal : '#' }}"
+                width="100%" height="500px">
         </div>
     </div>
 </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnggotaModel;
+use App\Models\ProfileKoperasiModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -14,7 +15,8 @@ class ProfileAnggotaController extends Controller
     public function index()
     {
         $dataAnggota = AnggotaModel::with('rembug')->find(Session::get('id_user'));
-        return view('anggota.profile', compact('dataAnggota'));
+        $dataProfile = ProfileKoperasiModel::first();
+        return view('anggota.profile', compact('dataAnggota', 'dataProfile'));
     }
 
     /**

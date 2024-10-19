@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProfileKoperasiModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -15,8 +16,9 @@ class ShuAnggotaController extends Controller
     {
         $no_user = Session::get('no_user');
         $no_user = str_replace('-', '', $no_user);
-        $spreadsheetId = '1-uXnDBTvCJsHfhY4qu6bgQK3wdjWG4kCuQNuC0AjNaQ'; // Replace with your Spreadsheet ID
-        $apiKey = 'AIzaSyAK2aDynWrjpA15dROqXccbTxaOUvrPFcw'; // Replace with your API Key
+        $dataProfile = ProfileKoperasiModel::first();
+        $spreadsheetId = $dataProfile && $dataProfile->id_spreadsheet_shu ? $dataProfile->id_spreadsheet_shu : ''; // Replace with your Spreadsheet ID
+        $apiKey = $dataProfile && $dataProfile->id_api_spreadsheet_shu ? $dataProfile->id_api_spreadsheet_shu : ''; // Replace with your API Key
 
         // Fetch data from Google Sheets API
         $response = Http::get("https://sheets.googleapis.com/v4/spreadsheets/{$spreadsheetId}/values/Sheet1?key={$apiKey}");
