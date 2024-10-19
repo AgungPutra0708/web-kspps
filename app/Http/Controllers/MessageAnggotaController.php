@@ -16,26 +16,38 @@ class MessageAnggotaController extends Controller
     {
         $id_user = Session::get('id_user');
 
-        $dataInformasi = InformasiModel::all()->filter(function ($informasi) use ($id_user) {
+        // Retrieve all information records except the soft-deleted ones
+        $dataInformasi = InformasiModel::whereNull('deleted_at')->get()->filter(function ($informasi) use ($id_user) {
+            // Filter messages that are relevant to the current user
             if ($informasi->kondisi_informasi === 'pesan' && $informasi->id_anggota != $id_user) {
                 return false;
             }
             return true;
-        })->map(function ($informasi) use ($id_user) {
+        })->all(); // Get all filtered results
 
-            if ($informasi->kondisi_informasi === 'info') {
-                $informasi->class = 'bg-primary text-white';
-            } elseif ($informasi->kondisi_informasi === 'pesan' && $informasi->id_anggota == $id_user) {
-                $informasi->class = 'bg-light text-secondary';
-            } else {
-                $informasi->class = 'bg-light text-secondary';
-            }
-            $informasi->keterangan = Str::words($informasi->keterangan, 20, ' ...');
-            return $informasi;
-        });
+        // Separate the records based on kondisi_informasi and apply transformations
+        $infoData = collect($dataInformasi)
+            ->where('kondisi_informasi', 'info')
+            ->sortByDesc('created_at') // Sort by created_at in descending order
+            ->take(2) // Take the top 2 after sorting
+            ->map(function ($informasi) {
+                $informasi->class = 'card-primary-border-radius text-white'; // Set class for info
+                $informasi->keterangan = Str::words($informasi->keterangan, 5, ' ...');
+                return $informasi;
+            });
+
+        $pesanData = collect($dataInformasi)
+            ->where('kondisi_informasi', 'pesan')
+            ->sortByDesc('created_at') // Sort by created_at in descending order
+            ->take(2) // Take the top 2 after sorting
+            ->map(function ($informasi) use ($id_user) {
+                $informasi->class = 'bg-light text-secondary'; // Set class for pesan
+                $informasi->keterangan = Str::words($informasi->keterangan, 5, ' ...');
+                return $informasi;
+            });
 
         // Pass the processed data to the view
-        return view('anggota.message', compact('dataInformasi'));
+        return view('anggota.message', compact('infoData', 'pesanData'));
     }
 
     public function detail($id)

@@ -50,7 +50,7 @@ class MessageController extends Controller
         // Menyimpan file foto KTP jika ada
         if ($request->hasFile('banner')) {
             // Simpan di folder 'private/banner' di dalam storage/app/private
-            $memberCardPath = $request->file('banner')->store('private/banner');
+            $memberCardPath = $request->file('banner')->store('banner', 'public');
         } else {
             $memberCardPath = null; // Jika tidak ada foto KTP
         }
@@ -76,18 +76,18 @@ class MessageController extends Controller
         $request->validate([
             'judul_informasi' => 'required',
             'id_member_name' => 'required',
-            'banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'edit_banner' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $informasi = InformasiModel::findOrFail($id);
 
         // Update banner if a new one is uploaded
-        if ($request->hasFile('banner')) {
+        if ($request->hasFile('edit_banner')) {
             // Optional: delete old banner file if it exists
             if ($informasi->banner) {
                 Storage::delete($informasi->banner);
             }
-            $informasi->banner = $request->file('banner')->store('banner', 'public');
+            $informasi->banner = $request->file('edit_banner')->store('banner', 'public');
         }
 
         $informasi->judul = $request->judul_informasi;

@@ -21,26 +21,35 @@
             <div class="card" style="max-height: 80vh">
                 <div class="card-body">
                     @if (!empty($filteredData))
-                        <table class="table table-bordered table-striped">
-                            <thead class="table-primary">
-                                <tr>
-                                    <th>SHU (MODAL + JASA)</th>
-                                    <th>BAITUL MAAL</th>
-                                    <th>TOTAL BAGI HASIL</th>
-                                </tr>
-                            </thead>
+                        <table class="table table-bordered table-striped table-responsive">
                             <tbody>
-                                @foreach ($filteredData as $index => $row)
+                                @foreach ($filteredData as $row)
                                     <tr>
+                                        <td><strong>No User:</strong></td> <!-- No User -->
+                                        <td>{{ $row[0] }}</td> <!-- No User -->
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Nama:</strong></td> <!-- Nama -->
+                                        <td>{{ $row[1] }}</td> <!-- Nama -->
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SHU (MODAL + JASA):</strong></td> <!-- SHU -->
                                         <td>{{ $row[2] }}</td> <!-- SHU -->
+                                    </tr>
+                                    <tr>
+                                        <td><strong>BAITUL MAAL:</strong></td> <!-- Baitul Maal -->
                                         <td>{{ $row[3] }}</td> <!-- Baitul Maal -->
-                                        <td>{{ $row[4] }}</td> <!-- Total Bagi Hasil -->
+                                    </tr>
+                                    <tr>
+                                        <td><strong>TOTAL BAGI HASIL:</strong></td>
+                                        <td>{{ $row[4] }}</td>
+                                        <!-- Total Bagi Hasil -->
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     @else
-                        <p>Data tidak ditemukan.</p>
+                        <p>Data tidak ditemukan untuk pengguna ini.</p>
                     @endif
                 </div>
             </div>

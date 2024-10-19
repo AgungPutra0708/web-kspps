@@ -10,7 +10,7 @@ body {
     justify-content: center;
     /* align-items: center; */
     /* min-height: 100vh; */
-    /* background: #ffffff; */
+    /* background: rgb(242, 242, 242); */
 }
 
 /* Loader */
@@ -203,6 +203,14 @@ body {
     max-height: 40px;
 }
 
+.img-profil {
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
 .btn-home {
     width: 100%;
     height: 100%;
@@ -216,7 +224,7 @@ body {
 }
 
 .message-anggota {
-    max-height: 200px;
+    max-height: 120px;
 }
 
 /* Custom CSS for dynamic text size */

@@ -74,7 +74,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="edit_banner">Banner (Optional)</label>
-                                <input type="file" class="form-control" id="edit_banner" name="banner">
+                                <input type="file" class="form-control" id="edit_banner" name="edit_banner">
                             </div>
                             <input type="hidden" id="edit_id" name="id">
                         </div>

@@ -55,11 +55,13 @@ class LoginController extends Controller
                     Session::put('role_user', $user->status);
                     return redirect()->route('dashboard');
                 } elseif ($user->status == 'anggota') {
-                    $anggotaData = AnggotaModel::find($user->id_user);
+                    $anggotaData = AnggotaModel::with('rembug')->find($user->id_user);
                     Session::put('id_user', $user->id_user);
                     Session::put('no_user', $anggotaData->no_anggota);
                     Session::put('nama_user', $anggotaData->nama_anggota);
                     Session::put('role_user', $user->status);
+                    Session::put('id_rembug', $anggotaData->id_rembug);
+                    Session::put('nama_rembug', $anggotaData->rembug->nama_rembug);
                     return redirect()->route('home');
                 }
             }

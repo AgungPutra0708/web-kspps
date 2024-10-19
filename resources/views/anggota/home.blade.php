@@ -3,7 +3,7 @@
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
         <div class="row">
             <div class="col-lg-4 col-4 text-right pr-0">
-                <img class="img-profile img-fluid" src="{{ asset('assets/img/logo-koperasi.png') }}" />
+                <img class="img-profile img-fluid" loading="lazy" src="{{ asset('assets/img/logo-koperasi.png') }}" />
             </div>
             <div class="col-lg-8 col-8 align-content-center">
                 <span class="fs-1">Assalamualaikum,</span>
