@@ -41,7 +41,7 @@
                                             <label for="is_main">Simpanan Utama?</label>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" id="is_main"
-                                                    name="is_main" value="false">
+                                                    name="is_main" value="true" onchange="setCheckboxValue(this)">
                                                 <label class="custom-control-label" for="is_main"></label>
                                             </div>
                                         </div>
@@ -171,5 +171,9 @@
                 $('#deleteSavingForm').attr('action', deleteUrl);
             });
         });
+
+        function setCheckboxValue(checkbox) {
+            checkbox.value = checkbox.checked ? 'true' : 'false';
+        }
     </script>
 @endsection
