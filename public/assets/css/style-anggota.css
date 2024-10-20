@@ -34,11 +34,6 @@ body {
     display: none !important; /* Memastikan loader disembunyikan */
 }
 
-.card {
-    overflow: hidden; /* Pastikan konten tidak keluar dari card */
-    border-radius: 1rem; /* Konsistensi dengan border radius lainnya */
-}
-
 .card-border-radius {
     border-radius: 1rem;
     background: linear-gradient(130deg, #08786b 60%, #29a192 100%) !important;

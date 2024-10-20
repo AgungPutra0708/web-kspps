@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [App\Http\Controllers\LoginController::class, 'index'])->name('login');
 Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->middleware('role:petugas')->name('dashboard');
 
