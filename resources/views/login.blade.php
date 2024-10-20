@@ -12,7 +12,7 @@
                             <div class="p-5">
                                 <div class="text-center">
                                     <img src="{{ $dataProfile && $dataProfile->logo_koperasi ? asset('storage/' . $dataProfile->logo_koperasi) : '' }}"
-                                        alt="Preview Banner" class="text-center"
+                                        alt="Preview Banner" class="text-center mb-1"
                                         style="max-width: 200px; max-height: 200px; display: {{ $dataProfile && $dataProfile->logo_koperasi ? '' : 'none' }}">
                                 </div>
                                 <form action="{{ route('login.authenticate') }}" method="POST" class="user">
