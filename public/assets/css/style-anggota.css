@@ -34,6 +34,11 @@ body {
     display: none !important; /* Memastikan loader disembunyikan */
 }
 
+.card {
+    overflow: hidden; /* Pastikan konten tidak keluar dari card */
+    border-radius: 1rem; /* Konsistensi dengan border radius lainnya */
+}
+
 .card-border-radius {
     border-radius: 1rem;
     background: linear-gradient(130deg, #08786b 60%, #29a192 100%) !important;
@@ -196,11 +201,17 @@ body {
 
 .img-saldo {
     width: 100%;
+    max-width: 50px;
 }
 
 .img-button {
     width: 70%;
     max-height: 40px;
+}
+
+.img-profile {
+    max-width: 100px;
+    width: 100%;
 }
 
 .img-profil {
@@ -218,9 +229,14 @@ body {
 }
 
 /* Add custom style to make the dataSimpanan scrollable */
+.table-responsive {
+    max-height: 70vh; /* Membatasi tinggi tabel */
+    overflow-y: auto; /* Membolehkan scrolling vertikal */
+    overflow-x: auto; /* Membolehkan scrolling horizontal jika diperlukan */
+}
+
 .scrollable-content {
-    max-height: 100vh; /* Set a maximum height */
-    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px; /* Tambahkan padding untuk estetika */
 }
 
 .message-anggota {
@@ -237,6 +253,9 @@ body {
 @media (min-width: 577px) and (max-width: 768px) {
     .menu-text {
         font-size: 14px;
+    }
+    .card {
+        margin: 5px; /* Beri jarak di mobile */
     }
 }
 

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [App\Http\Controllers\LoginController::class, 'index'])->name('login');
 Route::post('/login/authenticate', [LoginController::class, 'authenticate'])->name('login.authenticate');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->middleware('role:petugas')->name('dashboard');
 
@@ -103,15 +103,15 @@ Route::put('/pembiayaan/update/{id}', [InputLoanController::class, 'updatePembia
 Route::delete('/pembiayaan/delete/{encryptedId}', [InputLoanController::class, 'destroyPinjaman'])->name('delete_pembiayaan');
 
 // Anggota
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('home');
-Route::get('/home-anggota', [App\Http\Controllers\HomeController::class, 'indexHome'])->middleware('auth', 'role:anggota', 'mobile')->name('home.anggota');
-Route::get('/detail-simpanan', [App\Http\Controllers\SavingAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('detail_saving');
-Route::get('/transaksi-simpanan/{id}', [App\Http\Controllers\SavingAnggotaController::class, 'edit'])->middleware('auth', 'role:anggota', 'mobile')->name('transaksi_saving');
-Route::get('/detail-pembiayaan', [App\Http\Controllers\LoanAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('detail_loan');
-Route::get('/transaksi-pembiayaan/{id}', [App\Http\Controllers\LoanAnggotaController::class, 'edit'])->middleware('auth', 'role:anggota', 'mobile')->name('transaksi_loan');
-Route::get('/shu', [App\Http\Controllers\ShuAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('shu');
-Route::get('/market', [App\Http\Controllers\EksternalAnggotaController::class, 'indexMarket'])->middleware('auth', 'role:anggota', 'mobile')->name('market');
-Route::get('/baitul-mal', [App\Http\Controllers\EksternalAnggotaController::class, 'indexTamwil'])->middleware('auth', 'role:anggota', 'mobile')->name('tamwil');
-Route::get('/pesan', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('message');
-Route::get('/detail-pesan/{id}', [App\Http\Controllers\MessageAnggotaController::class, 'detail'])->middleware('auth', 'role:anggota', 'mobile')->name('detail_message');
-Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('auth', 'role:anggota', 'mobile')->name('profile');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('home');
+Route::get('/home-anggota', [App\Http\Controllers\HomeController::class, 'indexHome'])->middleware('checkSession', 'role:anggota', 'mobile')->name('home.anggota');
+Route::get('/detail-simpanan', [App\Http\Controllers\SavingAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('detail_saving');
+Route::get('/transaksi-simpanan/{id}', [App\Http\Controllers\SavingAnggotaController::class, 'edit'])->middleware('checkSession', 'role:anggota', 'mobile')->name('transaksi_saving');
+Route::get('/detail-pembiayaan', [App\Http\Controllers\LoanAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('detail_loan');
+Route::get('/transaksi-pembiayaan/{id}', [App\Http\Controllers\LoanAnggotaController::class, 'edit'])->middleware('checkSession', 'role:anggota', 'mobile')->name('transaksi_loan');
+Route::get('/shu', [App\Http\Controllers\ShuAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('shu');
+Route::get('/market', [App\Http\Controllers\EksternalAnggotaController::class, 'indexMarket'])->middleware('checkSession', 'role:anggota', 'mobile')->name('market');
+Route::get('/baitul-mal', [App\Http\Controllers\EksternalAnggotaController::class, 'indexTamwil'])->middleware('checkSession', 'role:anggota', 'mobile')->name('tamwil');
+Route::get('/pesan', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('message');
+Route::get('/detail-pesan/{id}', [App\Http\Controllers\MessageAnggotaController::class, 'detail'])->middleware('checkSession', 'role:anggota', 'mobile')->name('detail_message');
+Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('profile');

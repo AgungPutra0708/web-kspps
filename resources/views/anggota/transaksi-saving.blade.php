@@ -43,12 +43,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        {{ $transaksiSimpananData->links() }}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 {{-- Content Saldo End --}}
+
+<script>
+    $(document).ready(function() {
+        // Inisialisasi DataTables
+        $('#transaksiSimpananTable').DataTable({
+            "paging": true, // Mengaktifkan paging
+            "pageLength": 5, // Menampilkan 5 data per halaman
+            "searching": false, // Menonaktifkan pencarian
+            "lengthChange": false, // Menonaktifkan pemilihan panjang halaman
+            "ordering": true, // Mengaktifkan pengurutan
+            "language": {
+                "emptyTable": "Tidak ada data yang tersedia",
+                "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",
+                "infoEmpty": "Menampilkan 0 hingga 0 dari 0 entri",
+                "infoFiltered": "(disaring dari _MAX_ total entri)",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Berikutnya",
+                    "previous": "Sebelumnya"
+                }
+            }
+        });
+    });
+</script>

@@ -16,30 +16,28 @@
     </div>
     {{-- Content Header End --}}
 
-    {{-- Content Saldo --}}
-    @foreach ($dataSimpanan as $item)
-        @if ($item['utama'] == 'true')
-            <div class="d-flex justify-content-center mb-2">
-                <div class="col-12">
-                    <a href="{{ route('transaksi_saving', ['id' => $item['id_simpanan']]) }}"
-                        class="nav-link transaksi-saving p-0">
-                        <div class="card card-primary-border-radius text-white shadow" style="max-height: 120px">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-lg-12 col-12">
-                                        <h6 class="text-white">{{ $item['no_rekening_simpanan'] }}</h6>
-                                        <h5 class="text-white font-weight-bold">{{ $item['nama_simpanan'] }}</h5>
-                                        <h5 class="text-white">Rp {{ number_format($item['saldo_akhir'], 2, ',', '.') }}
-                                        </h5>
-                                    </div>
+    {{-- Content Saldo Utama --}}
+    @if ($totalSaldoUtama > 0)
+        <div class="d-flex justify-content-center mb-2">
+            <div class="col-12">
+                <a href="{{ route('transaksi_saving', ['id' => Crypt::encrypt($idSimpananUtama)]) }}"
+                    class="nav-link transaksi-saving p-0">
+                    <div class="card card-primary-border-radius text-white shadow" style="max-height: 120px">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-lg-12 col-12">
+                                    <h6 class="text-white">Modal Pokok Wajib</h6>
+                                    <h5 class="text-white">Rp {{ number_format($totalSaldoUtama, 2, ',', '.') }}</h5>
                                 </div>
                             </div>
                         </div>
-                    </a>
-                </div>
+                    </div>
+                </a>
             </div>
-        @endif
-    @endforeach
+        </div>
+    @endif
+    {{-- Content Saldo Utama End --}}
+
 
     {{-- Content Header --}}
     <div class="d-flex justify-content-center mb-1 mt-2">

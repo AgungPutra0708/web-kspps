@@ -86,6 +86,16 @@
         }
 
         $(document).ready(function() {
+            // Fungsi untuk menampilkan spinner
+            function setLoading() {
+                $('#loader').removeClass('hide-loader'); // Show the loader
+            }
+
+            // Fungsi untuk menyembunyikan spinner
+            function stopLoading() {
+                $('#loader').addClass('hide-loader'); // Hide the loader
+            }
+
             @if (session('success'))
                 Swal.fire({
                     icon: 'success',
@@ -102,6 +112,7 @@
                     confirmButtonText: 'OK'
                 });
             @endif
+
             // Sembunyikan loader pada awal load
             stopLoading();
 
@@ -123,6 +134,16 @@
                 // Load the content via AJAX
                 loadContent(url);
             });
+
+            // Event delegation for pagination links
+            $(document).on('click', '.pagination a', function(event) {
+                event.preventDefault(); // Mencegah navigasi default
+                var url = $(this).attr('href'); // Ambil URL dari link pagination
+                console.log(url);
+
+
+                // loadContent(url); // Panggil fungsi untuk memuat konten baru
+            });
         });
 
         // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
@@ -135,17 +156,31 @@
 
         // Function to load content with AJAX
         function loadContent(url) {
-            setLoading(); // Show the loader before content is loaded
+            setLoading(); // Tampilkan loader sebelum konten dimuat
             $.ajax({
                 url: url,
                 type: 'GET',
                 success: function(data) {
                     $('#main-content').html(data);
-                    stopLoading(); // Hide the loader after content is loaded
+                    stopLoading(); // Sembunyikan loader setelah konten dimuat
                 },
-                error: function() {
-                    alert('Error loading content');
-                    stopLoading(); // Hide the loader in case of an error
+                error: function(xhr) {
+                    stopLoading(); // Sembunyikan loader jika terjadi error
+
+                    if (xhr.status === 401) {
+                        // Jika session expired (status 401), arahkan pengguna ke halaman login
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Sesi Habis!',
+                            text: 'Sesi Anda telah habis. Silakan login kembali.',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = '/login'; // Arahkan ke halaman login
+                        });
+                    } else {
+                        // Tampilkan pesan error umum jika bukan masalah sesi
+                        alert('Error loading content');
+                    }
                 }
             });
         }

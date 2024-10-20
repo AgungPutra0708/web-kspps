@@ -23,5 +23,6 @@ class AppServiceProvider extends ServiceProvider
         // Daftarkan middleware route untuk role
         $this->app['router']->aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
         $this->app['router']->aliasMiddleware('mobile', \App\Http\Middleware\MobileMiddleware::class);
+        $this->app['router']->aliasMiddleware('checkSession', \App\Http\Middleware\CheckSessionExpired::class);
     }
 }

@@ -21,15 +21,19 @@
         <div class="card text-white card-border-radius">
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col-lg-8 col-8">
+                    <div class="col-lg-12 col-12">
                         <h6 class="text-white">Saldo Simpanan</h6>
                         <h4 class="text-white font-weight-bold mb-2">Rp <span
                                 id="saldo-simpanan">{{ number_format($saldoSimpanan, 2, ',', '.') }}</span>
                         </h4>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-lg-8 col-8 align-content-center">
                         <h5 class="text-white font-weight-bold mb-0">{{ Session::get('no_user') }}</h5>
                     </div>
-                    <div class="col-lg-4 col-4 align-content-center">
-                        <img class="img-saldo img-fluid" src="{{ asset('assets/img/wallet.svg') }}" />
+                    <div class="col-lg-4 col-4">
+                        <img class="img-saldo" src="{{ asset('assets/img/wallet.svg') }}" />
                     </div>
                 </div>
             </div>

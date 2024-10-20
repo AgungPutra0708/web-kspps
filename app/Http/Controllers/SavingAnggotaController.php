@@ -23,14 +23,26 @@ class SavingAnggotaController extends Controller
         // Ambil semua data simpanan
         $simpananData = SimpananModel::all();
 
+        // Variabel untuk total saldo simpanan utama
+        $totalSaldoUtama = 0;
+        $idSimpananUtama = null; // Variabel untuk menyimpan ID simpanan utama
+
         // Filter simpanan dan hitung saldo akhir berdasarkan id_anggota
-        $dataSimpanan = $simpananData->map(function ($item) use ($id_anggota) {
+        $dataSimpanan = $simpananData->map(function ($item) use ($id_anggota, &$totalSaldoUtama, &$idSimpananUtama) {
             // Hitung saldo_akhir berdasarkan transaksi_simpanans untuk id_anggota dan id_simpanan
             $saldoAkhir = $item->transaksiSimpanans($id_anggota)
                 ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
                 ->value('saldo_akhir');
 
-            $dataRekeningSimpanan = RekeningSimpananModel::where('id_anggota', $id_anggota)->where('id_simpanan', $item->id)->first();
+            $dataRekeningSimpanan = RekeningSimpananModel::where('id_anggota', $id_anggota)
+                ->where('id_simpanan', $item->id)
+                ->first();
+
+            // Jika simpanan utama, tambahkan ke total saldo utama dan simpan ID-nya
+            if ($item->utama == 'true') {
+                $totalSaldoUtama += $saldoAkhir;
+                $idSimpananUtama = $item->id; // Simpan ID simpanan utama
+            }
 
             return [
                 'id_simpanan' => Crypt::encrypt($item->id),  // ID Simpanan
@@ -44,31 +56,8 @@ class SavingAnggotaController extends Controller
                 'utama' => $item->utama,
             ];
         });
-        return view('anggota.detail-saving', compact('dataSimpanan'));
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        return view('anggota.detail-saving', compact('dataSimpanan', 'totalSaldoUtama', 'idSimpananUtama'));
     }
 
     /**
@@ -79,40 +68,35 @@ class SavingAnggotaController extends Controller
         $id_simpanan = Crypt::decrypt($id);
         $id_anggota = Session::get('id_user');
 
-        // Fetch the data and paginate it
-        $transaksiSimpananData = TransaksiSimpananModel::where('id_simpanan', $id_simpanan)->where('id_anggota', $id_anggota)->orderBy('tanggal_transaksi', 'desc')->paginate(5);
+        // Ambil data simpanan yang akan diedit
+        $simpananData = SimpananModel::find($id_simpanan);
 
-        // Get the total count of installments
-        $totalAngsuran = $transaksiSimpananData->total();
+        // Fetch transaksi untuk simpanan yang di-edit
+        if ($simpananData && $simpananData->utama == 'true') {
+            // Ambil semua simpanan yang utama
+            $simpananUtama = SimpananModel::where('utama', 'true')->pluck('id')->toArray();
+            $transaksiSimpananData = TransaksiSimpananModel::whereIn('id_simpanan', $simpananUtama)
+                ->where('id_anggota', $id_anggota)
+                ->orderBy('tanggal_transaksi', 'desc')
+                ->get();
+        } else {
+            $transaksiSimpananData = TransaksiSimpananModel::where('id_simpanan', $id_simpanan)
+                ->where('id_anggota', $id_anggota)
+                ->orderBy('tanggal_transaksi', 'desc')
+                ->get();
+        }
 
-        // Map the data to display 'angsuran_ke' starting from 1 in descending order
-        $transaksiSimpanan = $transaksiSimpananData->map(function ($item, $key) use ($totalAngsuran) {
-            $currentAngsuran = $totalAngsuran - $key; // Reverse the angsuran_ke
+        // Map the data to display
+        $transaksiSimpanan = $transaksiSimpananData->map(function ($item) {
             $kondisiTransaksi = $item->metode_transaksi == "+" ? "Setoran" : "Penarikan";
             return [
                 'id' => Crypt::encrypt($item->id),
-                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>' . $kondisiTransaksi,
+                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>' . $kondisiTransaksi . '<br>' . $item->keterangan,
                 'nominal' => $item->metode_transaksi . ' Rp ' . number_format($item->jumlah_setoran, 2, ',', '.'),
                 'metode_transaksi' => $item->metode_transaksi,
             ];
         });
 
-        return view('anggota.transaksi-saving', compact('transaksiSimpanan', 'transaksiSimpananData'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('anggota.transaksi-saving', compact('transaksiSimpanan'));
     }
 }
