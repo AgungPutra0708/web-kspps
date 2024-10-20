@@ -207,6 +207,9 @@ class InputLoanController extends Controller
                 continue; // Skip this iteration if any of the conditions are met
             }
 
+            // Ambil tanggal transaksi dari pembiayaan, jika tidak ada default ke tanggal saat ini
+            $tanggalTransaksi = $pembiayaan['tanggal_transaksi'] ?? Carbon::now()->format('Y-m-d');
+
             // Create new TransaksiPinjamanModel entry
             TransaksiPinjamanModel::create([
                 'id_anggota' => $pembiayaan['id_anggota'],
@@ -215,7 +218,7 @@ class InputLoanController extends Controller
                 'angsur_pinjaman' => $pembiayaan['angsur_pinjaman'],
                 'angsur_margin' => $pembiayaan['angsur_margin'],
                 'angsuran_ke' => $pembiayaan['angsuran_ke'],
-                'tanggal_transaksi' => Carbon::now()->format('Y-m-d H:i:s'),
+                'tanggal_transaksi' => $tanggalTransaksi, // Gunakan tanggal transaksi dari input
             ]);
 
             // Update the related PinjamanModel entry

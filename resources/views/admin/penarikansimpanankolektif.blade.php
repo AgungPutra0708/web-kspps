@@ -19,7 +19,7 @@
                             <!-- Card Body Anggota -->
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
+                                    <div class="col-lg-4 col-sm-12">
                                         <div class="form-group">
                                             <label for="saving_product">Pilih Produk Simpanan</label>
                                             <select class="form-control select2 saving_product" style="width: 100%;"
@@ -34,7 +34,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 col-sm-12">
+                                    <div class="col-lg-4 col-sm-12">
                                         <div class="form-group">
                                             <label for="member_group">Pilih Rembug/Area/Kelompok*</label>
                                             <select class="form-control select2 member_group" style="width: 100%;"
@@ -47,6 +47,13 @@
                                                         {{ $data->nama_rembug }}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="member_group">Tanggal Transaksi*</label>
+                                            <input type="date" class="form-control" name="tanggal_transaksi"
+                                                id="tanggal_transaksi">
                                         </div>
                                     </div>
                                 </div>
@@ -161,7 +168,21 @@
 
             // Saat form disubmit, kumpulkan data dari tabel dan masukkan ke dalam simpananArray
             $('#simpananKolektifForm').on('submit', function(event) {
-                simpananArray = []; // Reset array sebelum mengumpulkan data
+                event.preventDefault(); // Mencegah submit form secara default
+
+                let simpananArray = []; // Reset array sebelum mengumpulkan data
+                let tanggalTransaksi = $('#tanggal_transaksi').val(); // Ambil nilai tanggal transaksi
+
+                // Validasi jika tanggal transaksi kosong
+                if (!tanggalTransaksi) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tanggal Transaksi Kosong',
+                        text: 'Silakan isi tanggal transaksi terlebih dahulu.',
+                        confirmButtonText: 'OK'
+                    });
+                    return; // Stop proses submit jika validasi gagal
+                }
 
                 $('#dataTable tbody tr').each(function(index, row) {
                     let nominalSetoran = $(row).find('.nominal-setoran').val();
@@ -175,14 +196,28 @@
                         id_simpanan: simpananId,
                         metode_transaksi: '-',
                         jumlah_setoran: nominalSetoran,
-                        keterangan: keterangan
+                        keterangan: keterangan,
+                        tanggal_transaksi: tanggalTransaksi,
                     });
                 });
 
+                // Validasi jika array Simpanan kosong
+                if (simpananArray.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Data Simpanan Kosong',
+                        text: 'Tidak ada data simpanan yang dimasukkan. Silakan masukkan setidaknya satu data simpanan.',
+                        confirmButtonText: 'OK'
+                    });
+                    return; // Stop proses submit jika tidak ada data pembiayaan
+                }
+
                 // Serialize array menjadi JSON string dan masukkan ke input hidden
                 $('#simpanan_array').val(JSON.stringify(simpananArray));
-            });
 
+                // Submit form setelah konfirmasi
+                $(this).unbind('submit').submit();
+            });
             // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
             function formatRupiah(number) {
                 return number.toLocaleString('id-ID', {

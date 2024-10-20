@@ -167,6 +167,9 @@ class InputSavingController extends Controller
 
             // Create Transaksi Simpanan
             if (!empty($simpanan['jumlah_setoran']) && is_numeric($simpanan['jumlah_setoran'])) {
+
+                $tanggalTransaksi = $simpanan['tanggal_transaksi'] ?? Carbon::now()->format('Y-m-d');
+
                 TransaksiSimpananModel::create([
                     'id_rekening_simpanan' => $rekeningSimpanan->id,
                     'id_anggota' => $simpanan['id_anggota'],
@@ -174,7 +177,7 @@ class InputSavingController extends Controller
                     'metode_transaksi' => $simpanan['metode_transaksi'],
                     'jumlah_setoran' => $simpanan['jumlah_setoran'],
                     'keterangan' => $simpanan['keterangan'],
-                    'tanggal_transaksi' => Carbon::now()->format('Y-m-d H:i:s'),
+                    'tanggal_transaksi' => $tanggalTransaksi, // Gunakan tanggal transaksi dari input
                 ]);
             }
         }

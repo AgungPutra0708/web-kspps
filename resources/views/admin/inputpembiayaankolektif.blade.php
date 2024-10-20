@@ -17,7 +17,7 @@
                             <!-- Card Body Anggota -->
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
+                                    <div class="col-lg-4 col-sm-12">
                                         <div class="form-group">
                                             <label for="loan_product">Pilih Produk Pembiayaan</label>
                                             <select class="form-control select2 loan_product" style="width: 100%;"
@@ -32,7 +32,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 col-sm-12">
+                                    <div class="col-lg-4 col-sm-12">
                                         <div class="form-group">
                                             <label for="member_group">Pilih Rembug/Area/Kelompok*</label>
                                             <select class="form-control select2 member_group" style="width: 100%;"
@@ -45,6 +45,13 @@
                                                         {{ $data->nama_rembug }}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="member_group">Tanggal Transaksi*</label>
+                                            <input type="date" class="form-control" name="tanggal_transaksi"
+                                                id="tanggal_transaksi">
                                         </div>
                                     </div>
                                 </div>
@@ -187,8 +194,23 @@
 
             // Saat form disubmit, kumpulkan data dari tabel dan masukkan ke dalam pembiayaanArray
             $('#pembiayaanKolektifForm').on('submit', function(event) {
-                pembiayaanArray = []; // Reset array sebelum mengumpulkan data
+                event.preventDefault(); // Mencegah submit form secara default
 
+                let pembiayaanArray = []; // Reset array sebelum mengumpulkan data
+                let tanggalTransaksi = $('#tanggal_transaksi').val(); // Ambil nilai tanggal transaksi
+
+                // Validasi jika tanggal transaksi kosong
+                if (!tanggalTransaksi) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tanggal Transaksi Kosong',
+                        text: 'Silakan isi tanggal transaksi terlebih dahulu.',
+                        confirmButtonText: 'OK'
+                    });
+                    return; // Stop proses submit jika validasi gagal
+                }
+
+                // Loop untuk mengumpulkan data dari tabel
                 $('#dataTable tbody tr').each(function(index, row) {
                     let pinjamanId = $(row).find('.nominal-setoran-pokok').data('pinjaman_id');
                     let pembiayaanId = $(row).find('.nominal-setoran-pokok').data('pembiayaan_id');
@@ -199,19 +221,36 @@
                     let nominalSetoranPokok = $(row).find('.nominal-setoran-pokok').val();
                     let nominalSetoranMargin = $(row).find('.nominal-setoran-margin').val();
 
-                    // Tambahkan data ke pembiayaanArray
-                    pembiayaanArray.push({
-                        id_anggota: anggotaId,
-                        id_pembiayaan: pembiayaanId,
-                        id_pinjaman: pinjamanId,
-                        angsur_pinjaman: nominalSetoranPokok,
-                        angsur_margin: nominalSetoranMargin,
-                        angsuran_ke: sisaPinjaman
-                    });
+                    // Hanya tambahkan ke array jika data valid (misalnya angsurPinjaman dan Margin tidak kosong)
+                    if (pinjamanId && nominalSetoranPokok && nominalSetoranMargin) {
+                        pembiayaanArray.push({
+                            id_anggota: anggotaId,
+                            id_pembiayaan: pembiayaanId,
+                            id_pinjaman: pinjamanId,
+                            angsur_pinjaman: nominalSetoranPokok,
+                            angsur_margin: nominalSetoranMargin,
+                            angsuran_ke: sisaPinjaman,
+                            tanggal_transaksi: tanggalTransaksi,
+                        });
+                    }
                 });
 
-                // Serialize array menjadi JSON string dan masukkan ke input hidden
+                // Validasi jika array pembiayaan kosong
+                if (pembiayaanArray.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Data Pembiayaan Kosong',
+                        text: 'Tidak ada data pembiayaan yang dimasukkan. Silakan masukkan setidaknya satu data pembiayaan.',
+                        confirmButtonText: 'OK'
+                    });
+                    return; // Stop proses submit jika tidak ada data pembiayaan
+                }
+
+                // Jika validasi lolos, serialize array menjadi JSON string dan masukkan ke input hidden
                 $('#pembiayaan_array').val(JSON.stringify(pembiayaanArray));
+
+                // Submit form setelah konfirmasi
+                $(this).unbind('submit').submit();
             });
         });
     </script>
