@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfileKoperasiModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str; // Pastikan ini ditambahkan
 
 class ProfileKoperasiController extends Controller
 {
@@ -42,14 +43,22 @@ class ProfileKoperasiController extends Controller
         $profile = ProfileKoperasiModel::first();
 
         // Menyimpan file Logo Koperasi jika ada
-        $koperasiBannerPath = $request->hasFile('bannerKoperasi')
-            ? $request->file('bannerKoperasi')->store('koperasi', 'public')
-            : ($profile ? $profile->logo_koperasi : null); // Ambil nilai saat ini jika tidak ada file baru
+        if ($request->hasFile('bannerKoperasi')) {
+            $bannerFile = $request->file('bannerKoperasi');
+            $koperasiBannerPath = 'koperasi/' . Str::random(10) . '_' . $bannerFile->getClientOriginalName(); // Nama file yang disimpan dengan random string
+            $bannerFile->move(public_path('storage/koperasi'), $koperasiBannerPath); // Memindahkan file ke public/storage/koperasi
+        } else {
+            $koperasiBannerPath = $profile ? $profile->logo_koperasi : null; // Ambil nilai saat ini jika tidak ada file baru
+        }
 
         // Menyimpan file Logo Koperasi Indonesia jika ada
-        $koperasiIndonesiaBannerPath = $request->hasFile('bannerKoperasiIndonesia')
-            ? $request->file('bannerKoperasiIndonesia')->store('koperasi', 'public')
-            : ($profile ? $profile->logo_koperasi_indonesia : null); // Ambil nilai saat ini jika tidak ada file baru
+        if ($request->hasFile('bannerKoperasiIndonesia')) {
+            $bannerIndonesiaFile = $request->file('bannerKoperasiIndonesia');
+            $koperasiIndonesiaBannerPath = 'koperasi/' . Str::random(10) . '_' . $bannerIndonesiaFile->getClientOriginalName(); // Nama file yang disimpan dengan random string
+            $bannerIndonesiaFile->move(public_path('storage/koperasi'), $koperasiIndonesiaBannerPath); // Memindahkan file ke public/storage/koperasi
+        } else {
+            $koperasiIndonesiaBannerPath = $profile ? $profile->logo_koperasi_indonesia : null; // Ambil nilai saat ini jika tidak ada file baru
+        }
 
         // Data yang akan disimpan ke database
         $data = [
