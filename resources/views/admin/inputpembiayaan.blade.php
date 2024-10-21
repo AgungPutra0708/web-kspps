@@ -17,7 +17,7 @@
                             <!-- Card Body Anggota -->
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-lg-6 col-sm-6">
+                                    <div class="col-lg-4 col-sm-4">
                                         <div class="form-group">
                                             <label for="loan_product">Pilih Produk Pembiayaan</label>
                                             <select class="form-control select2 loan_product" style="width: 100%;"
@@ -25,14 +25,15 @@
                                                 <option></option>
                                                 @foreach ($dataPembiayaan as $data)
                                                     <option value="{{ $data->id }}"
-                                                        data-nama_pembiayaan="{{ $data->nama_pembiayaan }}">
+                                                        data-nama_pembiayaan="{{ $data->nama_pembiayaan }}"
+                                                        data-no_pembiayaan="{{ $data->no_pembiayaan }}">
                                                         ({{ $data->no_pembiayaan }})
                                                         {{ $data->nama_pembiayaan }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 col-sm-6">
+                                    <div class="col-lg-4 col-sm-4">
                                         <div class="form-group">
                                             <label for="member_name">Pilih Nama Anggota*</label>
                                             <select class="form-control select2 member_name" style="width: 100%;"
@@ -45,6 +46,13 @@
                                                         {{ $data->nama_anggota }}</option>
                                                 @endforeach
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-sm-4">
+                                        <div class="form-group">
+                                            <label for="number_pinjaman">Nomor Pinjaman*</label>
+                                            <input type="text" class="form-control number_pinjaman"
+                                                name="number_pinjaman" id="number_pinjaman" placeholder="Nomor Pinjaman">
                                         </div>
                                     </div>
                                 </div>
@@ -154,17 +162,17 @@
                 let memberID = $('#member_name').val();
                 let memberName = $('#member_name').find('option:selected').data("nama_anggota");
                 let loanID = $('#loan_product').val();
-                let loanProductName = $('#loan_product').find('option:selected').data(
-                    "nama_pembiayaan");
+                let loanProductName = $('#loan_product').find('option:selected').data("nama_pembiayaan");
                 let nominalPinjaman = parseFloat($('#nominal_pinjaman').val().replaceAll('.', ''));
                 let nominalMargin = parseFloat($('#nominal_margin').val().replaceAll('.', ''));
                 let lamaPinjaman = $('#lama_pinjaman').val();
                 let kondisiPinjaman = $('#kondisi_pinjaman').find('option:selected').val();
                 let loanDesc = $('#loan_desc').val();
+                let numberPinjaman = $('#number_pinjaman').val();
 
                 // Validasi input (opsional)
                 if (!memberID || !loanID || !nominalPinjaman || !nominalMargin || !lamaPinjaman || !
-                    kondisiPinjaman) {
+                    kondisiPinjaman || !numberPinjaman) {
                     Swal.fire('Error!', 'Semua kolom harus diisi!', 'error');
                     return;
                 }
@@ -184,30 +192,64 @@
                     }
                 }
 
-                // Buat objek pembiayaan baru
-                let pembiayaan = {
-                    id_anggota: memberID,
-                    id_pembiayaan: loanID,
-                    nama_anggota: memberName,
-                    produk_pembiayaan: loanProductName,
-                    nominal_pinjaman: nominalPinjaman,
-                    nominal_margin: nominalMargin,
-                    angsur_pinjaman: (parseFloat(nominalPinjaman) / parseFloat(lamaPinjaman)),
-                    angsur_margin: (parseFloat(nominalMargin) / parseFloat(lamaPinjaman)),
-                    lama_pinjaman: lamaPinjaman,
-                    kondisi_pinjaman: kondisiPinjaman,
-                    keterangan_pinjaman: loanDesc
-                };
+                // AJAX untuk memeriksa no_pinjaman
+                $.ajax({
+                    url: '{{ route('checkNoPinjaman') }}', // Ganti dengan route yang sesuai
+                    method: 'POST',
+                    data: {
+                        no_pinjaman: numberPinjaman,
+                        _token: '{{ csrf_token() }}' // Tambahkan token CSRF untuk keamanan
+                    },
+                    success: function(response) {
+                        if (response.exists) {
+                            Swal.fire('Error!', 'No Pinjaman sudah digunakan!', 'error');
+                        } else {
+                            // Buat objek pembiayaan baru jika no_pinjaman tidak ada
+                            let pembiayaan = {
+                                id_anggota: memberID,
+                                id_pembiayaan: loanID,
+                                nama_anggota: memberName,
+                                produk_pembiayaan: loanProductName,
+                                nominal_pinjaman: nominalPinjaman,
+                                nominal_margin: nominalMargin,
+                                angsur_pinjaman: (parseFloat(nominalPinjaman) / parseFloat(
+                                    lamaPinjaman)),
+                                angsur_margin: (parseFloat(nominalMargin) / parseFloat(
+                                    lamaPinjaman)),
+                                lama_pinjaman: lamaPinjaman,
+                                kondisi_pinjaman: kondisiPinjaman,
+                                keterangan_pinjaman: loanDesc,
+                                no_pinjaman: numberPinjaman,
+                            };
 
-                // Masukkan data ke array
-                pembiayaanArray.push(pembiayaan);
+                            // Masukkan data ke array
+                            pembiayaanArray.push(pembiayaan);
+                            console.log(pembiayaanArray);
 
-                console.log(pembiayaanArray);
+                            // Tambahkan baris ke tabel
+                            updateTable();
 
-
-                // Tambahkan baris ke tabel
-                updateTable();
+                            // Kosongkan semua field input
+                            clearFields();
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error!', 'Terjadi kesalahan, silakan coba lagi!', 'error');
+                    }
+                });
             });
+
+            function clearFields() {
+                // Kosongkan semua field input yang relevan
+                $('#member_name').val('').change();
+                $('#loan_product').val('').change();
+                $('#nominal_pinjaman').val('');
+                $('#nominal_margin').val('');
+                $('#lama_pinjaman').val('');
+                $('#kondisi_pinjaman').val('').change();
+                $('#loan_desc').val('');
+                $('#number_pinjaman').val('');
+            }
 
             // Fungsi untuk memperbarui tabel
             function updateTable() {

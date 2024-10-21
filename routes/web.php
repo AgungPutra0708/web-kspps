@@ -63,6 +63,7 @@ Route::post('/input-simpanan/save', [App\Http\Controllers\InputSavingController:
 
 Route::get('/input-pembiayaan', [App\Http\Controllers\InputLoanController::class, 'index'])->middleware('role:petugas')->name('input_pembiayaan');
 Route::post('/input-pembiayaan/save', [App\Http\Controllers\InputLoanController::class, 'store'])->middleware('role:petugas')->name('input_pembiayaan.store');
+Route::post('/check-no-pinjaman', [App\Http\Controllers\InputLoanController::class, 'checkNoPinjaman'])->middleware('role:petugas')->name('checkNoPinjaman');
 
 Route::get('/input-simpanan-kolektif', [App\Http\Controllers\InputSavingController::class, 'indexKolektif'])->middleware('role:petugas')->name('input_simpanan_kolektif');
 Route::get('/input-simpanan-kolektif/get-data', [App\Http\Controllers\InputSavingController::class, 'getMemberDataSimpananKolektif'])->middleware('role:petugas')->name('get_member_data_simpanan_kolektif');

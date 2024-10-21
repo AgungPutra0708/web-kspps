@@ -39,23 +39,8 @@ class InputLoanController extends Controller
             $kodePembiayaan = PembiayaanModel::find($pembiayaan['id_pembiayaan']);
             $kodeAnggota = AnggotaModel::find($pembiayaan['id_anggota']);
             // Get the last inserted no_pinjaman for the current pembiayaan
-            $lastPinjaman = PinjamanModel::where('id_pembiayaan', $pembiayaan['id_pembiayaan'])
-                ->orderBy('no_pinjaman', 'desc')
-                ->first();
-
-            if ($lastPinjaman) {
-                // Extract the numeric part after the hyphen and increment it
-                $lastNumber = (int) substr($lastPinjaman->no_pinjaman, strrpos($lastPinjaman->no_pinjaman, '-') + 1);
-                $nextNumber = str_pad($lastNumber + 1, 5, '0', STR_PAD_LEFT);
-            } else {
-                // If no previous records, start from 00001
-                $nextNumber = '00001';
-            }
-
-            // Create the combined code: MRB-00001
-            $noPinjaman = $kodePembiayaan->no_pembiayaan . '-' . $nextNumber;
             PinjamanModel::create([
-                'no_pinjaman' => $noPinjaman,
+                'no_pinjaman' => $pembiayaan['no_pinjaman'],
                 'id_pembiayaan' => (int) $pembiayaan['id_pembiayaan'],
                 'id_anggota' => (int) $pembiayaan['id_anggota'],
                 'besar_pinjaman' => $pembiayaan['nominal_pinjaman'],
@@ -261,6 +246,24 @@ class InputLoanController extends Controller
                     return Carbon::parse($row->tanggal_transaksi)->format('d/m/Y H:i:s');
                 })
                 ->make(true);
+        }
+    }
+
+    public function checkNoPinjaman(Request $request)
+    {
+        // Validasi request
+        $request->validate([
+            'no_pinjaman' => 'required|string',
+        ]);
+
+        // Mencari no_pinjaman di dalam database
+        $existingLoan = PinjamanModel::where('no_pinjaman', $request->no_pinjaman)->first();
+
+        // Jika ditemukan, maka no_pinjaman sudah ada
+        if ($existingLoan) {
+            return response()->json(['exists' => true]);
+        } else {
+            return response()->json(['exists' => false]);
         }
     }
 }

@@ -23,6 +23,15 @@ class UserMemberController extends Controller
             'member_password' => 'required',
         ]);
 
+        // Cek apakah id_user sudah ada dengan status anggota
+        $existingUser = UserMemberModel::where('id_user', $request->member_name)
+            ->where('status', 'anggota')
+            ->first();
+
+        if ($existingUser) {
+            return redirect()->back()->with('error', 'Account anggota sudah ada');
+        }
+
         $data = [
             'id_user' => $request->member_name,
             'status' => "anggota",
@@ -30,10 +39,11 @@ class UserMemberController extends Controller
             'password' => Hash::make($request->member_password),
         ];
 
-        $user = UserMemberModel::where('username', $request->petugas_username)->first();
+        // Cek apakah username sudah digunakan
+        $user = UserMemberModel::where('username', $request->member_username)->first();
 
         if ($user) {
-            return redirect()->route('petugas')->with('error', 'Username sudah digunakan silahkan pilih yang lain!');
+            return redirect()->back()->with('error', 'Username sudah digunakan, silahkan pilih yang lain!');
         } else {
             // Menyimpan data ke tabel anggotas
             UserMemberModel::create($data);

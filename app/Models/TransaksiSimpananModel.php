@@ -13,4 +13,10 @@ class TransaksiSimpananModel extends Model
     protected $table = "transaksi_simpanans";
 
     protected $guarded = [];
+
+    // Relasi ke SimpananModel
+    public function simpanan()
+    {
+        return $this->belongsTo(SimpananModel::class, 'id_simpanan');
+    }
 }

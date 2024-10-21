@@ -24,26 +24,30 @@ class MemberController extends Controller
             'member_name' => 'required',
             'member_group' => 'required',
             'member_phone' => 'nullable|digits_between:10,13',
-            'member_card' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file foto KTP
+            'member_card' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Menyimpan file foto KTP jika ada
-        if ($request->hasFile('member_card')) {
-            // Simpan di folder 'public/ktp' di dalam storage/app/public
-            $memberCardPath = $request->file('member_card')->store('ktp', 'public');
-        } else {
-            $memberCardPath = null; // Jika tidak ada foto KTP
+        // Cek apakah no_anggota sudah ada di database
+        $existingMember = AnggotaModel::where('no_anggota', $request->member_number)->first();
+        if ($existingMember) {
+            // Jika sudah ada, redirect dengan pesan error
+            return redirect()->back()->with('error', 'Nomor anggota sudah terdaftar, silakan gunakan nomor lain.');
         }
+
+        // Menyimpan file foto KTP jika ada
+        $memberCardPath = $request->hasFile('member_card')
+            ? $request->file('member_card')->store('ktp', 'public')
+            : null;
 
         $data = [
             'no_anggota' => $request->member_number,
             'nama_anggota' => $request->member_name,
-            'id_rembug' => $request->member_group, // ID Rembug
+            'id_rembug' => $request->member_group,
             'phone_anggota' => $request->member_phone,
-            'idcard_anggota' => $memberCardPath, // Simpan path file KTP
+            'idcard_anggota' => $memberCardPath,
         ];
 
-        // Menyimpan data ke tabel anggotas
+        // Simpan data anggota baru
         AnggotaModel::create($data);
 
         // Redirect ke halaman anggota dengan pesan sukses
@@ -100,7 +104,20 @@ class MemberController extends Controller
     {
         // Ambil nomor anggota terbesar dari tabel
         $latestPost = AnggotaModel::orderBy('no_anggota', 'desc')->lockForUpdate()->first();
-        $nextNumber = $latestPost ? intval(substr($latestPost->no_anggota, 2)) + 1 : 1;
+
+        if ($latestPost) {
+            // Cari posisi tanda hubung (-)
+            $dashPosition = strpos($latestPost->no_anggota, '-');
+
+            // Ambil angka setelah tanda hubung
+            $numberPart = substr($latestPost->no_anggota, $dashPosition + 1);
+
+            // Konversi menjadi integer
+            $nextNumber = intval($numberPart) + 1;
+        } else {
+            $nextNumber = 1; // Default untuk no anggota pertama
+        }
+
         $formattedNumber = '101-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
 
         // Ambil data rembug

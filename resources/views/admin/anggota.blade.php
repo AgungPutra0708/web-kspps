@@ -25,7 +25,7 @@
                                                     <div class="d-flex align-items-center">
                                                         <input type="text" class="form-control member_number"
                                                             name="member_number" id="member_number"
-                                                            placeholder="Nomor Anggota" readonly style="flex: 1;">
+                                                            placeholder="Nomor Anggota" style="flex: 1;">
                                                         <button class="btn btn-primary ml-2" type="button"
                                                             id="showSearchMember" style="height: 100%;"><i
                                                                 class="fas fa-search"></i></button>
@@ -298,7 +298,7 @@
             fetchMemberAndRembugData();
 
             // Update setiap 10 detik
-            setInterval(fetchMemberAndRembugData, 10000);
+            //setInterval(fetchMemberAndRembugData, 10000);
         });
     </script>
 @endsection
