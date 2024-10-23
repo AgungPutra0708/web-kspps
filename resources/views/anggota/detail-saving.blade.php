@@ -57,13 +57,16 @@
 
     <div class="d-flex justify-content-center mb-2">
         <div class="row w-100">
+            @php
+                $counter = 0; // Inisialisasi counter
+            @endphp
             @foreach ($dataSimpanan as $item)
                 @if ($item['utama'] == 'false')
-                    <div class="col-6 mb-2 {{ $loop->iteration % 2 == 0 ? 'pl-1' : 'pr-1' }}">
+                    <div class="col-6 mb-2 {{ $counter % 2 == 0 ? 'pl-1' : 'pr-1' }}">
                         <a href="{{ route('transaksi_saving', ['id' => $item['id_simpanan']]) }}"
                             class="nav-link transaksi-saving p-0">
                             <div class="card" style="max-height: 120px; min-height: 120px">
-                                <div class="card-body pt-1">
+                                <div class="card-body pt-2">
                                     <div class="row">
                                         <div class="col-12 pt-0">
                                             <h6 class="text-secondary">{{ $item['no_rekening_simpanan'] }}</h6>
@@ -78,6 +81,9 @@
                             </div>
                         </a>
                     </div>
+                    @php
+                        $counter++; // Increment counter
+                    @endphp
                 @endif
             @endforeach
         </div>

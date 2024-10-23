@@ -2,11 +2,11 @@
 <div class="d-flex justify-content-center mb-2 mt-2">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
         <div class="row">
-            <div class="col-lg-4 col-4 text-right pr-0">
+            <div class="col-lg-3 col-3 pr-0">
                 <img class="img-profile img-fluid" loading="lazy"
                     src="{{ $dataProfile && $dataProfile->logo_koperasi_indonesia ? asset('storage/' . $dataProfile->logo_koperasi_indonesia) : '' }}" />
             </div>
-            <div class="col-lg-8 col-8 align-content-center pl-0">
+            <div class="col-lg-9 col-9 align-content-center pl-0">
                 <span class="fs-1">Assalamualaikum,</span>
                 <h4 class="font-weight-bold">{{ Session::get('nama_user') }}</h4>
             </div>

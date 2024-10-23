@@ -20,7 +20,7 @@ class HomeController extends Controller
 
     public function indexHome()
     {
-        // Initialize saldoAkhir to 0
+        // Initialize saldoSimpanan to 0
         $saldoSimpanan = 0;
 
         // Set locale ke bahasa Indonesia
@@ -39,6 +39,8 @@ class HomeController extends Controller
             // Calculate saldo_akhir using the transaksiAllSimpanans relationship
             $saldoSimpanan = $anggotaData->transaksiAllSimpanans()
                 ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
+                ->join('simpanans', 'simpanans.id', '=', 'transaksi_simpanans.id_simpanan') // Correct the join condition
+                ->whereNull('simpanans.deleted_at') // Ensure simpanan is not soft deleted
                 ->value('saldo_akhir');
         }
 

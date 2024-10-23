@@ -44,24 +44,26 @@ class SavingAnggotaController extends Controller
                     ->where('id_simpanan', $rekening->id_simpanan)
                     ->value('saldo_akhir');
 
-                // Jika simpanan utama, tambahkan ke total saldo utama dan simpan ID-nya
-                if ($simpanan->utama == 'true') {
-                    $totalSaldoUtama += $saldoAkhir;
-                    $idSimpananUtama = $simpanan->id; // Simpan ID simpanan utama
-                }
+                if ($saldoAkhir != 0) {
+                    // Jika simpanan utama, tambahkan ke total saldo utama dan simpan ID-nya
+                    if ($simpanan->utama == 'true') {
+                        $totalSaldoUtama += $saldoAkhir;
+                        $idSimpananUtama = $simpanan->id; // Simpan ID simpanan utama
+                    }
 
-                // Tambahkan data simpanan ke array dataSimpanan
-                $dataSimpanan[] = [
-                    'id_simpanan' => Crypt::encrypt($simpanan->id),  // ID Simpanan
-                    'id_anggota' => $id_anggota,  // ID Anggota yang sedang difilter
-                    'no_anggota' => $simpanan->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
-                    'nama_anggota' => $simpanan->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota
-                    'no_rekening_simpanan' => $rekening->no_rekening_simpanan ?? "-", // No Simpanan
-                    'no_simpanan' => $simpanan->no_simpanan ?? null, // No Simpanan
-                    'nama_simpanan' => $simpanan->nama_simpanan ?? null, // Nama Simpanan
-                    'saldo_akhir' => $saldoAkhir, // Saldo akhir dari tabel transaksi_simpanans
-                    'utama' => $simpanan->utama,
-                ];
+                    // Tambahkan data simpanan ke array dataSimpanan
+                    $dataSimpanan[] = [
+                        'id_simpanan' => Crypt::encrypt($simpanan->id),  // ID Simpanan
+                        'id_anggota' => $id_anggota,  // ID Anggota yang sedang difilter
+                        'no_anggota' => $simpanan->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
+                        'nama_anggota' => $simpanan->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota
+                        'no_rekening_simpanan' => $rekening->no_rekening_simpanan ?? "-", // No Simpanan
+                        'no_simpanan' => $simpanan->no_simpanan ?? null, // No Simpanan
+                        'nama_simpanan' => $simpanan->nama_simpanan ?? null, // Nama Simpanan
+                        'saldo_akhir' => $saldoAkhir, // Saldo akhir dari tabel transaksi_simpanans
+                        'utama' => $simpanan->utama,
+                    ];
+                }
             }
         }
 
