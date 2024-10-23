@@ -20,6 +20,9 @@ class SavingAnggotaController extends Controller
     {
         $id_anggota = Session::get('id_user');
 
+        // Ambil semua rekening simpanan berdasarkan id_anggota
+        $dataRekeningSimpanan = RekeningSimpananModel::where('id_anggota', $id_anggota)->get();
+
         // Ambil semua data simpanan
         $simpananData = SimpananModel::all();
 
@@ -27,35 +30,40 @@ class SavingAnggotaController extends Controller
         $totalSaldoUtama = 0;
         $idSimpananUtama = null; // Variabel untuk menyimpan ID simpanan utama
 
-        // Filter simpanan dan hitung saldo akhir berdasarkan id_anggota
-        $dataSimpanan = $simpananData->map(function ($item) use ($id_anggota, &$totalSaldoUtama, &$idSimpananUtama) {
-            // Hitung saldo_akhir berdasarkan transaksi_simpanans untuk id_anggota dan id_simpanan
-            $saldoAkhir = $item->transaksiSimpanans($id_anggota)
-                ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
-                ->value('saldo_akhir');
+        // Simpanan yang akan ditampilkan
+        $dataSimpanan = [];
 
-            $dataRekeningSimpanan = RekeningSimpananModel::where('id_anggota', $id_anggota)
-                ->where('id_simpanan', $item->id)
-                ->first();
+        foreach ($dataRekeningSimpanan as $rekening) {
+            // Ambil data simpanan berdasarkan id_simpanan dari rekening
+            $simpanan = $simpananData->firstWhere('id', $rekening->id_simpanan);
 
-            // Jika simpanan utama, tambahkan ke total saldo utama dan simpan ID-nya
-            if ($item->utama == 'true') {
-                $totalSaldoUtama += $saldoAkhir;
-                $idSimpananUtama = $item->id; // Simpan ID simpanan utama
+            if ($simpanan) {
+                // Hitung saldo_akhir berdasarkan transaksi_simpanans untuk id_anggota dan id_simpanan
+                $saldoAkhir = $simpanan->transaksiSimpanans($id_anggota)
+                    ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
+                    ->where('id_simpanan', $rekening->id_simpanan)
+                    ->value('saldo_akhir');
+
+                // Jika simpanan utama, tambahkan ke total saldo utama dan simpan ID-nya
+                if ($simpanan->utama == 'true') {
+                    $totalSaldoUtama += $saldoAkhir;
+                    $idSimpananUtama = $simpanan->id; // Simpan ID simpanan utama
+                }
+
+                // Tambahkan data simpanan ke array dataSimpanan
+                $dataSimpanan[] = [
+                    'id_simpanan' => Crypt::encrypt($simpanan->id),  // ID Simpanan
+                    'id_anggota' => $id_anggota,  // ID Anggota yang sedang difilter
+                    'no_anggota' => $simpanan->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
+                    'nama_anggota' => $simpanan->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota
+                    'no_rekening_simpanan' => $rekening->no_rekening_simpanan ?? "-", // No Simpanan
+                    'no_simpanan' => $simpanan->no_simpanan ?? null, // No Simpanan
+                    'nama_simpanan' => $simpanan->nama_simpanan ?? null, // Nama Simpanan
+                    'saldo_akhir' => $saldoAkhir, // Saldo akhir dari tabel transaksi_simpanans
+                    'utama' => $simpanan->utama,
+                ];
             }
-
-            return [
-                'id_simpanan' => Crypt::encrypt($item->id),  // ID Simpanan
-                'id_anggota' => $id_anggota,  // ID Anggota yang sedang difilter
-                'no_anggota' => $item->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
-                'nama_anggota' => $item->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota
-                'no_rekening_simpanan' => $dataRekeningSimpanan->no_rekening_simpanan ?? "-", // No Simpanan
-                'no_simpanan' => $item->no_simpanan ?? null, // No Simpanan
-                'nama_simpanan' => $item->nama_simpanan ?? null, // Nama Simpanan
-                'saldo_akhir' => $saldoAkhir ?? 0, // Saldo akhir dari tabel transaksi_simpanans
-                'utama' => $item->utama,
-            ];
-        });
+        }
 
         return view('anggota.detail-saving', compact('dataSimpanan', 'totalSaldoUtama', 'idSimpananUtama'));
     }

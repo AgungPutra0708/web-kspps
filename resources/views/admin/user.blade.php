@@ -37,6 +37,8 @@
                                             <label for="member_username">Username Anggota</label>
                                             <input type="text" class="form-control member_username"
                                                 name="member_username" id="member_username" placeholder="Username Anggota">
+                                            <input type="hidden" class="form-control id_user" name="id_user" id="id_user"
+                                                placeholder="id_user">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -77,7 +79,9 @@
                         // Tambahkan opsi baru berdasarkan data yang didapat dari response
                         $.each(response.anggota_data, function(index, item) {
                             $('#member_name').append('<option value="' + item.id +
-                                '" data-rembug="' + item.nama_rembug + '">(' + item
+                                '" data-rembug="' + item.nama_rembug + '" data-username="' +
+                                item.username + '" data-id_user="' + item.id_user + '">(' +
+                                item
                                 .no_anggota + ') ' + item.nama_anggota + '</option>');
                         });
 
@@ -98,14 +102,21 @@
 
             $('#member_name').change(function(e) {
                 var rembugName = $(this).find('option:selected').data("rembug");
+                var userName = $(this).find('option:selected').data("username");
+                var idUser = $(this).find('option:selected').data("id_user");
                 $('#member_group').val(rembugName).change();
+                $('#member_username').val(userName).change();
+                if (userName != "") {
+                    $('#member_username').attr('readonly', true);
+                }
+                $('#id_user').val(idUser).change();
             });
 
             // Panggil fungsi saat halaman dimuat
             fetchMemberData();
 
             // Update setiap 10 detik
-            setInterval(fetchMemberData, 10000);
+            // setInterval(fetchMemberData, 10000);
         });
     </script>
 @endsection

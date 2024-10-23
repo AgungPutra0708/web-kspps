@@ -6,7 +6,7 @@
                 <img class="img-profile img-fluid" loading="lazy"
                     src="{{ $dataProfile && $dataProfile->logo_koperasi_indonesia ? asset('storage/' . $dataProfile->logo_koperasi_indonesia) : '' }}" />
             </div>
-            <div class="col-lg-8 col-8 align-content-center">
+            <div class="col-lg-8 col-8 align-content-center pl-0">
                 <span class="fs-1">Assalamualaikum,</span>
                 <h4 class="font-weight-bold">{{ Session::get('nama_user') }}</h4>
             </div>
@@ -16,7 +16,7 @@
 {{-- Content Name End --}}
 
 {{-- Content Saldo --}}
-<div class="d-flex justify-content-center mb-2">
+<div class="d-flex justify-content-center mb-3">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
         <div class="card text-white card-border-radius">
             <div class="card-body">
@@ -43,13 +43,13 @@
 {{-- Content Saldo End --}}
 
 {{-- Content Date --}}
-<div class="d-flex justify-content-center mb-2">
-    <div class="row mb-3 text-center">
+<div class="d-flex justify-content-center mb-3">
+    <div class="row text-center">
         <div class="col-lg-12 col-12">
             <h6 class="font-weight-bold">
                 {{ $dataProfile && $dataProfile->nama_koperasi_lengkap ? $dataProfile->nama_koperasi_lengkap : $dataProfile->nama_koperasi }}
             </h6>
-            <span>{{ $gregorianDate }} - {{ $hijriDate }}</span>
+            <span class="menu-text">{{ $gregorianDate }} - {{ $hijriDate }}</span>
         </div>
     </div>
 </div>

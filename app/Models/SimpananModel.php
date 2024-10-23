@@ -19,4 +19,10 @@ class SimpananModel extends Model
         return $this->hasMany(TransaksiSimpananModel::class, 'id_simpanan')
             ->where('id_anggota', $idAnggota);
     }
+
+    public function transaksiSimpanansAnggota($idAnggota, $idSimpanan)
+    {
+        return $this->hasMany(TransaksiSimpananModel::class, 'id_simpanan', $idSimpanan)
+            ->where('id_anggota', $idAnggota);
+    }
 }

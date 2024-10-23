@@ -32,7 +32,7 @@ class LoanAnggotaController extends Controller
                 'besar_pinjaman' => $item->besar_pinjaman,
                 'besar_margin' => $item->besar_margin,
                 'lama_pinjaman' => $item->lama_pinjaman,
-                'status_pinjaman' => $item->status_pinjaman,
+                'status_pinjaman' => $item->status_pinjaman == "done" ? "Lunas" : "Berjalan",
                 'kondisi_pinjaman' => $item->kondisi_pinjaman,
             ];
         });

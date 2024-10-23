@@ -33,6 +33,7 @@
                                 <div class="col-lg-4 col-4">
                                     <img class="img-saldo img-fluid"
                                         src="{{ asset('assets/img/card_pembiayaan.svg') }}" />
+                                    <p class="text-white mb-0">{{ $item['status_pinjaman'] }}</p>
                                 </div>
                             </div>
                         </div>

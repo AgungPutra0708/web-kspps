@@ -20,7 +20,7 @@ class UserMemberController extends Controller
         $request->validate([
             'member_name' => 'required',
             'member_username' => 'required',
-            'member_password' => 'required',
+            'member_password' => 'nullable', // Password bisa kosong
         ]);
 
         // Cek apakah id_user sudah ada dengan status anggota
@@ -28,8 +28,15 @@ class UserMemberController extends Controller
             ->where('status', 'anggota')
             ->first();
 
+        // Jika user sudah ada, update password hanya jika field password tidak kosong
         if ($existingUser) {
-            return redirect()->back()->with('error', 'Account anggota sudah ada');
+            if (!empty($request->member_password)) {
+                $existingUser->password = Hash::make($request->member_password);
+                $existingUser->save();
+                return redirect()->back()->with('success', 'Password user anggota berhasil diperbarui!');
+            } else {
+                return redirect()->back()->with('error', 'User anggota sudah ada, tetapi password tidak diperbarui karena kosong.');
+            }
         }
 
         $data = [
@@ -59,6 +66,13 @@ class UserMemberController extends Controller
 
         // Transform data untuk mengirimkan response JSON
         $encryptedData = $anggotaData->map(function ($item) {
+            $iduser = "";
+            $username = "";
+            $userAnggotaData = UserMemberModel::where('id_user', $item->id)->where('status', 'anggota')->first();
+            if ($userAnggotaData) {
+                $iduser = $userAnggotaData->id;
+                $username = $userAnggotaData->username;
+            }
             return [
                 'id' => $item->id,  // ID Anggota
                 'no_anggota' => $item->no_anggota, // No Anggota
@@ -67,6 +81,8 @@ class UserMemberController extends Controller
                 'id_rembug' => $item->id_rembug,
                 'phone_anggota' => $item->phone_anggota,
                 'ktp_image' => asset('storage/' . $item->idcard_anggota), // URL gambar KTP
+                'id_user' => $iduser,
+                'username' => $username,
             ];
         });
 
