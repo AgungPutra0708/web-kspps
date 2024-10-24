@@ -1,0 +1,5 @@
+---
+deployment:
+tasks:
+  - export DEPLOYPATH=/home/putg4462/public_html/bmtsarana/cms.bmtsarana.id
+  - /bin/cp -R * $DEPLOYPATH
