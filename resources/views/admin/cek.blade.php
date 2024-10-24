@@ -22,7 +22,7 @@
                                             name="member_name" id="member_name">
                                             <option></option>
                                             @foreach ($dataAnggota as $data)
-                                                <option value="{{ $data->id }}"
+                                                <option value="{{ Crypt::encrypt($data->id) }}"
                                                     data-nama_anggota="{{ $data->nama_anggota }}">
                                                     ({{ $data->no_anggota }})
                                                     {{ $data->nama_anggota }}</option>
@@ -132,7 +132,11 @@
                                             <td>${index + 1}</td>
                                             <td>${saving.nama_simpanan}</td>
                                             <td>${formatRupiah(parseFloat(saving.saldo_akhir))}</td>
-                                            <td class="text-center"><button type="button" class="btn btn-info" onclick="window.location.href='{{ url('history/') }}/${saving.id_simpanan}'"><i class="fas fa-history"></i></button></td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-info" onclick="window.location.href='{{ url('history/') }}/${saving.id_rekening_simpanan}'">
+                                                    <i class="fas fa-history"></i>
+                                                </button>
+                                            </td>
                                         </tr>`;
 
                             tbodySimpanan.append(row);

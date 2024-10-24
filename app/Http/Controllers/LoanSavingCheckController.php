@@ -28,7 +28,7 @@ class LoanSavingCheckController extends Controller
      */
     public function getSavingLoanData(Request $request)
     {
-        $id_anggota = $request->input('id_anggota');
+        $id_anggota = Crypt::decrypt($request->input('id_anggota'));
 
         // Ambil semua data simpanan
         $simpananData = SimpananModel::all();
@@ -49,6 +49,7 @@ class LoanSavingCheckController extends Controller
                 'no_anggota' => $item->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
                 'nama_anggota' => $item->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota
                 'no_rekening_simpanan' => $dataRekeningSimpanan->no_rekening_simpanan ?? "-", // No Simpanan
+                'id_rekening_simpanan' => Crypt::encrypt($dataRekeningSimpanan->id) ?? "-", // No Simpanan
                 'no_simpanan' => $item->no_simpanan ?? null, // No Simpanan
                 'nama_simpanan' => $item->nama_simpanan ?? null, // Nama Simpanan
                 'saldo_akhir' => $saldoAkhir ?? 0, // Saldo akhir dari tabel transaksi_simpanans

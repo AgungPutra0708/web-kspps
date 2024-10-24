@@ -11,13 +11,13 @@ class HistoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($id_simpanan)
+    public function index($id_rekening_simpanan)
     {
         // Dekripsi ID simpanan
-        $id_simpanan = Crypt::decrypt($id_simpanan);
+        $id_rekening_simpanan = Crypt::decrypt($id_rekening_simpanan);
         // Ambil history berdasarkan id_simpanan
-        $historyData = TransaksiSimpananModel::where('id_simpanan', $id_simpanan)->get();
-        return view('admin.historysimpanan', compact('historyData', 'id_simpanan'));
+        $historyData = TransaksiSimpananModel::where('id_rekening_simpanan', $id_rekening_simpanan)->get();
+        return view('admin.historysimpanan', compact('historyData', 'id_rekening_simpanan'));
     }
 
     /**
