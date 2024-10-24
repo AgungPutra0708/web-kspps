@@ -9,7 +9,7 @@
     <meta name="author" content="" />
 
     <title>BMT SARANA</title>
-    <link rel="icon" href="{{ asset('assets/img/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/img/logo-koperasi.png') }}" type="image/x-icon">
 
     @include('layout.header')
 </head>
