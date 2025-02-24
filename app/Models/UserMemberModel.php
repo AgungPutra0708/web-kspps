@@ -14,4 +14,9 @@ class UserMemberModel extends Authenticatable
     protected $table = "user_anggotas";
 
     protected $guarded = [];
+
+    public function anggota()
+    {
+        return $this->belongsTo(AnggotaModel::class, 'id_user', 'id');
+    }
 }

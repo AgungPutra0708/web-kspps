@@ -392,7 +392,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('transaksi_simpanan_terakhir') }}",
-                pageLength: 25, // Membatasi hanya 25 data per halaman
+                pageLength: 10, // Membatasi hanya 25 data per halaman
                 lengthChange: false, // Menghilangkan opsi "Show Entries"
                 paging: false, // Menghilangkan pagination (Next/Previous)
                 info: false, // Menghilangkan "Showing X to Y of Z entries"
@@ -425,7 +425,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('transaksi_angsuran_terakhir') }}",
-                pageLength: 25, // Membatasi hanya 25 data per halaman
+                pageLength: 10, // Membatasi hanya 25 data per halaman
                 lengthChange: false, // Menghilangkan opsi "Show Entries"
                 paging: false, // Menghilangkan pagination (Next/Previous)
                 info: false, // Menghilangkan "Showing X to Y of Z entries"

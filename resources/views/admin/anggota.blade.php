@@ -187,6 +187,13 @@
                         });
 
                         $('#select_member_name').prepend('<option value=""></option>');
+
+                        // Re-inisialisasi Select2 setelah data ditambahkan
+                        $('#select_member_name').select2({
+                            theme: 'bootstrap4',
+                            placeholder: 'Silahkan pilih',
+                            dropdownParent: $('#memberModal')
+                        });
                         $('#memberModal').modal('show');
                     },
                     error: function(xhr, status, error) {

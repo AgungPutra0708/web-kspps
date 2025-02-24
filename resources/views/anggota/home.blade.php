@@ -24,7 +24,7 @@
                     <div class="col-lg-12 col-12">
                         <h6 class="text-white">Saldo Simpanan</h6>
                         <h4 class="text-white font-weight-bold mb-2">Rp <span
-                                id="saldo-simpanan">{{ number_format($saldoSimpanan, 2, ',', '.') }}</span>
+                                id="saldo-simpanan">{{ number_format($saldoSimpanan, 0, ',', '.') }}</span>
                         </h4>
                     </div>
                 </div>

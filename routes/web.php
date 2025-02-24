@@ -55,8 +55,11 @@ Route::post('/pembiayaan/update/{id}', [App\Http\Controllers\LoanController::cla
 Route::post('/pembiayaan/delete/{id}', [App\Http\Controllers\LoanController::class, 'destroy'])->name('pembiayaan.destroy');
 
 Route::get('/management-user', [App\Http\Controllers\UserMemberController::class, 'index'])->middleware('role:petugas')->name('management_user');
-Route::post('/management-user/save', [App\Http\Controllers\UserMemberController::class, 'store'])->middleware('role:petugas')->name('management_user.store');
 Route::get('/management-user/anggota', [App\Http\Controllers\UserMemberController::class, 'getMemberData'])->middleware('role:petugas')->name('get_member_data');
+Route::get('/management-user/create', [App\Http\Controllers\UserMemberController::class, 'create'])->middleware('role:petugas')->name('management_user.create');
+Route::post('/management-user/save', [App\Http\Controllers\UserMemberController::class, 'store'])->middleware('role:petugas')->name('management_user.store');
+Route::get('/management-user/{id}', [App\Http\Controllers\UserMemberController::class, 'show'])->middleware('role:petugas')->name('management_user.show'); // Lihat detail user
+Route::delete('/management-user/{id}', [App\Http\Controllers\UserMemberController::class, 'destroy'])->middleware('role:petugas')->name('management_user.destroy'); // Hapus user
 
 Route::get('/input-simpanan', [App\Http\Controllers\InputSavingController::class, 'index'])->middleware('role:petugas')->name('input_simpanan');
 Route::post('/input-simpanan/save', [App\Http\Controllers\InputSavingController::class, 'store'])->middleware('role:petugas')->name('input_simpanan.store');

@@ -207,7 +207,7 @@ class InputSavingController extends Controller
                 ->join('anggotas', 'anggotas.id', '=', 'transaksi_simpanans.id_anggota')
                 ->join('simpanans', 'simpanans.id', '=', 'transaksi_simpanans.id_simpanan')
                 ->latest('transaksi_simpanans.created_at')
-                ->take(25)
+                ->take(10)
                 ->get();
 
             return DataTables::of($data)

@@ -68,7 +68,7 @@ class LoanAnggotaController extends Controller
         $id = Crypt::decrypt($id);
 
         // Fetch the data and paginate it
-        $transaksiPinjamanData = TransaksiPinjamanModel::where('id_pinjaman', $id)->orderBy('angsuran_ke', 'asc')->paginate(5);
+        $transaksiPinjamanData = TransaksiPinjamanModel::where('id_pinjaman', $id)->orderBy('angsuran_ke', 'desc')->paginate(5);
 
         // Get the total count of installments
         $totalAngsuran = $transaksiPinjamanData->total();
@@ -78,8 +78,8 @@ class LoanAnggotaController extends Controller
             $currentAngsuran = $totalAngsuran - $key; // Reverse the angsuran_ke
             return [
                 'id' => Crypt::encrypt($item->id),
-                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>Angsuran ke - ' . $currentAngsuran,
-                'nominal' => 'Rp ' . number_format($item->angsur_pinjaman, 2, ',', '.'),
+                'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>Angsuran ke - ' . $item->angsuran_ke,
+                'nominal' => 'Rp ' . number_format($item->angsur_pinjaman, 0, ',', '.'),
             ];
         });
 

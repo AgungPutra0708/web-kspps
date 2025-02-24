@@ -149,12 +149,16 @@
                             totalAngsurPinjamanSisa += angsurPinjamanSisa;
 
                             let row = `<tr>
-                        <td>${index + 1}</td>
-                        <td>${anggota.nama_anggota}</td>
-                        <td><input type="number" name="nominal_setoran_pokok[]" class="form-control nominal-setoran-pokok" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-pembiayaan_id="${anggota.id_pembiayaan}" data-pinjaman_id="${anggota.id_pinjaman}" data-angsur_pinjaman="${angsurPinjaman}" data-sisa_pinjaman="${anggota.sisa_pinjaman}" value="${angsurPinjaman}"></td>
-                        <td><input type="number" name="nominal_setoran_margin[]" class="form-control nominal-setoran-margin" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-pembiayaan_id="${anggota.id_pembiayaan}" data-pinjaman_id="${anggota.id_pinjaman}" data-angsur_pinjaman="${angsurPinjaman}" data-sisa_pinjaman="${anggota.sisa_pinjaman}" value="${angsurMargin}"></td>
-                        <td>${angsurPinjamanSisa.toLocaleString()}</td>
-                    </tr>`;
+                                            <td>${index + 1}</td>
+                                            <td>${anggota.nama_anggota}</td>
+                                            <td>
+                                                <input type="text" name="nominal_setoran_pokok[]" class="form-control nominal-setoran-pokok" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-pembiayaan_id="${anggota.id_pembiayaan}" data-pinjaman_id="${anggota.id_pinjaman}" data-angsur_pinjaman="${angsurPinjaman}" data-sisa_pinjaman="${anggota.sisa_pinjaman}" value="${angsurPinjaman}" onkeyup="this.value = this.value.replace(/[^0-9\.]/g, '')">
+                                            </td>
+                                            <td>
+                                                <input type="text" name="nominal_setoran_margin[]" class="form-control nominal-setoran-margin" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-pembiayaan_id="${anggota.id_pembiayaan}" data-pinjaman_id="${anggota.id_pinjaman}" data-angsur_pinjaman="${angsurPinjaman}" data-sisa_pinjaman="${anggota.sisa_pinjaman}" value="${angsurMargin}" onkeyup="this.value = this.value.replace(/[^0-9\.]/g, '')">
+                                            </td>
+                                            <td>${angsurPinjamanSisa.toLocaleString()}</td>
+                                        </tr>`;
 
                             tbody.append(row);
                         });

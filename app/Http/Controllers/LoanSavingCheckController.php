@@ -35,8 +35,12 @@ class LoanSavingCheckController extends Controller
         $pinjamanData = PinjamanModel::where('id_anggota', $id_anggota)->get();
 
         // Filter simpanan dan hitung saldo akhir berdasarkan id_anggota
-        $filteredDataSimpanan = $simpananData->map(function ($item) use ($id_anggota) {
-            // Hitung saldo_akhir berdasarkan transaksi_simpanans untuk id_anggota dan id_simpanan
+        $filteredDataSimpanan = $simpananData->filter(function ($item) use ($id_anggota) {
+            // Hanya tampilkan data jika ada rekening simpanan yang sesuai
+            return RekeningSimpananModel::where('id_anggota', $id_anggota)
+                ->where('id_simpanan', $item->id)
+                ->exists();
+        })->map(function ($item) use ($id_anggota) {
             $saldoAkhir = $item->transaksiSimpanans($id_anggota)
                 ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
                 ->value('saldo_akhir');
@@ -44,18 +48,18 @@ class LoanSavingCheckController extends Controller
             $dataRekeningSimpanan = RekeningSimpananModel::where('id_anggota', $id_anggota)->where('id_simpanan', $item->id)->first();
 
             return [
-                'id_simpanan' => Crypt::encrypt($item->id),  // ID Simpanan
-                'id_anggota' => $id_anggota,  // ID Anggota yang sedang difilter
-                'no_anggota' => $item->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
-                'nama_anggota' => $item->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota
-                'no_rekening_simpanan' => $dataRekeningSimpanan->no_rekening_simpanan ?? "-", // No Simpanan
-                'id_rekening_simpanan' => Crypt::encrypt($dataRekeningSimpanan->id) ?? "-", // No Simpanan
-                'no_simpanan' => $item->no_simpanan ?? null, // No Simpanan
-                'nama_simpanan' => $item->nama_simpanan ?? null, // Nama Simpanan
-                'saldo_akhir' => $saldoAkhir ?? 0, // Saldo akhir dari tabel transaksi_simpanans
+                'id_simpanan' => Crypt::encrypt($item->id),
+                'id_anggota' => $id_anggota,
+                'no_anggota' => $item->anggota->no_anggota ?? null,
+                'nama_anggota' => $item->anggota->nama_anggota ?? null,
+                'no_rekening_simpanan' => $dataRekeningSimpanan->no_rekening_simpanan ?? "-",
+                'id_rekening_simpanan' => isset($dataRekeningSimpanan->id) ? Crypt::encrypt($dataRekeningSimpanan->id) : null,
+                'no_simpanan' => $item->no_simpanan ?? null,
+                'nama_simpanan' => $item->nama_simpanan ?? null,
+                'saldo_akhir' => $saldoAkhir ?? 0,
                 'utama' => $item->utama ?? null,
             ];
-        });
+        })->values();
 
         // Map pinjamanData untuk mengenkripsi id_pinjaman
         $filteredDataPinjaman = $pinjamanData->map(function ($item) {

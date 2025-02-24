@@ -183,13 +183,14 @@ class InputLoanController extends Controller
 
         // Loop melalui array pembiayaan dan simpan ke database
         foreach ($pembiayaanArray as $pembiayaan) {
-            // Skip if id_pinjaman is null, 0, or invalid, or if angsur_pinjaman or angsur_margin is null, empty, or 0
+            // Skip if both angsur_pinjaman and angsur_margin are empty or invalid
             if (
                 empty($pembiayaan['id_pinjaman']) || !is_numeric($pembiayaan['id_pinjaman']) ||
-                empty($pembiayaan['angsur_pinjaman']) || !is_numeric($pembiayaan['angsur_pinjaman']) ||
-                empty($pembiayaan['angsur_margin']) || !is_numeric($pembiayaan['angsur_margin'])
+                (empty($pembiayaan['angsur_pinjaman']) && empty($pembiayaan['angsur_margin'])) ||
+                (!is_numeric($pembiayaan['angsur_pinjaman']) && !empty($pembiayaan['angsur_pinjaman'])) ||
+                (!is_numeric($pembiayaan['angsur_margin']) && !empty($pembiayaan['angsur_margin']))
             ) {
-                continue; // Skip this iteration if any of the conditions are met
+                continue; // Skip this iteration if both angsur_pinjaman and angsur_margin are empty
             }
 
             // Ambil tanggal transaksi dari pembiayaan, jika tidak ada default ke tanggal saat ini
@@ -238,6 +239,7 @@ class InputLoanController extends Controller
             ])
                 ->join('anggotas', 'anggotas.id', '=', 'transaksi_pinjamans.id_anggota')  // Perbaiki kondisi ON
                 ->join('pembiayaans', 'pembiayaans.id', '=', 'transaksi_pinjamans.id_pembiayaan')  // Perbaiki kondisi ON
+                ->take(10)
                 ->get();
 
             return DataTables::of($data)

@@ -58,7 +58,7 @@
             "pageLength": 5, // Menampilkan 5 data per halaman
             "searching": false, // Menonaktifkan pencarian
             "lengthChange": false, // Menonaktifkan pemilihan panjang halaman
-            "ordering": true, // Mengaktifkan pengurutan
+            "ordering": false, // Mengaktifkan pengurutan
             "language": {
                 "emptyTable": "Tidak ada data yang tersedia",
                 "info": "Menampilkan _START_ hingga _END_ dari _TOTAL_ entri",

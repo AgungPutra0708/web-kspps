@@ -102,7 +102,7 @@ class SavingAnggotaController extends Controller
             return [
                 'id' => Crypt::encrypt($item->id),
                 'keterangan' => Carbon::parse($item->tanggal_transaksi)->format('d/m/Y') . '<br>' . $kondisiTransaksi . '<br>' . $item->keterangan,
-                'nominal' => $item->metode_transaksi . ' Rp ' . number_format($item->jumlah_setoran, 2, ',', '.'),
+                'nominal' => $item->metode_transaksi . ' Rp ' . number_format($item->jumlah_setoran, 0, ',', '.'),
                 'metode_transaksi' => $item->metode_transaksi,
             ];
         });

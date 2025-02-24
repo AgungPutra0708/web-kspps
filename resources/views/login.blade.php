@@ -22,8 +22,15 @@
                                             name="username" placeholder="Enter Username">
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user" name="password"
-                                            id="password" placeholder="Enter Password">
+                                        <div class="input-group">
+                                            <input type="password" class="form-control form-control-user" name="password"
+                                                id="password" placeholder="Enter Password">
+                                            <div class="input-group-append">
+                                                <span class="input-group-text border-0" onclick="togglePassword()" style="cursor: pointer;">
+                                                    <i id="eye-icon" class="fas fa-eye"></i>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <button type="submit" class="btn btn-secondary btn-user btn-block">
                                         Login
@@ -36,4 +43,20 @@
             </div>
         </div>
     </div>
+<script>
+    function togglePassword() {
+        let passwordField = document.getElementById("password");
+        let eyeIcon = document.getElementById("eye-icon");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        }
+    }
+</script>
 @endsection

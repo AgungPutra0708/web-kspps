@@ -27,7 +27,7 @@
                             <div class="row mb-3">
                                 <div class="col-lg-12 col-12">
                                     <h6 class="text-white">Modal Pokok Wajib</h6>
-                                    <h5 class="text-white">Rp {{ number_format($totalSaldoUtama, 2, ',', '.') }}</h5>
+                                    <h5 class="text-white">Rp {{ number_format($totalSaldoUtama, 0, ',', '.') }}</h5>
                                 </div>
                             </div>
                         </div>
@@ -73,7 +73,7 @@
                                             <h6 class="text-secondary font-weight-bold">{{ $item['nama_simpanan'] }}
                                             </h6>
                                             <h6 class="text-secondary">Rp
-                                                {{ number_format($item['saldo_akhir'], 2, ',', '.') }}
+                                                {{ number_format($item['saldo_akhir'], 0, ',', '.') }}
                                             </h6>
                                         </div>
                                     </div>
