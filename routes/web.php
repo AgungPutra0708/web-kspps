@@ -102,7 +102,9 @@ Route::get('/detail-pembiayaan', [App\Http\Controllers\LoanAnggotaController::cl
 Route::get('/transaksi-pembiayaan/{id}', [App\Http\Controllers\LoanAnggotaController::class, 'edit'])->middleware('checkSession', 'role:anggota', 'mobile')->name('transaksi_loan');
 Route::get('/shu', [App\Http\Controllers\ShuAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('shu');
 Route::get('/market', [App\Http\Controllers\EksternalAnggotaController::class, 'indexMarket'])->middleware('checkSession', 'role:anggota', 'mobile')->name('market');
-Route::get('/baitul-mal', [App\Http\Controllers\EksternalAnggotaController::class, 'indexTamwil'])->middleware('checkSession', 'role:anggota', 'mobile')->name('tamwil');
+Route::get('/transaksi', [App\Http\Controllers\EksternalAnggotaController::class, 'indexTamwil'])->middleware('checkSession', 'role:anggota', 'mobile')->name('tamwil');
+Route::post('/kirim-whatsapp-setoran', [App\Http\Controllers\EksternalAnggotaController::class, 'sendToWhatsappSetoran'])->middleware('checkSession', 'role:anggota', 'mobile')->name('kirim.whatsapp.setoran');
+Route::post('/kirim-whatsapp-penarikan', [App\Http\Controllers\EksternalAnggotaController::class, 'sendToWhatsappPenarikan'])->middleware('checkSession', 'role:anggota', 'mobile')->name('kirim.whatsapp.penarikan');
 Route::get('/pesan', [App\Http\Controllers\MessageAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('message');
 Route::get('/detail-pesan/{id}', [App\Http\Controllers\MessageAnggotaController::class, 'detail'])->middleware('checkSession', 'role:anggota', 'mobile')->name('detail_message');
 Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('profile');

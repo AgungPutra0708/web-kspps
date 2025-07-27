@@ -13,4 +13,9 @@ class RekeningSimpananModel extends Model
     protected $table = "rekening_simpanans";
 
     protected $guarded = [];
+
+    public function simpanan()
+    {
+        return $this->belongsTo(SimpananModel::class, 'id_simpanan', 'id');
+    }
 }
