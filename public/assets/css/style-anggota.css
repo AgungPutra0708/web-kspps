@@ -265,3 +265,42 @@ body {
         font-size: 18px;
     }
 }
+/* Custom Tab Styles */
+#transaksiTab {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link {
+    color: #495057;
+    background-color: #f8f9fa;
+    border: 1px solid transparent;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.nav-tabs .nav-link:hover {
+    border-color: #e9ecef #e9ecef #08786b;
+    color: #08786b;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff;
+    background-color: #08786b;
+    border-color: #08786b #08786b #fff;
+}
+
+.tab-content {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+    padding: 1rem;
+}

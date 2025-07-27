@@ -14,7 +14,6 @@
     </div>
 </div>
 {{-- Content Name End --}}
-
 {{-- Content Saldo --}}
 <div class="d-flex justify-content-center mb-3">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-8">
@@ -23,14 +22,16 @@
                 <div class="row mb-3">
                     <div class="col-lg-12 col-12">
                         <h6 class="text-white">Saldo Simpanan</h6>
-                        <h4 class="text-white font-weight-bold mb-2">Rp <span
-                                id="saldo-simpanan">{{ number_format($saldoSimpanan, 0, ',', '.') }}</span>
+                        <h4 class="text-white font-weight-bold mb-2">
+                            Rp <span id="saldo-simpanan">{{ number_format($saldoSimpanan, 0, ',', '.') }}</span>
                         </h4>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-lg-8 col-8 align-content-center">
-                        <h5 class="text-white font-weight-bold mb-0">{{ Session::get('no_user') }}</h5>
+                        <h5 class="text-white font-weight-bold mb-0">
+                            {{ Session::get('no_user') }}
+                        </h5>
                     </div>
                     <div class="col-lg-4 col-4">
                         <img class="img-saldo" src="{{ asset('assets/img/wallet.svg') }}" />
@@ -41,7 +42,6 @@
     </div>
 </div>
 {{-- Content Saldo End --}}
-
 {{-- Content Date --}}
 <div class="d-flex justify-content-center mb-3">
     <div class="row text-center">
@@ -54,8 +54,6 @@
     </div>
 </div>
 {{-- Content Date End --}}
-
-
 {{-- Content Menu --}}
 <div class="d-flex justify-content-center">
     <div class="container-fluid">
@@ -92,7 +90,7 @@
                 <a href="{{ route('tamwil') }}"
                     class="btn btn-outline-dark flex-column align-items-center justify-content-center btn-home">
                     <img class="img-button img-fluid" src="{{ asset('assets/img/link.svg') }}" />
-                    <span class="menu-text">Baitul Mal</span>
+                    <span class="menu-text">Transaksi</span>
                 </a>
             </div>
         </div>
@@ -105,8 +103,6 @@
         $('.btn-home').on('click', function(event) {
             event.preventDefault();
             var url = $(this).attr('href');
-
-
             // Load the content via AJAX
             loadContent(url);
         });

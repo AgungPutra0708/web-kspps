@@ -21,8 +21,8 @@ class EksternalAnggotaController extends Controller
      */
     public function indexTamwil()
     {
-        $dataProfile = ProfileKoperasiModel::first();
-        return view('anggota.tamwil', compact('dataProfile'));
+        // $dataProfile = ProfileKoperasiModel::first();
+        return view('anggota.tamwil');
     }
 
     /**
