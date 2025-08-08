@@ -46,6 +46,7 @@ class EksternalAnggotaController extends Controller
         $noRekening  = $request->nomorRekeningSetoran;
         $jumlah      = number_format($request->jumlahSetoran, 0, ',', '.');
         $metode      = $request->setoranMelalui;
+        $alasan      = $request->alasanSetoran;
 
         // Upload dan ambil URL publik
         $path = $request->file('buktiTransferSetoran')->store('bukti-transfer', 'public');
@@ -75,6 +76,7 @@ class EksternalAnggotaController extends Controller
             - Nomor Rekening: *{$noRekening}*
             - Jumlah Setoran: *Rp {$jumlah}*
             - Metode Setoran: *{$metode}*
+            - Alasan Setoran: *{$alasan}*
             - Bukti Transfer: {$shortUrl}
 
             Dengan ini menyampaikan bahwa telah melakukan SETORAN TABUNGAN.
@@ -103,6 +105,7 @@ class EksternalAnggotaController extends Controller
         $noRekening  = $request->nomorRekeningPenarikan;
         $jumlah      = number_format($request->jumlahPenarikan, 0, ',', '.');
         $metode      = $request->penarikanMelalui;
+        $alasan      = $request->alasanPenarikan;
 
         // Inisialisasi variabel untuk data tambahan
         $additionalInfo = '';
@@ -135,6 +138,7 @@ class EksternalAnggotaController extends Controller
             - Nomor Rekening: *{$noRekening}*
             - Jumlah Penarikan: *Rp {$jumlah}*
             - Metode Penarikan: *{$metode}*
+            - Alasan Penarikan: *{$alasan}*
             {$additionalInfo}
 
             Dengan ini menyampaikan bahwa telah melakukan PENARIKAN TABUNGAN.

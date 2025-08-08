@@ -68,6 +68,13 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="alasanSetoran">Alasan Setoran</label>
+                                <input type="text" id="alasanSetoran" name="alasanSetoran"
+                                    placeholder="Masukkan alasan setoran" required class="form-control"
+                                    value="">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="setoranMelalui">Setoran Melalui</label>
                                 <select id="setoranMelalui" name="setoranMelalui" class="form-control" required>
                                     <option value="" disabled selected>Pilih metode setoran</option>
@@ -137,6 +144,13 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="alasanPenarikan">Alasan Penarikan</label>
+                                <input type="text" id="alasanPenarikan" name="alasanPenarikan"
+                                    placeholder="Masukkan alasan penarikan" required class="form-control"
+                                    value="">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="penarikanMelalui">Penarikan Melalui</label>
                                 <select id="penarikanMelalui" name="penarikanMelalui" class="form-control" required>
                                     <option value="" disabled selected>Pilih metode penarikan</option>
@@ -191,11 +205,11 @@
                                         <option value="Bank BNI">Bank BNI</option>
                                         <option value="Bank Mandiri">Bank Mandiri</option>
                                         <option value="Bank BTN">Bank BTN</option>
-                                        <option value="Bank Syariah Indonesia">Bank Syariah Indonesia</option>
+                                        <option value="Bank BTN Syariah">Bank BTN Syariah</option>
                                         <option value="Bank Muamalat">Bank Muamalat</option>
-                                        <option value="Bank Danamon">Bank Danamon</option>
-                                        <option value="Bank CIMB Niaga">Bank CIMB Niaga</option>
-                                        <option value="Bank Mega">Bank Mega</option>
+                                        <option value="Bank Jatim">Bank Jatim</option>
+                                        <option value="Bank Jatim Syariah">Bank Jatim Syariah</option>
+                                        <option value="Bank BCA Syariah">Bank BCA Syariah</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -223,8 +237,6 @@
                                         <option value="GoPay">GoPay</option>
                                         <option value="ShopeePay">ShopeePay</option>
                                         <option value="LinkAja">LinkAja</option>
-                                        <option value="SeaBank">SeaBank</option>
-                                        <option value="Jenius">Jenius</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
