@@ -53,10 +53,11 @@
                                 <select name="nomorRekeningSetoran" id="nomorRekeningSetoran" class="form-control"
                                     required>
                                     <option value="" disabled selected>Pilih Rekening</option>
-                                    @foreach ($dataRekeningSimpanan as $item)
-                                        <option value="{{ $item->no_rekening_simpanan }}">
-                                            {{ $item->no_rekening_simpanan }} -
-                                            {{ $item->simpanan->nama_simpanan }}</option>
+                                    @foreach ($dataSimpanan as $item)
+                                    <option value="{{ $item['no_rekening_simpanan'] }}">
+                                        {{ $item['no_rekening_simpanan'] }} -
+                                        {{ $item['nama_simpanan'] }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -82,6 +83,39 @@
                                     <option value="QRIS">QRIS</option>
                                     <option value="Tunai">Tunai</option>
                                 </select>
+                            </div>
+
+                            <!-- Conditional Section for Tunai Langsung Kasir -->
+                            <div id="jadwalSetoranSection" class="conditional-section hidden">
+                                <h4 style="margin-bottom: 12px; color: #374151; font-size: 14px;">Jadwal Setoran
+                                </h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="hariSetor">Hari</label>
+                                        <select id="hariSetor" name="hariSetor" class="form-control">
+                                            <option value="" selected>Pilih hari</option>
+                                            <option value="Senin">Senin</option>
+                                            <option value="Selasa">Selasa</option>
+                                            <option value="Rabu">Rabu</option>
+                                            <option value="Kamis">Kamis</option>
+                                            <option value="Jumat">Jumat</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="jamSetor">Jam</label>
+                                        <select id="jamSetor" name="jamSetor" class="form-control">
+                                            <option value="" selected>Pilih jam</option>
+                                            <option value="07:00">07:00</option>
+                                            <option value="08:00">08:00</option>
+                                            <option value="09:00">09:00</option>
+                                            <option value="10:00">10:00</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="14:00">14:00</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="form-group">
@@ -129,10 +163,11 @@
                                 <select name="nomorRekeningPenarikan" id="nomorRekeningPenarikan"
                                     class="form-control" required>
                                     <option value="" disabled selected>Pilih Rekening</option>
-                                    @foreach ($dataRekeningSimpanan as $item)
-                                        <option value="{{ $item->no_rekening_simpanan }}">
-                                            {{ $item->no_rekening_simpanan }} -
-                                            {{ $item->simpanan->nama_simpanan }}</option>
+                                    @foreach ($dataSimpanan as $item)
+                                    <option value="{{ $item['no_rekening_simpanan'] }}">
+                                        {{ $item['no_rekening_simpanan'] }} -
+                                        {{ $item['nama_simpanan'] }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -269,6 +304,19 @@
     document.getElementById('buktiTransferSetoran').addEventListener('change', function() {
         const fileName = this.files[0]?.name || "Tidak ada file yang dipilih";
         document.getElementById('fileName').textContent = fileName;
+    });
+
+    // Handler untuk perubahan metode setoran
+    document.getElementById('setoranMelalui').addEventListener('change', function() {
+        // Sembunyikan semua bagian kondisional
+        document.querySelectorAll('.conditional-section').forEach(function(section) {
+            section.classList.add('hidden');
+        });
+
+        // Tampilkan bagian yang sesuai
+        if (this.value === 'Tunai') {
+            document.getElementById('jadwalSetoranSection').classList.remove('hidden');
+        }
     });
 
     // Validasi Form Setoran

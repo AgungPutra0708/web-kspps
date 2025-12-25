@@ -26,6 +26,7 @@ class LoanAnggotaController extends Controller
                 'no_pinjaman' => $item->no_pinjaman,
                 'nama_pembiayaan' => $item->pembiayaan->nama_pembiayaan,
                 'sisa_besar_pinjaman' => $item->sisa_besar_pinjaman,
+                'sisa_besar_margin' => $item->sisa_besar_margin,
                 'besar_margin' => $item->besar_margin,
                 'lama_pinjaman' => $item->lama_pinjaman,
                 'status_pinjaman' => $item->status_pinjaman == "done" ? "Lunas" : "Berjalan",

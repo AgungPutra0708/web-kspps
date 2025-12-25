@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfileKoperasiModel;
 use App\Models\RekeningSimpananModel;
+use App\Models\SimpananModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -35,8 +37,36 @@ class EksternalAnggotaController extends Controller
                     ->where('utama', 'false');
             })
             ->get();
-        // $dataProfile = ProfileKoperasiModel::first();
-        return view('anggota.tamwil', compact('dataRekeningSimpanan'));
+
+        $simpananData = SimpananModel::all();
+
+        $dataSimpanan = [];
+        foreach ($dataRekeningSimpanan as $rekening) {
+            // Ambil data simpanan berdasarkan id_simpanan dari rekening
+            $simpanan = $simpananData->firstWhere('id', $rekening->id_simpanan);
+            if ($simpanan) {
+                // Hitung saldo_akhir berdasarkan transaksi_simpanans untuk id_anggota dan id_simpanan
+                $saldoAkhir = $simpanan->transaksiSimpanans($id_anggota)
+                    ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
+                    ->where('id_simpanan', $rekening->id_simpanan)
+                    ->value('saldo_akhir');
+                if ($saldoAkhir != 0) {
+                    // Tambahkan data simpanan ke array dataSimpanan
+                    $dataSimpanan[] = [
+                        'id_simpanan' => $simpanan->id,  // ID Simpanan
+                        'id_anggota' => $id_anggota,  // ID Anggota yang sedang difilter
+                        'no_anggota' => $simpanan->anggota->no_anggota ?? null, // No Anggota dari tabel anggota
+                        'nama_anggota' => $simpanan->anggota->nama_anggota ?? null, // Nama Anggota dari tabel anggota
+                        'no_rekening_simpanan' => $rekening->no_rekening_simpanan ?? "-", // No Simpanan
+                        'no_simpanan' => $simpanan->no_simpanan ?? null, // No Simpanan
+                        'nama_simpanan' => $simpanan->nama_simpanan ?? null, // Nama Simpanan
+                        'saldo_akhir' => $saldoAkhir, // Saldo akhir dari tabel transaksi_simpanans
+                        'utama' => $simpanan->utama,
+                    ];
+                }
+            }
+        }
+        return view('anggota.tamwil', compact('dataSimpanan'));
     }
 
     public function sendToWhatsappSetoran(Request $request)
@@ -47,6 +77,16 @@ class EksternalAnggotaController extends Controller
         $jumlah      = number_format($request->jumlahSetoran, 0, ',', '.');
         $metode      = $request->setoranMelalui;
         $alasan      = $request->alasanSetoran;
+
+        // Inisialisasi variabel untuk data tambahan
+        $additionalInfo = '';
+
+        // Handle data tambahan berdasarkan metode penarikan
+        if ($metode === 'Tunai') {
+            $hariSetor = $request->hariSetor;
+            $jamSetor = $request->jamSetor;
+            $additionalInfo = "- Jadwal Setoran: *{$hariSetor}, {$jamSetor}*";
+        }
 
         // Upload dan ambil URL publik
         $path = $request->file('buktiTransferSetoran')->store('bukti-transfer', 'public');
@@ -78,6 +118,7 @@ class EksternalAnggotaController extends Controller
             - Metode Setoran: *{$metode}*
             - Alasan Setoran: *{$alasan}*
             - Bukti Transfer: {$shortUrl}
+            {$additionalInfo}
 
             Dengan ini menyampaikan bahwa telah melakukan SETORAN TABUNGAN.
 
