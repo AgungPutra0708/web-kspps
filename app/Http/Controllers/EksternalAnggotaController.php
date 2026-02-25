@@ -6,11 +6,11 @@ use App\Models\ProfileKoperasiModel;
 use App\Models\RekeningSimpananModel;
 use App\Models\SimpananModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class EksternalAnggotaController extends Controller
 {
@@ -129,7 +129,7 @@ class EksternalAnggotaController extends Controller
             Wassalamualaikum Wr. Wb.
             EOT;
 
-        $waNumber = "6283872790091"; // Ganti dengan nomor WA CS kamu
+        $waNumber = "6281217283960"; // Ganti dengan nomor WA CS kamu
         $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
 
         return response()->json([
@@ -191,7 +191,7 @@ class EksternalAnggotaController extends Controller
             Wassalamualaikum Wr. Wb.
             EOT;
 
-        $waNumber = "6283872790091"; // Ganti dengan nomor WA CS kamu
+        $waNumber = "6281217283960"; // Ganti dengan nomor WA CS kamu
         $waLink = "https://wa.me/{$waNumber}?text=" . urlencode($message);
 
         return response()->json([
