@@ -10,22 +10,31 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-
-        // Retrieve the role from the session
-        $userRole = Session::get('role_user');
-
-        // Check if the user is authenticated
         if (!Auth::check()) {
-            return redirect()->route('login'); // Redirect to login if not authenticated
+            return redirect()->route('login');
         }
 
-        // Debugging: Check what role is being retrieved
-        if ($userRole !== $role) {
-            return redirect()->route('login'); // Redirect if role doesn't match
+        $roleUser = Session::get('role_user');
+        $rolePetugas = Session::get('role_petugas');
+
+        // Kalau role utama tidak cocok
+        if (!in_array($roleUser, $roles)) {
+            return redirect()->route('login');
         }
 
-        return $next($request); // Proceed to the next request if everything is fine
+        // Khusus petugas, cek role_petugas jika dikirim
+        if ($roleUser === 'petugas') {
+
+            // ambil semua role selain 'petugas'
+            $allowedPetugasRole = array_diff($roles, ['petugas']);
+
+            if (!empty($allowedPetugasRole) && !in_array($rolePetugas, $allowedPetugasRole)) {
+                return redirect()->route('login');
+            }
+        }
+
+        return $next($request);
     }
 }

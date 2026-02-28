@@ -24,27 +24,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($historyData as $index => $transaction)
-                                                <tr
-                                                    class="{{ $transaction->metode_transaksi == '-' ? 'text-danger' : '' }}">
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $transaction->tanggal_transaksi }}</td>
-                                                    <td>{{ $transaction->metode_transaksi }}</td>
-                                                    <td class="rupiah">{{ $transaction->jumlah_setoran }}</td>
-                                                    <td class="text-center">
-                                                        <a href="{{ route('edit_transaction', Crypt::encrypt($transaction->id)) }}"
-                                                            class="btn btn-warning"><i class="fas fa-edit"></i></a>
-                                                        <form action="{{ route('delete_transaction', $transaction->id) }}"
-                                                            method="POST" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger"
-                                                                onclick="return confirm('Are you sure you want to delete this transaction?');"><i
-                                                                    class="fas fa-trash"></i></button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -61,6 +40,21 @@
 
     <script>
         $(document).ready(function() {
+
+            $('#historyTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('history_simpanan.data', Crypt::encrypt($id_rekening_simpanan)) }}",
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'tanggal_transaksi', name: 'tanggal_transaksi' },
+                    { data: 'metode_transaksi', name: 'metode_transaksi' },
+                    { data: 'jumlah_setoran', name: 'jumlah_setoran', className: 'text-right' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
+                ],
+                order: [[1, 'desc']]
+            });
+            
             // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
             function formatRupiah(number) {
                 return number.toLocaleString('id-ID', {

@@ -19,4 +19,14 @@ class TransaksiSimpananModel extends Model
     {
         return $this->belongsTo(SimpananModel::class, 'id_simpanan');
     }
+
+    public function rekeningSimpanan()
+    {
+        return $this->belongsTo(RekeningSimpananModel::class, 'id_rekening_simpanan');
+    }
+
+    public function petugas()
+    {
+        return $this->belongsTo(PetugasModel::class, 'id_petugas');
+    }
 }

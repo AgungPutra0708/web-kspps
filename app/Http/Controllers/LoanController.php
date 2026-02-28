@@ -7,6 +7,8 @@ use App\Models\PinjamanModel;
 use App\Models\TransaksiPinjamanModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
 
 class LoanController extends Controller
 {
@@ -98,12 +100,67 @@ class LoanController extends Controller
         // Dekripsi ID pembiayaan
         $id_pinjaman = Crypt::decrypt($encryptedId);
 
-        // Ambil data history pembiayaan berdasarkan id_pinjaman
-        $historyData = TransaksiPinjamanModel::where('id_pinjaman', $id_pinjaman)->get();
-
-        return view('admin.historyloan', compact('historyData', 'id_pinjaman'));
+        return view('admin.historyloan', compact('id_pinjaman'));
     }
-    // Fungsi history tetap sama
+
+    public function historyData(Request $request, $encryptedId)
+    {
+        $id_pinjaman = Crypt::decrypt($encryptedId);
+
+        $query = TransaksiPinjamanModel::where('id_pinjaman', $id_pinjaman);
+
+        return DataTables::of($query)
+
+            ->addIndexColumn()
+
+            ->editColumn('tanggal_transaksi', function ($row) {
+                return \Carbon\Carbon::parse($row->tanggal_transaksi)
+                    ->format('d-m-Y H:i');
+            })
+
+            ->editColumn('angsur_pinjaman', function ($row) {
+                return number_format($row->angsur_pinjaman, 0, ',', '.');
+            })
+
+            ->editColumn('angsur_margin', function ($row) {
+                return number_format($row->angsur_margin, 0, ',', '.');
+            })
+
+            ->addColumn('aksi', function ($row) {
+                $editUrl = route('loan.edit', Crypt::encrypt($row->id));
+                $deleteUrl = route('loan.destroy', Crypt::encrypt($row->id));
+                $printUrl = route('angsuran.print', [
+                    'ids' => implode(',', [$row->id]),
+                ]);
+                if (Session::get('role_petugas') == 'ADMIN') {
+                    return '
+                        <a href="' . $editUrl . '" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="' . $printUrl . '" class="btn btn-info btn-sm" target="_blank">
+                            <i class="fas fa-print"></i>
+                        </a>
+                        <form action="' . $deleteUrl . '" method="POST" style="display:inline;">
+                            ' . csrf_field() . '
+                            ' . method_field("DELETE") . '
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm(\'Yakin hapus?\')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    ';
+                } else {
+                    return '
+                        <a href="' . $printUrl . '" class="btn btn-info btn-sm" target="_blank">
+                            <i class="fas fa-print"></i>
+                        </a>
+                    ';
+                }
+            })
+
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
 
     public function edit($encryptedId)
     {

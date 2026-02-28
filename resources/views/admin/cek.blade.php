@@ -162,9 +162,11 @@
                                             <td>${loan.status_pinjaman == "done" ? "Lunas" : "Berjalan"}</td>
                                             <td class="text-center">
                                                 <!-- Tombol Edit -->
-                                                <a href="{{ route('pinjaman.edit', ':id') }}" class="btn btn-warning">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
+                                                @if (Session::get('role_petugas') == 'ADMIN')
+                                                    <a href="{{ route('pinjaman.edit', ':id') }}" class="btn btn-warning">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endif
                                                 <button type="button" class="btn btn-info" onclick="window.location.href='{{ url('loan-history/') }}/${loan.id_pinjaman}'">
                                                     <i class="fas fa-history"></i>
                                                 </button>

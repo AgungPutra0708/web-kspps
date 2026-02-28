@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
 class InputLoanController extends Controller
@@ -136,6 +137,15 @@ class InputLoanController extends Controller
         return view('admin.inputpembiayaankolektif', $data);
     }
 
+    public function indexAngsuran()
+    {
+        $data = [
+            'dataPembiayaan' => PembiayaanModel::all(),
+            'dataKumpulan' => RembugModel::all(),
+        ];
+        return view('admin.inputangsuran', $data);
+    }
+
     public function getMemberDataPembiayaanKolektif(Request $request)
     {
         $idPembiayaan = $request->input('id_pembiayaan');
@@ -205,6 +215,7 @@ class InputLoanController extends Controller
                 'angsur_margin' => $pembiayaan['angsur_margin'],
                 'angsuran_ke' => $pembiayaan['angsuran_ke'],
                 'tanggal_transaksi' => $tanggalTransaksi, // Gunakan tanggal transaksi dari input
+                'id_petugas' => Session::get('id_user'), // Simpan ID petugas yang melakukan transaksi
             ]);
 
             // Update the related PinjamanModel entry
@@ -225,6 +236,59 @@ class InputLoanController extends Controller
         }
 
         return redirect()->back()->with('success', 'Data pembiayaan kolektif berhasil disimpan.');
+    }
+
+    public function storeAngsuran(Request $request)
+    {
+        if($request->input('angsuran_pokok') == 0 && $request->input('angsuran_margin') == 0) {
+            return redirect()->back()->with(['error' => 'Angsuran pokok dan margin tidak boleh keduanya nol.']);
+        }
+
+        if($request->input('sisa_angsuran') <= 0) {
+            return redirect()->back()->with(['error' => 'Anggota tidak memiliki sisa angsuran.']);
+        }
+
+        $transaksiIds = [];
+
+        // Ambil tanggal transaksi dari pembiayaan, jika tidak ada default ke tanggal saat ini
+        $tanggalTransaksi = $request->input('tanggal_transaksi') ?? Carbon::now()->format('Y-m-d');
+
+        // Create new TransaksiPinjamanModel entry
+        $transaksi = TransaksiPinjamanModel::create([
+            'id_anggota' => $request->input('id_anggota'),
+            'id_pembiayaan' => $request->input('id_pembiayaan'),
+            'id_pinjaman' => $request->input('id_pinjaman'),
+            'angsur_pinjaman' => $request->input('angsuran_pokok'),
+            'angsur_margin' => $request->input('angsuran_margin'),
+            'angsuran_ke' => $request->input('angsuran_ke'),
+            'tanggal_transaksi' => $tanggalTransaksi, // Gunakan tanggal transaksi dari input
+            'id_petugas' => Session::get('id_user'), // Simpan ID petugas yang melakukan transaksi
+        ]);
+
+        // Update the related PinjamanModel entry
+        PinjamanModel::where('id', $request->input('id_pinjaman'))
+            ->update([
+                'sisa_besar_pinjaman' => DB::raw('sisa_besar_pinjaman - ' . $request->input('angsuran_pokok')),
+                'sisa_besar_margin' => DB::raw('sisa_besar_margin - ' . $request->input('angsuran_margin')),
+                'sisa_pinjaman' => DB::raw('sisa_pinjaman - 1'),
+            ]);
+
+        // Check if the sisa_pinjaman has reached 0
+        $pinjaman = PinjamanModel::find($request->input('id_pinjaman'));
+        if ($pinjaman->sisa_pinjaman == 0) {
+            // Update the status_pinjaman to "done"
+            $pinjaman->status_pinjaman = 'done';
+            $pinjaman->save();
+        }
+        
+        $transaksiIds[] = $transaksi->id;
+
+        return redirect()->back()->with([
+                'success'   => 'Data transaksi angsuran berhasil ditambahkan.',
+                'print_url' => route('angsuran.print', [
+                    'ids' => implode(',', $transaksiIds)
+                ])
+            ]);
     }
 
     public function getLastTransactionLoan(Request $request)
@@ -267,5 +331,21 @@ class InputLoanController extends Controller
         } else {
             return response()->json(['exists' => false]);
         }
+    }
+
+    public function printAngsuran(Request $request)
+    {
+        $ids = explode(',', $request->ids);
+
+        $transaksis = TransaksiPinjamanModel::with([
+            'pinjaman',
+            'pembiayaan',
+            'anggota',
+            'petugas'
+        ])
+        ->whereIn('id', $ids)
+        ->get();
+
+        return view('admin.printpinjaman', compact('transaksis'));
     }
 }

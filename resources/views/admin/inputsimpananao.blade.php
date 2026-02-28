@@ -7,21 +7,21 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xl-12">
-                    <form action="{{ route('pindahbuku.store') }}" method="post" id="simpananForm">
+                    <form action="{{ route('input_simpanan.store') }}" method="post" id="simpananForm">
                         @csrf
                         <div class="card shadow mb-4">
                             <!-- Card Header Anggota -->
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Pindah Buku Anggota</h6>
+                                <h6 class="m-0 font-weight-bold" style="color: #08786B">Input Simpanan Anggota</h6>
                             </div>
                             <!-- Card Body Anggota -->
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
-                                            <label for="asal_saving_product">Pilih Produk Simpanan</label>
-                                            <select class="form-control select2 asal_saving_product" style="width: 100%;"
-                                                name="asal_saving_product" id="asal_saving_product">
+                                            <label for="saving_product">Pilih Produk Simpanan</label>
+                                            <select class="form-control select2 saving_product" style="width: 100%;"
+                                                name="saving_product" id="saving_product">
                                                 <option></option>
                                                 @foreach ($dataSimpanan as $data)
                                                     <option value="{{ $data->id }}"
@@ -34,9 +34,9 @@
                                     </div>
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
-                                            <label for="asal_member_name">Pilih Nama Anggota*</label>
-                                            <select class="form-control select2 asal_member_name" style="width: 100%;"
-                                                name="asal_member_name" id="asal_member_name">
+                                            <label for="member_name">Pilih Nama Anggota*</label>
+                                            <select class="form-control select2 member_name" style="width: 100%;"
+                                                name="member_name" id="member_name">
                                                 <option></option>
                                                 @foreach ($dataAnggota as $data)
                                                     <option value="{{ $data->id }}"
@@ -51,43 +51,13 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
-                                            <label for="tujuan_saving_product">Pilih Produk Simpanan</label>
-                                            <select class="form-control select2 tujuan_saving_product" style="width: 100%;"
-                                                name="tujuan_saving_product" id="tujuan_saving_product">
-                                                <option></option>
-                                                @foreach ($dataSimpanan as $data)
-                                                    <option value="{{ $data->id }}"
-                                                        data-nama_simpanan="{{ $data->nama_simpanan }}">
-                                                        ({{ $data->no_simpanan }})
-                                                        {{ $data->nama_simpanan }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-sm-6">
-                                        <div class="form-group">
-                                            <label for="tujuan_member_name">Pilih Nama Anggota*</label>
-                                            <select class="form-control select2 tujuan_member_name" style="width: 100%;"
-                                                name="tujuan_member_name" id="tujuan_member_name">
-                                                <option></option>
-                                                @foreach ($dataAnggota as $data)
-                                                    <option value="{{ $data->id }}"
-                                                        data-nama_anggota="{{ $data->nama_anggota }}">
-                                                        ({{ $data->no_anggota }})
-                                                        {{ $data->nama_anggota }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-6">
-                                        <div class="form-group">
                                             <label for="amount_saving">Nominal Setoran</label>
+                                            <input type="hidden" id="kondisi_setoran" name="kondisi_setoran"
+                                                value="+">
                                             <input type="text" class="form-control amount_saving" name="amount_saving"
-                                                id="amount_saving" placeholder="Nominal Setoran" onchange="formatLocalString(this)" onkeyup="formatLocalString(this)">
+                                                id="amount_saving" placeholder="Nominal Setoran"
+                                                onchange="formatLocalString(this)" onkeyup="formatLocalString(this)">
+
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-sm-6">
@@ -106,10 +76,8 @@
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Produk Simpanan Asal</th>
-                                                    <th>Nama Anggota Asal</th>
-                                                    <th>Produk Simpanan Tujuan</th>
-                                                    <th>Nama Anggota Tujuan</th>
+                                                    <th>Nama Anggota</th>
+                                                    <th>Produk Simpanan</th>
                                                     <th>Nominal Setoran</th>
                                                     <th>Keterangan</th>
                                                     <th></th>
@@ -117,7 +85,7 @@
                                             </thead>
                                             <tfoot>
                                                 <tr>
-                                                    <th colspan="5">Total Setoran</th>
+                                                    <th colspan="3">Total Setoran</th>
                                                     <th><span class="amount_setoran"></span></th>
                                                     <th></th>
                                                     <th></th>
@@ -144,95 +112,103 @@
     <!-- /.container-fluid -->
     <script>
         $(document).ready(function() {
-            let simpananArray = []; // Array untuk menyimpan data simpanan
-            let firstMemberID = null; // Variabel untuk menyimpan member ID pertama yang diinput
+            let simpananArray = []; // Array to store savings data
+            let firstMemberID = null; // Variable to store the first member ID input
 
-            // Event handler untuk tombol "Tambah"
+            // Event handler for the "Tambah" button
             $('.btn-success').on('click', function() {
-                // Ambil data dari form
-                let memberAsalID = $('#asal_member_name').val();
-                let memberAsalName = $('#asal_member_name').find('option:selected').data("nama_anggota");
-                let savingAsalID = $('#asal_saving_product').val();
-                let savingProductAsalName = $('#asal_saving_product').find('option:selected').data(
-                    "nama_simpanan");
-                let memberTujuanID = $('#tujuan_member_name').val();
-                let memberTujuanName = $('#tujuan_member_name').find('option:selected').data(
-                    "nama_anggota");
-                let savingTujuanID = $('#tujuan_saving_product').val();
-                let savingProductTujuanName = $('#tujuan_saving_product').find('option:selected').data(
-                    "nama_simpanan");
+                // Get data from the form
+                let memberID = $('#member_name').val();
+                let memberName = $('#member_name').find('option:selected').data("nama_anggota");
+                let savingID = $('#saving_product').val();
+                let savingProductName = $('#saving_product').find('option:selected').data("nama_simpanan");
                 let amountSaving = $('#amount_saving').val();
                 let savingDesc = $('#saving_desc').val();
+                let kondisiSetoran = $('#kondisi_setoran').val();
 
-                // Validasi input (opsional)
-                if (!memberAsalID || !savingAsalID || !memberTujuanID || !savingTujuanID || !amountSaving) {
+                // Validation
+                if (!memberID || !savingID || !amountSaving) {
                     Swal.fire('Error!', 'Semua kolom harus diisi!', 'error');
                     return;
                 }
 
-                // Buat objek simpanan baru
+                // Check if it's the first member input
+                if (simpananArray.length === 0) {
+                    firstMemberID = memberID;
+                } else {
+                    if (memberID !== firstMemberID) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Member ID berbeda! Hanya member yang sama yang bisa diinput.',
+                        });
+                        return;
+                    }
+                }
+
+                // Create new savings object
                 let simpanan = {
-                    id_anggota_asal: memberAsalID,
-                    nama_anggota_asal: memberAsalName,
-                    id_simpanan_asal: savingAsalID,
-                    produk_simpanan_asal: savingProductAsalName,
-                    id_anggota_tujuan: memberTujuanID,
-                    nama_anggota_tujuan: memberTujuanName,
-                    id_simpanan_tujuan: savingTujuanID,
-                    produk_simpanan_tujuan: savingProductTujuanName,
+                    id_anggota: memberID,
+                    nama_anggota: memberName,
+                    id_simpanan: savingID,
+                    produk_simpanan: savingProductName,
+                    metode_transaksi: kondisiSetoran,
                     nominal_setoran: amountSaving,
                     keterangan: savingDesc
                 };
-
                 console.log(simpanan);
-                
 
-                // Masukkan data ke array
+                // Add the data to the array
                 simpananArray.push(simpanan);
 
-                // Tambahkan baris ke tabel
+                // Update the table with the new data
                 updateTable();
             });
 
-            // Fungsi untuk memperbarui tabel
+            // Function to update the table with the savings data
             function updateTable() {
                 let tableBody = $('#dataTable tbody');
-                tableBody.empty(); // Kosongkan isi tabel sebelum menambahkan data baru
+                tableBody.empty(); // Clear the table before adding new data
 
                 let totalSetoran = 0;
 
-                // Loop melalui array dan tambahkan baris ke tabel
+                // Loop through the array and add rows to the table
                 $.each(simpananArray, function(index, simpanan) {
-                    totalSetoran += parseFloat(simpanan.nominal_setoran.replace(/\./g, '').replace(/,/g,
+                    // Remove the formatting (dots and commas) for calculation
+                    let cleanAmount = parseFloat(simpanan.nominal_setoran.replace(/\./g, '').replace(/,/g,
                         '.'));
+
+                    if (simpanan.metode_transaksi == "+") {
+                        totalSetoran += cleanAmount;
+                    } else {
+                        totalSetoran -= cleanAmount;
+                    }
+
                     tableBody.append(`
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${simpanan.nama_anggota_asal}</td>
-                        <td>${simpanan.produk_simpanan_asal}</td>
-                        <td>${simpanan.nama_anggota_tujuan}</td>
-                        <td>${simpanan.produk_simpanan_tujuan}</td>
-                        <td>${simpanan.nominal_setoran}</td>
-                        <td>${simpanan.keterangan}</td>
-                        <td><button class="btn btn-danger btn-sm" onclick="removeRow(${index})">Hapus</button></td>
-                    </tr>
-                `);
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${simpanan.nama_anggota}</td>
+                    <td>${simpanan.produk_simpanan}</td>
+                    <td>${simpanan.metode_transaksi}${formatRupiah(cleanAmount)}</td>
+                    <td>${simpanan.keterangan}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="removeRow(${index})">Hapus</button></td>
+                </tr>
+            `);
                 });
 
-                // Perbarui total setoran di footer tabel
+                // Update total setoran in the table footer
                 $('.amount_setoran').text(formatRupiah(totalSetoran));
             }
 
-            // Fungsi untuk menghapus baris dari tabel dan array
+            // Function to remove a row from the table and array
             window.removeRow = function(index) {
-                simpananArray.splice(index, 1); // Hapus elemen dari array
-                updateTable(); // Perbarui tabel setelah penghapusan
+                simpananArray.splice(index, 1); // Remove the element from the array
+                updateTable(); // Update the table after deletion
             }
 
-            // Saat form disubmit, simpan array ke dalam input hidden
+            // Submit form handler
             $('#simpananForm').on('submit', function() {
-                // Serialize array menjadi JSON string dan masukkan ke input hidden
-                $('#simpanan_array').val(JSON.stringify(simpananArray));
+                $('#simpanan_array').val(JSON.stringify(simpananArray)); // Serialize array to JSON string
             });
 
             // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
@@ -245,17 +221,14 @@
 
             // Auto generate keterangan
             function generateKeterangan() {
-                let asalMemberName = $('#asal_member_name').find('option:selected').data("nama_anggota");
-                let asalSavingProductName = $('#asal_saving_product').find('option:selected').data("nama_simpanan");
-                let tujuanMemberName = $('#tujuan_member_name').find('option:selected').data("nama_anggota");
-                let tujuanSavingProductName = $('#tujuan_saving_product').find('option:selected').data("nama_simpanan");
+                let memberName = $('#member_name').find('option:selected').data("nama_anggota");
+                let savingProductName = $('#saving_product').find('option:selected').data("nama_simpanan");
                 let amountSaving = $('#amount_saving').val();
 
-                if (asalMemberName && asalSavingProductName && tujuanMemberName && tujuanSavingProductName && amountSaving) {
+                if (memberName && savingProductName && amountSaving) {
                     $('#saving_desc').val(
-                        'Pindah Buku Simpanan ' + asalSavingProductName +
-                        ' dari ' + asalMemberName +
-                        ' ke Simpanan ' + tujuanSavingProductName + ' ' + tujuanMemberName +
+                        'Setoran Simpanan ' + savingProductName +
+                        ' untuk ' + memberName +
                         ' oleh ' + "{{ Session::get('nama_user', 'Petugas') }}" +
                         ' sebesar Rp ' + formatRupiah(amountSaving)
                     );
@@ -263,7 +236,7 @@
             }
 
             // Trigger saat field berubah
-            $('#asal_member_name, #asal_saving_product, #tujuan_member_name, #tujuan_saving_product').on('change', function() {
+            $('#member_name, #saving_product').on('change', function() {
                 generateKeterangan();
             });
 

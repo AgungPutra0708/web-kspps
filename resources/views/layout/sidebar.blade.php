@@ -1,10 +1,10 @@
 @if (Route::currentRouteName() != 'login')
     <!-- Sidebar -->
-    <ul class="navbar-nav sidebar sidebar-dark accordion d-none d-lg-block" style="background-color: #08786B"
+    <ul class="navbar-nav sidebar sidebar-dark accordion d-none {{ Session::get('role_petugas') === 'AO' ? 'd-lg-none' : 'd-lg-block' }}" style="background-color: #08786B"
         id="accordionSidebar">
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
-            BMT SARANA
+            {{ Session::get('nama_koperasi') }}
         </a>
 
         <!-- Divider -->

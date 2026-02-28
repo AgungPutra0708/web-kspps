@@ -23,94 +23,140 @@ class PindahBukuController extends Controller
 
     public function store(Request $request)
     {
-        // Decode JSON array dari input hidden
         $simpananArray = json_decode($request->simpanan_array, true);
 
-        // Validasi array jika diperlukan
         if (empty($simpananArray)) {
             return redirect()->back()->withErrors(['message' => 'Data simpanan kosong']);
         }
 
-        // Loop melalui setiap item dalam array dan simpan ke database
-        foreach ($simpananArray as $simpanan) {
-            // Ambil data anggota dengan filter id_rembug
-            $anggotaData = AnggotaModel::where('id', $simpanan['id_anggota_asal'])->get();
+        DB::beginTransaction();
 
-            // Ambil saldo akhir dari transaksi simpanan berdasarkan id_anggota dan id_simpanan asal
-            $rekeningSimpananAsal = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan_asal'])
-                ->where('id_anggota', $simpanan['id_anggota_asal'])
-                ->first();
+        try {
 
-            if (!$rekeningSimpananAsal) {
-                $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan_asal']);
-                $kodeAnggota = AnggotaModel::find($simpanan['id_anggota_asal']);
+            $transaksiIds = []; // ← kumpulkan semua id transaksi
 
-                // Buat kode rekening simpanan baru jika belum ada
-                $memberCodePart = substr($kodeAnggota->no_anggota, strpos($kodeAnggota->no_anggota, '-') + 1);
-                $noRekeningSimpanan = $kodeSimpanan->no_simpanan . '-' . $memberCodePart;
+            foreach ($simpananArray as $simpanan) {
 
-                $rekeningSimpananAsal = RekeningSimpananModel::create([
-                    'no_rekening_simpanan' => $noRekeningSimpanan,
-                    'id_anggota' => $simpanan['id_anggota_asal'],
+                // =============================
+                // REKENING ASAL
+                // =============================
+
+                $rekeningSimpananAsal = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan_asal'])
+                    ->where('id_anggota', $simpanan['id_anggota_asal'])
+                    ->first();
+
+                if (!$rekeningSimpananAsal) {
+
+                    $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan_asal']);
+                    $kodeAnggota = AnggotaModel::find($simpanan['id_anggota_asal']);
+
+                    if (!$kodeSimpanan || !$kodeAnggota) {
+                        throw new \Exception('Data Simpanan Asal atau Anggota tidak ditemukan.');
+                    }
+
+                    $memberCodePart = substr(
+                        $kodeAnggota->no_anggota,
+                        strpos($kodeAnggota->no_anggota, '-') + 1
+                    );
+
+                    $rekeningSimpananAsal = RekeningSimpananModel::create([
+                        'no_rekening_simpanan' => $kodeSimpanan->no_simpanan . '-' . $memberCodePart,
+                        'id_anggota' => $simpanan['id_anggota_asal'],
+                        'id_simpanan' => $simpanan['id_simpanan_asal'],
+                    ]);
+                }
+
+                $cleanAmount = str_replace('.', '', $simpanan['nominal_setoran']);
+                $cleanAmount = str_replace(',', '.', $cleanAmount);
+
+                // Hitung saldo akhir
+                $saldoAkhir = TransaksiSimpananModel::where('id_rekening_simpanan', $rekeningSimpananAsal->id)
+                    ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
+                    ->value('saldo_akhir') ?? 0;
+
+                if ($saldoAkhir < $cleanAmount) {
+                    throw new \Exception('Saldo tidak mencukupi.');
+                }
+
+                // =============================
+                // REKENING TUJUAN
+                // =============================
+
+                $rekeningSimpananTujuan = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan_tujuan'])
+                    ->where('id_anggota', $simpanan['id_anggota_tujuan'])
+                    ->first();
+
+                if (!$rekeningSimpananTujuan) {
+
+                    $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan_tujuan']);
+                    $kodeAnggota = AnggotaModel::find($simpanan['id_anggota_tujuan']);
+
+                    if (!$kodeSimpanan || !$kodeAnggota) {
+                        throw new \Exception('Data Simpanan Tujuan atau Anggota tidak ditemukan.');
+                    }
+
+                    $memberCodePart = substr(
+                        $kodeAnggota->no_anggota,
+                        strpos($kodeAnggota->no_anggota, '-') + 1
+                    );
+
+                    $rekeningSimpananTujuan = RekeningSimpananModel::create([
+                        'no_rekening_simpanan' => $kodeSimpanan->no_simpanan . '-' . $memberCodePart,
+                        'id_anggota' => $simpanan['id_anggota_tujuan'],
+                        'id_simpanan' => $simpanan['id_simpanan_tujuan'],
+                    ]);
+                }
+
+                // =============================
+                // TRANSAKSI ASAL (-)
+                // =============================
+
+                $transaksiAsal = TransaksiSimpananModel::create([
+                    'id_rekening_simpanan' => $rekeningSimpananAsal->id,
                     'id_simpanan' => $simpanan['id_simpanan_asal'],
+                    'id_anggota' => $simpanan['id_anggota_asal'],
+                    'metode_transaksi' => "-",
+                    'jumlah_setoran' => $cleanAmount,
+                    'keterangan' => $simpanan['keterangan'],
+                    'tanggal_transaksi' => Carbon::now(),
                 ]);
-            }
 
-            // Hitung saldo akhir dari transaksi simpanan
-            $saldoAkhir = TransaksiSimpananModel::where('id_rekening_simpanan', $rekeningSimpananAsal->id)
-                ->select(DB::raw('SUM(CASE WHEN metode_transaksi = "+" THEN jumlah_setoran ELSE -jumlah_setoran END) as saldo_akhir'))
-                ->value('saldo_akhir');
+                $transaksiIds[] = $transaksiAsal->id;
 
-            // Pengecekan saldo: jika saldo akhir kurang dari nominal setoran, kembalikan pesan error
-            if ($saldoAkhir < $simpanan['nominal_setoran']) {
-                return redirect()->back()->with(['error' => 'Saldo tidak mencukupi']);
-            }
+                // =============================
+                // TRANSAKSI TUJUAN (+)
+                // =============================
 
-            // Lanjutkan ke proses simpanan jika saldo mencukupi
-            $rekeningSimpananTujuan = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan_tujuan'])
-                ->where('id_anggota', $simpanan['id_anggota_tujuan'])
-                ->first();
-
-            if (!$rekeningSimpananTujuan) {
-                $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan_tujuan']);
-                $kodeAnggota = AnggotaModel::find($simpanan['id_anggota_tujuan']);
-                $memberCodePart = substr($kodeAnggota->no_anggota, strpos($kodeAnggota->no_anggota, '-') + 1);
-                $noRekeningSimpanan = $kodeSimpanan->no_simpanan . '-' . $memberCodePart;
-
-                $rekeningSimpananTujuan = RekeningSimpananModel::create([
-                    'no_rekening_simpanan' => $noRekeningSimpanan,
-                    'id_anggota' => $simpanan['id_anggota_tujuan'],
+                $transaksiTujuan = TransaksiSimpananModel::create([
+                    'id_rekening_simpanan' => $rekeningSimpananTujuan->id,
                     'id_simpanan' => $simpanan['id_simpanan_tujuan'],
+                    'id_anggota' => $simpanan['id_anggota_tujuan'],
+                    'metode_transaksi' => "+",
+                    'jumlah_setoran' => $cleanAmount,
+                    'keterangan' => $simpanan['keterangan'],
+                    'tanggal_transaksi' => Carbon::now(),
                 ]);
+
+                $transaksiIds[] = $transaksiTujuan->id;
             }
 
-            // Create Transaksi Simpanan asal
-            TransaksiSimpananModel::create([
-                'id_rekening_simpanan' => $rekeningSimpananAsal->id,
-                'id_simpanan' => $simpanan['id_simpanan_asal'],
-                'id_anggota' => $simpanan['id_anggota_asal'],
-                'metode_transaksi' => "-",
-                'jumlah_setoran' => $simpanan['nominal_setoran'],
-                'keterangan' => $simpanan['keterangan'],
-                'tanggal_transaksi' => Carbon::now(),
-            ]);
+            DB::commit();
 
-            // Create Transaksi Simpanan tujuan
-            TransaksiSimpananModel::create([
-                'id_rekening_simpanan' => $rekeningSimpananTujuan->id,
-                'id_simpanan' => $simpanan['id_simpanan_tujuan'],
-                'id_anggota' => $simpanan['id_anggota_tujuan'],
-                'metode_transaksi' => "+",
-                'jumlah_setoran' => $simpanan['nominal_setoran'],
-                'keterangan' => $simpanan['keterangan'],
-                'tanggal_transaksi' => Carbon::now(),
+            return redirect()->back()->with([
+                'success'   => 'Data pindah buku berhasil ditambahkan.',
+                'print_url' => route('simpanan.print', [
+                    'ids' => implode(',', $transaksiIds)
+                ])
+            ]);
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            return redirect()->back()->with([
+                'error' => $e->getMessage()
             ]);
         }
-
-        // Redirect kembali dengan pesan sukses
-        return redirect()->back()->with('success', 'Data pindah buku berhasil ditambahkan.');
     }
-
 
     /**
      * Update the specified resource in storage.

@@ -21,9 +21,9 @@
                                         <div class="form-group">
                                             <label for="petugas_number">Nomor Petugas*</label>
                                             <div class="d-flex align-items-center">
-                                                <input type="text" class="form-control petugas_number"
-                                                    name="petugas_number" id="petugas_number" placeholder="Nomor Petugas"
-                                                    readonly style="flex: 1;">
+                                                <input type="text" class="form-control petugas_number" name="petugas_number"
+                                                    id="petugas_number" placeholder="Nomor Petugas" readonly
+                                                    style="flex: 1;">
                                                 <button class="btn btn-primary ml-2" type="button" id="showSearchMember"
                                                     style="height: 100%;"><i class="fas fa-search"></i></button>
                                             </div>
@@ -38,10 +38,19 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
+                                            <label for="petugas_role">Role Petugas*</label>
+                                            <select class="form-control petugas_role" name="petugas_role" id="petugas_role">
+                                                <option value="">Pilih Role</option>
+                                                <option value="ADMIN">ADMIN</option>
+                                                <option value="AO">AO</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
                                             <label for="petugas_username">Username Petugas</label>
-                                            <input type="text" class="form-control petugas_username"
-                                                name="petugas_username" id="petugas_username"
-                                                placeholder="Username Petugas">
+                                            <input type="text" class="form-control petugas_username" name="petugas_username"
+                                                id="petugas_username" placeholder="Username Petugas">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -93,15 +102,23 @@
                                     id="edit_petugas_name" placeholder="Nama Petugas">
                             </div>
                             <div class="form-group">
+                                <label for="petugas_role">Role Petugas*</label>
+                                <select class="form-control edit_petugas_role" name="edit_petugas_role"
+                                    id="edit_petugas_role">
+                                    <option value="">Pilih Role</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="AO">AO</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="edit_petugas_username">Username Petugas</label>
-                                <input type="text" class="form-control edit_petugas_username"
-                                    name="edit_petugas_username" id="edit_petugas_username" placeholder="Username Petugas">
+                                <input type="text" class="form-control edit_petugas_username" name="edit_petugas_username"
+                                    id="edit_petugas_username" placeholder="Username Petugas">
                             </div>
                             <div class="form-group">
                                 <label for="edit_petugas_password">Password Petugas</label>
                                 <input type="password" class="form-control edit_petugas_password"
-                                    name="edit_petugas_password" id="edit_petugas_password"
-                                    placeholder="Password Petugas">
+                                    name="edit_petugas_password" id="edit_petugas_password" placeholder="Password Petugas">
                             </div>
                         </form>
 
@@ -121,8 +138,8 @@
     </div>
     <!-- /.container-fluid -->
     <script>
-        $(document).ready(function() {
-            $('#showSearchMember').on('click', function() {
+        $(document).ready(function () {
+            $('#showSearchMember').on('click', function () {
                 $('#select_petugas_name').val('').change();
                 $('#edit_petugas_name').val('').change();
                 $('#edit_petugas_username').val('').change();
@@ -130,15 +147,16 @@
                 $.ajax({
                     url: "{{ route('get_data_petugas') }}",
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         $('#select_petugas_name').empty().prepend('<option value=""></option>');
 
-                        $.each(response.petugas_data, function(index, item) {
+                        $.each(response.petugas_data, function (index, item) {
                             $('#select_petugas_name').append('<option value="' + item
                                 .id +
                                 '" data-nama_petugas="' + item.nama_petugas +
+                                '" data-role_petugas="' + item.role_petugas +
                                 '" data-username="' + item.data_user_petugas
-                                .username +
+                                    .username +
                                 '">(' + item.no_petugas + ') ' + item.nama_petugas +
                                 '</option>');
                         });
@@ -146,17 +164,18 @@
                         $('#select_petugas_name').prepend('<option value=""></option>');
                         $('#petugasModal').modal('show');
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("Terjadi kesalahan: " + error);
                     }
                 });
             });
-            $('#select_petugas_name').change(function(e) {
+            $('#select_petugas_name').change(function (e) {
                 var selectedOption = $(this).find('option:selected');
                 var petugasId = selectedOption.val();
                 var updateUrl = "{{ route('petugas.update', ':id') }}";
                 var deleteUrl = "{{ route('petugas.destroy', ':id') }}";
                 var nama_petugas = selectedOption.data('nama_petugas');
+                var role_petugas = selectedOption.data('role_petugas');
                 var username = selectedOption.data('username');
 
                 updateUrl = updateUrl.replace(':id', petugasId);
@@ -164,6 +183,7 @@
 
                 $('#edit_petugas_name').val(nama_petugas).change();
                 $('#edit_petugas_username').val(username).change();
+                $('#edit_petugas_role').val(role_petugas).change();
 
                 $('#editPetugasForm').attr('action', updateUrl);
                 $('#deletePetugasForm').attr('action', deleteUrl);
@@ -173,7 +193,7 @@
                 $.ajax({
                     url: "{{ route('get_number_petugas') }}",
                     method: 'GET',
-                    success: function(response) {
+                    success: function (response) {
                         $('#petugas_number').val(response).change();
                     }
                 });

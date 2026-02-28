@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,5 +25,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app['router']->aliasMiddleware('role', \App\Http\Middleware\RoleMiddleware::class);
         $this->app['router']->aliasMiddleware('mobile', \App\Http\Middleware\MobileMiddleware::class);
         $this->app['router']->aliasMiddleware('checkSession', \App\Http\Middleware\CheckSessionExpired::class);
+        // if (app()->environment('production') || str_contains(config('app.url'), 'ngrok')) {
+        //     URL::forceScheme('https');
+        // }
     }
 }

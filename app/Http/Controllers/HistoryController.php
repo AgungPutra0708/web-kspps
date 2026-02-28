@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\TransaksiSimpananModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
 
 class HistoryController extends Controller
 {
@@ -13,11 +15,63 @@ class HistoryController extends Controller
      */
     public function index($id_rekening_simpanan)
     {
-        // Dekripsi ID simpanan
         $id_rekening_simpanan = Crypt::decrypt($id_rekening_simpanan);
-        // Ambil history berdasarkan id_simpanan
-        $historyData = TransaksiSimpananModel::where('id_rekening_simpanan', $id_rekening_simpanan)->get();
-        return view('admin.historysimpanan', compact('historyData', 'id_rekening_simpanan'));
+
+        return view('admin.historysimpanan', compact('id_rekening_simpanan'));
+    }
+
+    public function data(Request $request, $id_rekening_simpanan)
+    {
+        $id_rekening_simpanan = Crypt::decrypt($id_rekening_simpanan);
+
+        $query = TransaksiSimpananModel::where('id_rekening_simpanan', $id_rekening_simpanan);
+
+        return DataTables::of($query)
+
+            ->addIndexColumn()
+
+            ->editColumn('tanggal_transaksi', function ($row) {
+                return \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y H:i');
+            })
+
+            ->editColumn('jumlah_setoran', function ($row) {
+                return number_format($row->jumlah_setoran, 0, ',', '.');
+            })
+
+            ->addColumn('aksi', function ($row) {
+                $editUrl = route('edit_transaction', Crypt::encrypt($row->id));
+                $deleteUrl = route('delete_transaction', $row->id);
+                $printUrl = route('simpanan.print', [
+                    'ids' => implode(',', [$row->id]),
+                ]);
+                if (Session::get('role_petugas') == 'ADMIN') {
+                    return '
+                        <a href="'.$editUrl.'" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="'.$printUrl.'" class="btn btn-info btn-sm" target="_blank">
+                            <i class="fas fa-print"></i>
+                        </a>
+                        <form action="'.$deleteUrl.'" method="POST" style="display:inline;">
+                            '.csrf_field().'
+                            '.method_field('DELETE').'
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm(\'Yakin hapus?\')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    ';
+                } else {
+                    return '
+                        <a href="'.$printUrl.'" class="btn btn-info btn-sm" target="_blank">
+                            <i class="fas fa-print"></i>
+                        </a>
+                    ';
+                }
+            })
+
+            ->rawColumns(['aksi'])
+            ->make(true);
     }
 
     /**

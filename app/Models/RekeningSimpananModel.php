@@ -18,4 +18,9 @@ class RekeningSimpananModel extends Model
     {
         return $this->belongsTo(SimpananModel::class, 'id_simpanan', 'id');
     }
+
+    public function anggota()
+    {
+        return $this->belongsTo(AnggotaModel::class, 'id_anggota', 'id');
+    }
 }

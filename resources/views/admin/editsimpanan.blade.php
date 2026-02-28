@@ -33,7 +33,7 @@
                             </div>
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-success">Update</button>
-                                <a href="{{ route('history', Crypt::encrypt($transaction->id_simpanan)) }}"
+                                <a href="{{ route('history', Crypt::encrypt($transaction->id_rekening_simpanan)) }}"
                                     class="btn btn-danger">Batal</a>
                             </div>
                         </div>

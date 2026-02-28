@@ -10,6 +10,7 @@ use App\Models\TransaksiSimpananModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
 
 class InputSavingController extends Controller
@@ -23,27 +24,46 @@ class InputSavingController extends Controller
         return view('admin.inputsimpanan', $data);
     }
 
+    public function indexAo()
+    {
+        $data = [
+            'dataSimpanan' => SimpananModel::all(),
+            'dataAnggota' => AnggotaModel::all(),
+        ];
+        return view('admin.inputsimpananao', $data);
+    }
+
+    public function indexAoPenarikan()
+    {
+        $data = [
+            'dataSimpanan' => SimpananModel::all(),
+            'dataAnggota' => AnggotaModel::all(),
+        ];
+        return view('admin.inputpenarikanao', $data);
+    }
+
     public function store(Request $request)
     {
-        // Decode JSON array from the hidden input
         $simpananArray = json_decode($request->simpanan_array, true);
 
-        // Validate array if necessary
         if (empty($simpananArray)) {
             return redirect()->back()->withErrors(['message' => 'Data simpanan kosong']);
         }
 
-        // Use database transactions to ensure atomicity
         DB::beginTransaction();
 
         try {
-            // Loop through each item in the array and save to the database
+
+            $transaksiIds = []; // ← tampung semua id transaksi
+
             foreach ($simpananArray as $simpanan) {
+
                 $rekeningSimpanan = RekeningSimpananModel::where('id_simpanan', $simpanan['id_simpanan'])
                     ->where('id_anggota', $simpanan['id_anggota'])
                     ->first();
 
                 if (!$rekeningSimpanan) {
+
                     $kodeSimpanan = SimpananModel::find($simpanan['id_simpanan']);
                     $kodeAnggota = AnggotaModel::find($simpanan['id_anggota']);
 
@@ -51,13 +71,13 @@ class InputSavingController extends Controller
                         throw new \Exception('Data Simpanan atau Anggota tidak ditemukan.');
                     }
 
-                    // Extract the member code part after '-'
-                    $memberCodePart = substr($kodeAnggota->no_anggota, strpos($kodeAnggota->no_anggota, '-') + 1);
+                    $memberCodePart = substr(
+                        $kodeAnggota->no_anggota,
+                        strpos($kodeAnggota->no_anggota, '-') + 1
+                    );
 
-                    // Create the combined code: SP-00001
                     $noRekeningSimpanan = $kodeSimpanan->no_simpanan . '-' . $memberCodePart;
 
-                    // Create Rekening Simpanan
                     $rekeningSimpanan = RekeningSimpananModel::create([
                         'no_rekening_simpanan' => $noRekeningSimpanan,
                         'id_anggota' => $simpanan['id_anggota'],
@@ -65,33 +85,39 @@ class InputSavingController extends Controller
                     ]);
                 }
 
-                // Clean and format 'nominal_setoran' to ensure it's a valid decimal
-                $cleanAmount = str_replace('.', '', $simpanan['nominal_setoran']); // Remove dots
-                $cleanAmount = str_replace(',', '.', $cleanAmount); // Replace commas with dots
+                $cleanAmount = str_replace('.', '', $simpanan['nominal_setoran']);
+                $cleanAmount = str_replace(',', '.', $cleanAmount);
 
-                // Create Transaksi Simpanan
-                TransaksiSimpananModel::create([
+                $transaksi = TransaksiSimpananModel::create([
                     'id_rekening_simpanan' => $rekeningSimpanan->id,
                     'id_simpanan' => $simpanan['id_simpanan'],
                     'id_anggota' => $simpanan['id_anggota'],
                     'metode_transaksi' => $simpanan['metode_transaksi'],
-                    'jumlah_setoran' => number_format((float) $cleanAmount, 2, '.', ''), // Store as a decimal (15,2)
+                    'jumlah_setoran' => number_format((float) $cleanAmount, 2, '.', ''),
                     'keterangan' => $simpanan['keterangan'],
                     'tanggal_transaksi' => Carbon::now(),
+                    'id_petugas' => Session::get('id_user'), // Simpan ID petugas yang melakukan transaksi
                 ]);
+
+                $transaksiIds[] = $transaksi->id; // ← simpan id transaksi
             }
 
-            // Commit the transaction
             DB::commit();
 
-            // Redirect back with success message
-            return redirect()->back()->with('success', 'Data transaksi simpanan berhasil ditambahkan.');
+            return redirect()->back()->with([
+                'success'   => 'Data transaksi simpanan berhasil ditambahkan.',
+                'print_url' => route('simpanan.print', [
+                    'ids' => implode(',', $transaksiIds)
+                ])
+            ]);
+
         } catch (\Exception $e) {
-            // Rollback the transaction if something goes wrong
+
             DB::rollback();
 
-            // Return back with error message
-            return redirect()->back()->with(['error' => 'Gagal menyimpan data transaksi simpanan: ' . $e->getMessage()]);
+            return redirect()->back()->with([
+                'error' => 'Gagal menyimpan data transaksi simpanan: ' . $e->getMessage()
+            ]);
         }
     }
 
@@ -178,6 +204,7 @@ class InputSavingController extends Controller
                     'jumlah_setoran' => $simpanan['jumlah_setoran'],
                     'keterangan' => $simpanan['keterangan'],
                     'tanggal_transaksi' => $tanggalTransaksi, // Gunakan tanggal transaksi dari input
+                    'id_petugas' => Session::get('id_user'), // Simpan ID petugas yang melakukan transaksi
                 ]);
             }
         }
@@ -221,5 +248,20 @@ class InputSavingController extends Controller
                 })
                 ->make(true);
         }
+    }
+
+    public function print(Request $request)
+    {
+        $ids = explode(',', $request->ids);
+
+        $transaksis = TransaksiSimpananModel::with([
+            'rekeningSimpanan',
+            'simpanan',
+            'petugas'
+        ])
+        ->whereIn('id', $ids)
+        ->get();
+
+        return view('admin.printsimpanan', compact('transaksis'));
     }
 }

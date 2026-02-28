@@ -25,28 +25,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($historyData as $index => $history)
-                                                <tr>
-                                                    <td>{{ $index + 1 }}</td>
-                                                    <td>{{ $history->tanggal_transaksi }}</td>
-                                                    <td>{{ $history->angsur_pinjaman }}</td>
-                                                    <td>{{ $history->angsur_margin }}</td>
-                                                    <td>{{ $history->angsuran_ke }}</td>
-                                                    <td>
-                                                        <a href="{{ route('loan.edit', Crypt::encrypt($history->id)) }}"
-                                                            class="btn btn-warning"><i class="fas fa-edit"></i>
-                                                        </a>
-                                                        <form
-                                                            action="{{ route('loan.destroy', Crypt::encrypt($history->id)) }}"
-                                                            method="POST" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger"><i
-                                                                    class="fas fa-trash"></i></button>
-                                                        </form>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -60,4 +38,24 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+
+            $('#historyTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('loan.history.data', Crypt::encrypt($id_pinjaman)) }}",
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                    { data: 'tanggal_transaksi', name: 'tanggal_transaksi' },
+                    { data: 'angsur_pinjaman', name: 'angsur_pinjaman', className: 'text-right' },
+                    { data: 'angsur_margin', name: 'angsur_margin', className: 'text-right' },
+                    { data: 'angsuran_ke', name: 'angsuran_ke' },
+                    { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
+                ],
+                order: [[1, 'desc']]
+            });
+
+        });
+    </script>
 @endsection

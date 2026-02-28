@@ -43,7 +43,7 @@
     <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.select2').select2({
                 theme: 'bootstrap4',
                 placeholder: 'Silahkan pilih',
@@ -53,36 +53,116 @@
                     icon: 'success',
                     title: 'Berhasil!',
                     text: '{{ session('success') }}',
-                    confirmButtonText: 'OK'
-                });
+                    confirmButtonText: 'OK',
+                    @if(session('print_url'))
+                                showCancelButton: true,
+                        cancelButtonText: 'CETAK',
+                    @endif
+                    }).then((result) => {
+
+                        @if(session('print_url'))
+                            if (result.dismiss === Swal.DismissReason.cancel) {
+                                window.open("{{ session('print_url') }}", "_blank");
+                                return;
+                            }
+                        @endif
+
+                        window.location.reload();
+                    });
             @endif
-            @if (session('error'))
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: '{{ session('error') }}',
-                    confirmButtonText: 'OK'
-                });
-            @endif
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonText: 'OK'
+            });
+        @endif
         });
     </script>
-    
-<script>
-    function togglePassword() {
-        let passwordField = document.getElementById("password");
-        let eyeIcon = document.getElementById("eye-icon");
 
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            eyeIcon.classList.remove("fa-eye");
-            eyeIcon.classList.add("fa-eye-slash");
-        } else {
-            passwordField.type = "password";
-            eyeIcon.classList.remove("fa-eye-slash");
-            eyeIcon.classList.add("fa-eye");
+    <script>
+        function togglePassword() {
+            let passwordField = document.getElementById("password");
+            let eyeIcon = document.getElementById("eye-icon");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
         }
-    }
-</script>
+
+
+        function greatFormatRupiah(x) {
+            var min = false;
+            // Pastikan x memiliki nilai yang valid sebelum memanggil toString
+            if (x === null || x === undefined) {
+                x = "";
+            }
+
+            x = x.toString();
+            if (x.includes("-")) {
+                min = true;
+            } else {
+                min = false;
+            }
+            x = x.replace(/-/g, "");
+
+            // decimal sekarang pakai koma
+            var parts = x.toString().split(",");
+
+            // hapus titik karena sekarang titik adalah ribuan
+            parts[0] = parts[0].replace(/\./g, "");
+            var bilangan = parts[0];
+
+            if (parts[1] && parts[1] === "00") {
+                parts.pop();
+            }
+
+            var number_string = bilangan.toString(),
+                sisa = number_string.length % 3,
+                rupiah = number_string.substr(0, sisa),
+                ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+            if (ribuan) {
+                // ribuan sekarang pakai titik
+                var separator = sisa ? "." : "";
+                rupiah += separator + ribuan.join(".");
+            }
+
+            parts[0] = rupiah;
+
+            if (min) {
+                // gabung decimal pakai koma
+                return "-" + parts.join(",");
+            } else {
+                return parts.join(",");
+            }
+        }
+
+        function destroyFormatRupiah(x) {
+            if (typeof x === "number") return x;
+            if (!x) return 0;
+
+            let strValue = String(x);
+            let isNegative = strValue.includes("-");
+
+            // hapus titik ribuan
+            let cleaned = strValue.replace(/[^\d,]/g, "");
+
+            // ubah koma decimal jadi titik
+            let withoutDecimal = cleaned.replace(",", ".");
+
+            let result = parseFloat(withoutDecimal) || 0;
+
+            return isNegative ? -result : result;
+        }
+    </script>
 </body>
 
 </html>

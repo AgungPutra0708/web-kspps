@@ -34,6 +34,7 @@ class PetugasController extends Controller
         $request->validate([
             'petugas_number' => 'required',
             'petugas_name' => 'required',
+            'petugas_role' => 'required',
             'petugas_username' => 'required',
             'petugas_password' => 'required',
         ]);
@@ -45,6 +46,7 @@ class PetugasController extends Controller
             $dataPetugas = [
                 'no_petugas' => $request->petugas_number,
                 'nama_petugas' => $request->petugas_name,
+                'role_petugas' => $request->petugas_role,
             ];
 
             // Menyimpan data ke tabel anggotas
@@ -53,6 +55,7 @@ class PetugasController extends Controller
             $dataPetugasUser = [
                 'id_user' => $id->id,
                 'status' => "petugas",
+                'is_condition' => 0,
                 'username' => $request->petugas_username,
                 'password' => Hash::make($request->petugas_password),
             ];
@@ -71,6 +74,7 @@ class PetugasController extends Controller
         $request->validate([
             'edit_petugas_name' => 'required',
             'edit_petugas_username' => 'required',
+            'edit_petugas_role' => 'required',
         ]);
 
         // Find petugas by ID
@@ -82,6 +86,7 @@ class PetugasController extends Controller
         // Update petugas data
         $petugas->nama_petugas = $request->input('edit_petugas_name');
         $userPetugas->username = $request->input('edit_petugas_username');
+        $petugas->role_petugas = $request->input('edit_petugas_role');
 
         if ($request->input('edit_petugas_password')) {
             $userPetugas->password = Hash::make($request->input('edit_petugas_password'));
