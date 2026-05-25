@@ -18,6 +18,7 @@ class SavingController extends Controller
         $request->validate([
             'saving_number' => 'required',
             'saving_name' => 'required',
+            'jenis_simpanan' => 'required|in:terima,bayar,terima bayar',
         ]);
         $saving = SimpananModel::where('no_simpanan', $request->saving_number)->first();
         if ($saving) {
@@ -26,6 +27,7 @@ class SavingController extends Controller
             $data = [
                 'no_simpanan' => $request->saving_number,
                 'nama_simpanan' => $request->saving_name,
+                'jenis_simpanan' => $request->jenis_simpanan,
                 'utama' => $request->is_main ?? 'false',
                 'keterangan_simpanan' => $request->saving_desc,
             ];
@@ -45,10 +47,13 @@ class SavingController extends Controller
         $request->validate([
             'edit_saving_number' => 'required',
             'edit_saving_name' => 'nullable',
+            'edit_jenis_simpanan' => 'required|in:terima,bayar,terima bayar',
             'edit_saving_desc' => 'nullable',
         ]);
 
-        $saving = SimpananModel::where('no_simpanan', $request->input('edit_saving_number'))->first();
+        $saving = SimpananModel::where('no_simpanan', $request->input('edit_saving_number'))
+            ->where('id', '<>', $id)
+            ->first();
         if ($saving) {
             return redirect()->route('simpanan')->with('error', 'No simpanan sudah digunakan silahkan pilih yang lain!');
         } else {
@@ -58,6 +63,7 @@ class SavingController extends Controller
             // Update saving data
             $savingUpdate->no_simpanan = $request->input('edit_saving_number');
             $savingUpdate->nama_simpanan = $request->input('edit_saving_name');
+            $savingUpdate->jenis_simpanan = $request->input('edit_jenis_simpanan');
             $savingUpdate->keterangan_simpanan = $request->input('edit_saving_desc');
 
             $savingUpdate->save();

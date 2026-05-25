@@ -38,6 +38,17 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="form-group">
+                                            <label for="jenis_simpanan">Jenis Simpanan*</label>
+                                            <select class="form-control" name="jenis_simpanan" id="jenis_simpanan">
+                                                <option value="">Pilih jenis simpanan</option>
+                                                <option value="terima">Terima</option>
+                                                <option value="bayar">Bayar</option>
+                                                <option value="terima bayar">Terima Bayar</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
                                             <label for="is_main">Simpanan Utama?</label>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" id="is_main"
@@ -98,6 +109,15 @@
                                     id="edit_saving_name" placeholder="Nama Simpanan">
                             </div>
                             <div class="form-group">
+                                <label for="edit_jenis_simpanan">Jenis Simpanan*</label>
+                                <select class="form-control" name="edit_jenis_simpanan" id="edit_jenis_simpanan">
+                                    <option value="">Pilih jenis simpanan</option>
+                                    <option value="terima">Terima</option>
+                                    <option value="bayar">Bayar</option>
+                                    <option value="terima bayar">Terima Bayar</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="edit_saving_desc">Keterangan</label>
                                 <textarea class="form-control edit_saving_desc" name="edit_saving_desc" id="edit_saving_desc"></textarea>
                             </div>
@@ -124,6 +144,7 @@
                 $('#select_saving_name').val('').change();
                 $('#edit_saving_number').val('').change();
                 $('#edit_saving_name').val('').change();
+                $('#edit_jenis_simpanan').val('').change();
                 $('#edit_saving_desc').val('').change();
                 $.ajax({
                     url: "{{ route('get_saving_data') }}",
@@ -136,6 +157,7 @@
                                 .id +
                                 '" data-no_simpanan="' + item.no_simpanan +
                                 '" data-nama_simpanan="' + item.nama_simpanan +
+                                '" data-jenis_simpanan="' + item.jenis_simpanan +
                                 '" data-keterangan_simpanan="' + item
                                 .keterangan_simpanan +
                                 '">(' + item.no_simpanan + ') ' + item
@@ -158,6 +180,7 @@
                 var deleteUrl = "{{ route('simpanan.destroy', ':id') }}";
                 var no_simpanan = selectedOption.data('no_simpanan');
                 var nama_simpanan = selectedOption.data('nama_simpanan');
+                var jenis_simpanan = selectedOption.data('jenis_simpanan');
                 var keterangan_simpanan = selectedOption.data('keterangan_simpanan');
 
                 updateUrl = updateUrl.replace(':id', savingId);
@@ -165,6 +188,7 @@
 
                 $('#edit_saving_number').val(no_simpanan).change();
                 $('#edit_saving_name').val(nama_simpanan).change();
+                $('#edit_jenis_simpanan').val(jenis_simpanan).change();
                 $('#edit_saving_desc').val(keterangan_simpanan).change();
 
                 $('#editSavingForm').attr('action', updateUrl);

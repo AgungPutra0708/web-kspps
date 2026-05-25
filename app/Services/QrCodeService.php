@@ -33,6 +33,23 @@ class QrCodeService
         return $this->injectLogo($svg);
     }
 
+    public function generateTanpaLogo(string $data): string
+    {
+        $renderer = new ImageRenderer(
+            new RendererStyle(
+                400,    // size
+                8       // margin (quiet zone)
+            ),
+            new SvgImageBackEnd()
+        );
+
+        $writer = new Writer($renderer);
+
+        $svg = $writer->writeString($data);
+
+        return $svg;
+    }
+
     /**
      * Inject logo to center of SVG QR
      */

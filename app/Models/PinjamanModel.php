@@ -18,4 +18,9 @@ class PinjamanModel extends Model
     {
         return $this->belongsTo(PembiayaanModel::class, 'id_pembiayaan', 'id');
     }
+
+    public function anggota()
+    {
+        return $this->belongsTo(AnggotaModel::class, 'id_anggota', 'id');
+    }
 }

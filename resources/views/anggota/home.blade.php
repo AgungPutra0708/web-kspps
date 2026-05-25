@@ -93,6 +93,13 @@
                     <span class="menu-text">Transaksi</span>
                 </a>
             </div>
+            <div class="col-4 mb-3">
+                <a href="{{ route('message') }}"
+                    class="btn btn-outline-dark flex-column align-items-center justify-content-center btn-home">
+                    <img class="img-button img-fluid" src="{{ asset('assets/img/info.svg') }}" />
+                    <span class="menu-text">Informasi</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>

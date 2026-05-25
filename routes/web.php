@@ -5,6 +5,7 @@ use App\Http\Controllers\InputLoanController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransaksiAnggotaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/kartu-anggota', function () {
@@ -108,6 +109,8 @@ Route::post('/pesan-anggota/delete', [App\Http\Controllers\MessageController::cl
 
 Route::get('/cek-simpanan-pembiayaan', [App\Http\Controllers\LoanSavingCheckController::class, 'index'])->name('cek_saldo');
 Route::get('/cek-simpanan-pembiayaan/get-data', [App\Http\Controllers\LoanSavingCheckController::class, 'getSavingLoanData'])->name('get_saving_loan_data');
+Route::get('/cek-simpanan/{id}/qrcode', [App\Http\Controllers\LoanSavingCheckController::class, 'generateQRSimpanan'])->name('generate_simpanan_qrcode');
+Route::get('/cek-pembiayaan/{id}/qrcode', [App\Http\Controllers\LoanSavingCheckController::class, 'generateQRPembiayaan'])->name('generate_pembiayaan_qrcode');
 
 Route::get('/history/{id_simpanan}', [HistoryController::class, 'index'])->name('history');
 Route::get('/history-simpanan/data/{id}', [HistoryController::class, 'data'])->name('history_simpanan.data');
@@ -122,6 +125,15 @@ Route::get('/loan-history/data/{encryptedId}', [LoanController::class, 'historyD
 Route::get('/loan/edit/{encryptedId}', [LoanController::class, 'edit'])->name('loan.edit');
 Route::delete('/loan/delete/{encryptedId}', [LoanController::class, 'destroyTransaction'])->name('loan.destroy');
 Route::put('/loan/update/{id}', [LoanController::class, 'updateHistory'])->name('loan.update');
+
+// Transaksi Anggota Routes
+Route::get('/transaksi-anggota', [TransaksiAnggotaController::class, 'index'])->middleware('role:petugas,ADMIN')->name('transaksi_anggota');
+Route::get('/transaksi-anggota/data', [TransaksiAnggotaController::class, 'data'])->middleware('role:petugas,ADMIN')->name('transaksi_anggota.data');
+Route::get('/transaksi-anggota/detail/{id}', [TransaksiAnggotaController::class, 'detail'])->middleware('role:petugas,ADMIN')->name('transaksi_anggota.detail');
+Route::get('/transaksi-anggota/export', [TransaksiAnggotaController::class, 'export'])->middleware('role:petugas,ADMIN')->name('transaksi_anggota.export');
+Route::get('/transaksi-anggota/print', [TransaksiAnggotaController::class, 'print'])->middleware('role:petugas,ADMIN')->name('transaksi_anggota.print');
+Route::delete('/transaksi-anggota/{id}', [TransaksiAnggotaController::class, 'destroy'])->middleware('role:petugas,ADMIN')->name('transaksi_anggota.destroy');
+Route::post('/transaksi-anggota/scan-qr', [TransaksiAnggotaController::class, 'scanQr'])->middleware('role:petugas,ADMIN')->name('transaksi_anggota.scanQr');
 
 Route::get('/pembiayaan/edit/{encryptedId}', [InputLoanController::class, 'edit'])->name('pinjaman.edit');
 Route::put('/pembiayaan/update/{id}', [InputLoanController::class, 'updatePembiayaan'])->name('pinjaman.update');
@@ -143,3 +155,11 @@ Route::get('/pesan', [App\Http\Controllers\MessageAnggotaController::class, 'ind
 Route::get('/detail-pesan/{id}', [App\Http\Controllers\MessageAnggotaController::class, 'detail'])->middleware('checkSession', 'role:anggota', 'mobile')->name('detail_message');
 Route::get('/profile-anggota', [App\Http\Controllers\ProfileAnggotaController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('profile');
 Route::post('/change-password', [App\Http\Controllers\UserMemberController::class, 'changePassword'])->middleware('checkSession', 'role:anggota', 'mobile')->name('changePassword');
+
+Route::get('/qr', [App\Http\Controllers\QrCodeController::class, 'index'])->middleware('checkSession', 'role:anggota', 'mobile')->name('qr.index');
+Route::post('/qr/detail', [App\Http\Controllers\QrCodeController::class, 'detail'])->middleware('checkSession', 'role:anggota', 'mobile')->name('qr.detail');
+Route::get('/qr/get-simpanan', [App\Http\Controllers\QrCodeController::class, 'getSimpananAnggota'])->middleware('checkSession', 'role:anggota', 'mobile')->name('qr.get_simpanan');
+Route::get('/qr/get-simpanan-terima', [App\Http\Controllers\QrCodeController::class, 'getSimpananTerima'])->middleware('checkSession', 'role:anggota', 'mobile')->name('qr.get_simpanan_terima');
+Route::get('/qr/generate-qr-simpanan/{id}', [App\Http\Controllers\QrCodeController::class, 'generateQRSimpanan'])->name('qr.generate_qr_simpanan');
+Route::post('/qr/process', [App\Http\Controllers\QrCodeController::class, 'process'])->name('qr.process');
+

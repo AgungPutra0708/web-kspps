@@ -20,6 +20,17 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
+                                            <label for="no_rekening">No Rekening</label>
+                                            <input type="text" class="form-control no_rekening"
+                                                name="no_rekening" id="no_rekening" placeholder="No Rekening"
+                                                value="{{ old('no_rekening', $pinjaman->no_pinjaman) }}">
+                                                @error('no_rekening')
+                                                    <div class="text-danger">{{ $message }}</div>
+                                                @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-6">
+                                        <div class="form-group">
                                             <label for="loan_product">Pilih Produk Pembiayaan</label>
                                             <select class="form-control select2 loan_product" style="width: 100%;"
                                                 name="loan_product" id="loan_product">
@@ -50,8 +61,6 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
                                             <label for="nominal_pinjaman">Nominal Pinjaman</label>
@@ -68,8 +77,6 @@
                                                 value="{{ $pinjaman->besar_margin }}">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
                                             <label for="nominal_angsuran_pinjaman">Nominal Angsuran Pinjaman</label>
@@ -88,8 +95,6 @@
                                                 value="{{ $pinjaman->angsur_margin }}">
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
                                             <label for="lama_pinjaman">Lama Pinjaman</label>
@@ -130,8 +135,6 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-lg-6 col-sm-6">
                                         <div class="form-group">
                                             <label for="loan_desc">Keterangan</label>

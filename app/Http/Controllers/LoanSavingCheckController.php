@@ -6,6 +6,7 @@ use App\Models\AnggotaModel;
 use App\Models\PinjamanModel;
 use App\Models\RekeningSimpananModel;
 use App\Models\SimpananModel;
+use App\Services\QrCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -78,5 +79,37 @@ class LoanSavingCheckController extends Controller
             'saving_data' => $filteredDataSimpanan,
             'loan_data' => $filteredDataPinjaman,
         ]);
+    }
+
+    public function generateQRSimpanan(string $id, QrCodeService $qr)
+    {
+        $id = Crypt::decrypt($id);
+        
+        $rekeningSimpanan = RekeningSimpananModel::with('anggota')->findOrFail($id);
+        
+        $simpananData = 'simpanan|' . $rekeningSimpanan->no_rekening_simpanan . '|' . $rekeningSimpanan->anggota->nama_anggota;
+
+        $encryptedData = Crypt::encryptString($simpananData);
+
+        $svg = $qr->generateTanpaLogo($encryptedData);
+
+        return response($svg)
+            ->header('Content-Type', 'image/svg+xml');
+    }
+
+    public function generateQRPembiayaan(string $id, QrCodeService $qr)
+    {
+        $id = Crypt::decrypt($id);
+        
+        $rekeningPinjaman = PinjamanModel::with('anggota')->findOrFail($id);
+        
+        $pinjamanData = 'pembiayaan|' . $rekeningPinjaman->no_pinjaman . '|' . $rekeningPinjaman->anggota->nama_anggota;
+
+        $encryptedData = Crypt::encryptString($pinjamanData);
+
+        $svg = $qr->generateTanpaLogo($encryptedData);
+
+        return response($svg)
+            ->header('Content-Type', 'image/svg+xml');
     }
 }

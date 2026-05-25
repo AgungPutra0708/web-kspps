@@ -10,11 +10,11 @@
             </a>
         </li>
         <li class="list">
-            <a href="{{ route('message') }}">
+            <a href="{{ route('qr.index') }}">
                 <span class="icon">
-                    <i class="fas fa-info"></i>
+                    <i class="fas fa-qrcode"></i>
                 </span>
-                <span class="text">Message</span>
+                <span class="text">QR</span>
                 <span class="circle"></span>
             </a>
         </li>

@@ -102,6 +102,7 @@
     <!-- Page level plugins -->
     <script src="{{ asset('assets/vendor/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
         // Fungsi untuk menampilkan spinner
         function setLoading() {

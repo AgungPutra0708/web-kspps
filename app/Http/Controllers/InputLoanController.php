@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 
 class InputLoanController extends Controller
@@ -92,6 +93,13 @@ class InputLoanController extends Controller
             'lama_pinjaman' => 'required',
             'kondisi_pinjaman' => 'required|string',
             'loan_desc' => 'nullable|string',
+            'no_rekening' => [
+                'required',
+                Rule::unique('pinjamans', 'no_pinjaman')->ignore(Crypt::decrypt($id))
+            ],
+        ], [
+            'no_rekening.required' => 'No rekening wajib diisi.',
+            'no_rekening.unique' => 'No rekening sudah digunakan.',
         ]);
 
         // Temukan data pinjaman berdasarkan ID yang dienkripsi
@@ -101,6 +109,7 @@ class InputLoanController extends Controller
         $pinjaman->update([
             'id_pembiayaan' => $request->loan_product,
             'id_anggota' => $request->member_name,
+            'no_pinjaman' => $request->no_rekening,
             'besar_pinjaman' => $request->nominal_pinjaman,
             'besar_margin' => $request->nominal_margin,
             'angsur_pinjaman' => $request->nominal_angsuran_pinjaman,

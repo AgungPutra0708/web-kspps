@@ -41,7 +41,7 @@
                                                 <th>No</th>
                                                 <th>Produk Simpanan</th>
                                                 <th>Saldo Simpanan</th>
-                                                <th style="width: 50px"></th>
+                                                <th style="width: 150px"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -70,7 +70,7 @@
                                                 <th>Margin Pinjaman</th>
                                                 <th>Lama Pinjaman</th>
                                                 <th>Status Pinjaman</th>
-                                                <th style="width: 125px"></th>
+                                                <th style="width: 200px"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -97,6 +97,31 @@
             </div>
         </div>
         <!-- /.container-fluid -->
+        <div class="modal fade" id="qrModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">QR Code Anggota</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body text-center">
+                        <div id="qrContainer">
+                            <div class="text-muted">Loading QR Code...</div>
+                        </div>
+
+                        <div class="mt-3 d-flex justify-content-center gap-2">
+                            <button class="btn btn-success mr-2" id="btnDownloadQR">Download</button>
+                            <button class="btn btn-secondary" id="btnPrintQR">Print</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
     <!-- End of Main Content -->
 
@@ -136,6 +161,9 @@
                                                 <button type="button" class="btn btn-info" onclick="window.location.href='{{ url('history/') }}/${saving.id_rekening_simpanan}'">
                                                     <i class="fas fa-history"></i>
                                                 </button>
+                                                <button class="btn btn-success btn-sm btn-qr" data-url="{{ url('/cek-simpanan/') }}/${saving.id_rekening_simpanan}/qrcode">
+                                                    QR
+                                                </button>
                                             </td>
                                         </tr>`;
 
@@ -170,6 +198,9 @@
                                                 <button type="button" class="btn btn-info" onclick="window.location.href='{{ url('loan-history/') }}/${loan.id_pinjaman}'">
                                                     <i class="fas fa-history"></i>
                                                 </button>
+                                                <button class="btn btn-success btn-sm btn-qr" data-url="{{ url('/cek-pembiayaan/') }}/${loan.id_pinjaman}/qrcode">
+                                                    QR
+                                                </button>
                                             </td>
                                         </tr>`;
                             row = row.replace(':id', `${loan.id_pinjaman}`);
@@ -196,6 +227,95 @@
                     maximumFractionDigits: 2
                 }).replace(/,/g, ',').replace(/\./g, '.');
             }
+
+            $(document).on('click', '.btn-qr', function() {
+                const url = $(this).data('url');
+
+                $('#qrContainer').html('<div class="text-muted">Loading QR Code...</div>');
+                $('#qrModal').modal('show');
+
+                fetch(url)
+                    .then(res => res.text())
+                    .then(svg => {
+                        $('#qrContainer').html(svg);
+                    })
+                    .catch(() => {
+                        $('#qrContainer').html('<div class="text-danger">Gagal load QR Code</div>');
+                    });
+            });
+
+            $('#btnDownloadQR').on('click', function() {
+                const svg = document.querySelector('#qrContainer svg');
+                if (!svg) return;
+
+                const serializer = new XMLSerializer();
+                const svgStr = serializer.serializeToString(svg);
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                const img = new Image();
+                const svgBlob = new Blob([svgStr], {
+                    type: 'image/svg+xml;charset=utf-8'
+                });
+                const url = URL.createObjectURL(svgBlob);
+
+                img.onload = function() {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    // background putih (biar gak transparan)
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.drawImage(img, 0, 0);
+                    URL.revokeObjectURL(url);
+
+                    const pngUrl = canvas.toDataURL('image/png');
+
+                    const a = document.createElement('a');
+                    a.href = pngUrl;
+                    a.download = 'qr-anggota.png';
+                    a.click();
+                };
+
+                img.src = url;
+            });
+
+            $('#btnPrintQR').on('click', function() {
+                const svgHtml = $('#qrContainer').html();
+                if (!svgHtml) return;
+
+                const win = window.open('', '_blank');
+                win.document.write(`
+                    <html>
+                    <head>
+                        <title>Print QR Code</title>
+                        <style>
+                            body {
+                                display:flex;
+                                justify-content:center;
+                                align-items:center;
+                                height:100vh;
+                            }
+                            svg {
+                                width:300px;
+                                height:300px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${svgHtml}
+                        <script>
+                            window.onload = function () {
+                                window.print();
+                                window.close();
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+            });
         });
     </script>
 @endsection

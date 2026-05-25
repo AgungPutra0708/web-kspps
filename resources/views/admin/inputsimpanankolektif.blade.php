@@ -93,137 +93,205 @@
     </div>
     <!-- /.container-fluid -->
     <script>
-        $(document).ready(function() {
-            let selectedSavingProduct = null;
-            let selectedMemberGroup = null;
-            let simpananArray = []; // Array untuk menyimpan data simpanan per anggota
+    $(document).ready(function() {
+        let selectedSavingProduct = null;
+        let selectedMemberGroup = null;
+        let simpananArray = []; // Array untuk menyimpan data simpanan per anggota
 
-            function checkSelections() {
-                if (selectedSavingProduct && selectedMemberGroup) {
-                    fetchSavingData(selectedSavingProduct, selectedMemberGroup);
-                }
+        function checkSelections() {
+            if (selectedSavingProduct && selectedMemberGroup) {
+                fetchSavingData(selectedSavingProduct, selectedMemberGroup);
             }
+        }
 
-            // Event listener untuk pilihan produk simpanan
-            $('#saving_product').on('change', function() {
-                selectedSavingProduct = $(this).val();
-                checkSelections();
-            });
+        // Event listener untuk pilihan produk simpanan
+        $('#saving_product').on('change', function() {
+            selectedSavingProduct = $(this).val();
+            checkSelections();
+        });
 
-            // Event listener untuk pilihan member group
-            $('#member_group').on('change', function() {
-                selectedMemberGroup = $(this).val();
-                checkSelections();
-            });
+        // Event listener untuk pilihan member group
+        $('#member_group').on('change', function() {
+            selectedMemberGroup = $(this).val();
+            checkSelections();
+        });
 
-            // Fungsi untuk melakukan AJAX request
-            function fetchSavingData(savingProduct, memberGroup) {
-                $.ajax({
-                    url: "{{ route('get_member_data_simpanan_kolektif') }}", // Sesuaikan route
-                    method: 'GET',
-                    data: {
-                        id_simpanan: savingProduct,
-                        id_rembug: memberGroup
-                    },
-                    success: function(response) {
-                        let anggotaData = response.anggota_data;
-                        let tbody = $('#dataTable tbody');
-                        tbody.empty(); // Kosongkan tabel sebelum menambah data baru
-                        simpananArray = []; // Reset array simpanan
+        // Fungsi untuk melakukan AJAX request
+        function fetchSavingData(savingProduct, memberGroup) {
+            $.ajax({
+                url: "{{ route('get_member_data_simpanan_kolektif') }}", // Sesuaikan route
+                method: 'GET',
+                data: {
+                    id_simpanan: savingProduct,
+                    id_rembug: memberGroup
+                },
+                success: function(response) {
+                    let anggotaData = response.anggota_data;
+                    let tbody = $('#dataTable tbody');
+                    tbody.empty(); // Kosongkan tabel sebelum menambah data baru
+                    simpananArray = []; // Reset array simpanan
 
-                        // Loop melalui data anggota dan tampilkan ke dalam tabel
-                        anggotaData.forEach(function(anggota, index) {
-                            let row = `<tr>
-                        <td>${index + 1}</td>
-                        <td>${anggota.nama_anggota}</td>
-                        <td>${formatRupiah(parseFloat(anggota.saldo_akhir))}</td>
-                        <td><input type="number" name="nominal_setoran[]" class="form-control nominal-setoran" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-simpanan_id="${anggota.id_simpanan}" data-saldo="${anggota.saldo_akhir}"></td>
-                        <td><input type="text" name="keterangan[]" class="form-control keterangan" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-simpanan_id="${anggota.id_simpanan}"></td>
-                    </tr>`;
+                    // Loop melalui data anggota dan tampilkan ke dalam tabel
+                    anggotaData.forEach(function(anggota, index) {
+                        let row = `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${anggota.nama_anggota}</td>
+                                <td>${formatRupiah(parseFloat(anggota.saldo_akhir))}</td>
+                                <td><input type="text" class="form-control nominal-setoran" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-simpanan_id="${anggota.id_simpanan}" data-saldo="${anggota.saldo_akhir}" value=""></td>
+                                <td><input type="text" class="form-control keterangan" data-index="${index}" data-anggota_id="${anggota.id_anggota}" data-simpanan_id="${anggota.id_simpanan}"></td>
+                            </tr>`;
 
-                            tbody.append(row);
-                        });
+                        tbody.append(row);
+                    });
 
-                        // Total setoran di bagian footer
-                        $('.nominal-setoran').on('input', function() {
-                            updateTotalSetoran();
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Terjadi kesalahan: " + error);
-                    }
-                });
-            }
-
-            // Fungsi untuk menghitung total setoran
-            function updateTotalSetoran() {
-                let totalSetoran = 0;
-                $('.nominal-setoran').each(function() {
-                    totalSetoran += parseFloat($(this).val()) || 0;
-                });
-                $('tfoot th:eq(1)').text(formatRupiah(parseFloat(totalSetoran)));
-            }
-
-            // Saat form disubmit, kumpulkan data dari tabel dan masukkan ke dalam simpananArray
-            $('#simpananKolektifForm').on('submit', function(event) {
-                event.preventDefault(); // Mencegah submit form secara default
-
-                let simpananArray = []; // Reset array sebelum mengumpulkan data
-                let tanggalTransaksi = $('#tanggal_transaksi').val(); // Ambil nilai tanggal transaksi
-
-                // Validasi jika tanggal transaksi kosong
-                if (!tanggalTransaksi) {
+                    // Attach event handlers dynamically
+                    attachNominalSetoranHandlers();
+                    
+                    // Total setoran di bagian footer
+                    updateTotalSetoran();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Terjadi kesalahan: " + error);
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Tanggal Transaksi Kosong',
-                        text: 'Silakan isi tanggal transaksi terlebih dahulu.',
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal mengambil data anggota',
                         confirmButtonText: 'OK'
                     });
-                    return; // Stop proses submit jika validasi gagal
                 }
+            });
+        }
 
-                $('#dataTable tbody tr').each(function(index, row) {
-                    let nominalSetoran = $(row).find('.nominal-setoran').val();
-                    let keterangan = $(row).find('.keterangan').val();
-                    let anggotaId = $(row).find('.nominal-setoran').data('anggota_id');
-                    let simpananId = $(row).find('.nominal-setoran').data('simpanan_id');
+        // Function to attach event handlers to nominal-setoran inputs
+        function attachNominalSetoranHandlers() {
+            $('.nominal-setoran').off('input').on('input', function() {
+                formatLocalString(this);
+                updateTotalSetoran();
+            });
+        }
 
+        // Fungsi untuk menghitung total setoran
+        function updateTotalSetoran() {
+            let totalSetoran = 0;
+            $('.nominal-setoran').each(function() {
+                let rawValue = $(this).val().replace(/\./g, '').replace(/,/g, '.');
+                let numericValue = parseFloat(rawValue);
+                if (!isNaN(numericValue)) {
+                    totalSetoran += numericValue;
+                }
+            });
+            $('tfoot th:eq(3)').text(formatRupiah(totalSetoran));
+        }
+
+        // Improved formatLocalString function
+        function formatLocalString(input) {
+            // Get the input element and its value
+            let $input = $(input);
+            let value = $input.val();
+            
+            // Remove existing formatting (dots and commas)
+            let cleanValue = value.replace(/\./g, '').replace(/,/g, '.');
+            
+            // Parse as float
+            let number = parseFloat(cleanValue);
+            
+            // Check if it's a valid number
+            if (!isNaN(number) && value !== '') {
+                // Format with thousand separators (dots) and keep decimals
+                let formattedValue = new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                }).format(number);
+                
+                // Set the formatted value back
+                $input.val(formattedValue);
+            } else {
+                $input.val('');
+                // If invalid, just keep original but maybe show error
+                console.warn('Invalid number entered:', value);
+            }
+        }
+
+        // Function to parse formatted value to number
+        function parseFormattedNumber(formattedValue) {
+            if (!formattedValue) return 0;
+            // Remove dots (thousand separators) and replace comma with dot for decimal
+            return parseFloat(formattedValue.replace(/\./g, '').replace(/,/g, '.')) || 0;
+        }
+
+        // Saat form disubmit, kumpulkan data dari tabel dan masukkan ke dalam simpananArray
+        $('#simpananKolektifForm').on('submit', function(event) {
+            event.preventDefault(); // Mencegah submit form secara default
+
+            let simpananArray = []; // Reset array sebelum mengumpulkan data
+            let tanggalTransaksi = $('#tanggal_transaksi').val(); // Ambil nilai tanggal transaksi
+
+            // Validasi jika tanggal transaksi kosong
+            if (!tanggalTransaksi) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tanggal Transaksi Kosong',
+                    text: 'Silakan isi tanggal transaksi terlebih dahulu.',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop proses submit jika validasi gagal
+            }
+
+            let hasValidData = false;
+            
+            $('#dataTable tbody tr').each(function(index, row) {
+                let $nominalInput = $(row).find('.nominal-setoran');
+                let nominalSetoran = $nominalInput.val();
+                let keterangan = $(row).find('.keterangan').val();
+                let anggotaId = $nominalInput.data('anggota_id');
+                let simpananId = $nominalInput.data('simpanan_id');
+                
+                // Parse the formatted value to get the actual number
+                let parsedNominal = parseFormattedNumber(nominalSetoran);
+                
+                // Only add if there's a valid nominal amount
+                if (parsedNominal > 0) {
+                    hasValidData = true;
+                    
                     // Tambahkan data ke simpananArray
                     simpananArray.push({
                         id_anggota: anggotaId,
                         id_simpanan: simpananId,
                         metode_transaksi: '+',
-                        jumlah_setoran: nominalSetoran,
+                        jumlah_setoran: parsedNominal, // Send the parsed number, not formatted string
                         keterangan: keterangan,
                         tanggal_transaksi: tanggalTransaksi,
                     });
-                });
-
-                // Validasi jika array Simpanan kosong
-                if (simpananArray.length === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Data Simpanan Kosong',
-                        text: 'Tidak ada data simpanan yang dimasukkan. Silakan masukkan setidaknya satu data simpanan.',
-                        confirmButtonText: 'OK'
-                    });
-                    return; // Stop proses submit jika tidak ada data pembiayaan
                 }
-
-                // Serialize array menjadi JSON string dan masukkan ke input hidden
-                $('#simpanan_array').val(JSON.stringify(simpananArray));
-
-                // Submit form setelah konfirmasi
-                $(this).unbind('submit').submit();
             });
 
-            // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
-            function formatRupiah(number) {
-                return number.toLocaleString('id-ID', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2
-                }).replace(/,/g, ',').replace(/\./g, '.');
+            // Validasi jika array Simpanan kosong
+            if (simpananArray.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Data Simpanan Kosong',
+                    text: 'Tidak ada data simpanan yang dimasukkan. Silakan masukkan setidaknya satu nominal setoran yang valid.',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop proses submit jika tidak ada data pembiayaan
             }
+
+            // Serialize array menjadi JSON string dan masukkan ke input hidden
+            $('#simpanan_array').val(JSON.stringify(simpananArray));
+
+            // Submit form setelah konfirmasi
+            $(this).unbind('submit').submit();
         });
-    </script>
+
+        // Function to format a number as Rupiah (without "Rp" and using dots for thousands, commas for decimals)
+        function formatRupiah(number) {
+            if (isNaN(number) || number === 0) return '0';
+            return new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }).format(number);
+        }
+    });
+</script>
 @endsection

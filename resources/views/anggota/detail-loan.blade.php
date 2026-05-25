@@ -23,7 +23,7 @@
                                 <div class="col-lg-8 col-8">
                                     <h6 class="text-white">{{ $item['no_pinjaman'] }}</h6>
                                     <h5 class="text-white">{{ $item['nama_pembiayaan'] }}</h5>
-                                    <h5 class="text-white">Rp {{ number_format($item['sisa_besar_pinjaman'], 0, ',', '.') }}</h5>
+                                    <h5 class="text-white">Rp {{ number_format($item['sisa_besar_pinjaman'] + $item['sisa_besar_margin'], 0, ',', '.') }}</h5>
                                 </div>
                                 <div class="col-lg-4 col-4">
                                     <img class="img-saldo img-fluid" src="{{ asset('assets/img/card_pembiayaan.svg') }}" />
@@ -34,8 +34,8 @@
                     </div>
                     <div class="row p-2">
                         <div class="col-6">
-                            <span class="text-secondary">Margin</span><br>
-                            <span class="text-secondary">Rp {{ number_format($item['sisa_besar_margin'], 0, ',', '.') }}</span>
+                            <span class="text-secondary">Angsuran</span><br>
+                            <span class="text-secondary">Rp {{ number_format($item['angsur_pinjaman'] + $item['angsur_margin'], 0, ',', '.') }}</span>
                         </div>
                         <div class="col-6">
                             <span class="text-secondary">Jangka Waktu</span><br>

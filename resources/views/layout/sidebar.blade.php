@@ -144,6 +144,14 @@
             </a>
         </li>
 
+        <!-- Nav Item - Transaksi Anggota -->
+        <li class="nav-item {{ Route::is('transaksi_anggota') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('transaksi_anggota') }}">
+                <i class="fas fa-tasks"></i>
+                <span>Transaksi Anggota</span>
+            </a>
+        </li>
+
         <!-- Divider -->
         <hr class="sidebar-divider" />
 
